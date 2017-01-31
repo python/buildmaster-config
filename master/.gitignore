@@ -1,0 +1,8 @@
+http.log*
+twistd.log*
+twistd.pid
+state.sqlite
+custom.*/
+bolen-dmg-*/
+2.7.*/
+3.*.*/
