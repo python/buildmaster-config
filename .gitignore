@@ -6,3 +6,4 @@ bin/
 buildbot.sh
 buildbot/
 lib/
+venv/
