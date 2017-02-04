@@ -1,1 +1,8 @@
 *.pyc
+.*
+!.gitignore
+backup/
+bin/
+buildbot.sh
+buildbot/
+lib/
