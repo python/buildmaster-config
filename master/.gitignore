@@ -1,7 +1,7 @@
 http.log*
 twistd.log*
 twistd.pid
-state.sqlite
+state.sqlite*
 custom.*/
 bolen-dmg-*/
 2.7.*/
