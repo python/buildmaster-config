@@ -1,0 +1,5 @@
+language: python
+python:
+  - 2.7
+install: pip install buildbot==0.8.14
+script: buildbot checkconfig master/master.cfg
