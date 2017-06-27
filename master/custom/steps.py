@@ -27,6 +27,8 @@ class Test(BaseTest):
         r'Re-running failed tests in verbose mode',
         # Thread last resort exception handler in t_bootstrap()
         r'Unhandled exception in thread started by ',
+        # test_os leaked [6, 6, 6] memory blocks, sum=18,
+        r'test_.* leaked \[',
     )
     # Use ".*" prefix to search the regex anywhere since stdout is mixed
     # with stderr, so warnings are not always written at the start
