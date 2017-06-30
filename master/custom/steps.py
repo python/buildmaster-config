@@ -25,10 +25,12 @@ class Test(BaseTest):
         # regrtest: At least one test failed. Log a warning even if the test
         # passed on the second try, to notify that a test is unstable.
         r'Re-running failed tests in verbose mode',
+        # Re-running test 'test_multiprocessing_fork' in verbose mode
+        r'Re-running test .* in verbose mode',
         # Thread last resort exception handler in t_bootstrap()
         r'Unhandled exception in thread started by ',
         # test_os leaked [6, 6, 6] memory blocks, sum=18,
-        r'test_.* leaked \[',
+        r'test_[^ ]+ leaked ',
     )
     # Use ".*" prefix to search the regex anywhere since stdout is mixed
     # with stderr, so warnings are not always written at the start
