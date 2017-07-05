@@ -3,7 +3,7 @@ python:
   - 2.7
 cache:
   - pip
-install: pip install buildbot==0.8.14
+install: pip install -r requirements.in
 script: buildbot checkconfig master/master.cfg
 notifications:
   email: false
