@@ -73,27 +73,3 @@ class Uninstall(ShellCommand):
     command = "chmod -R +w target/ &&  rm -rf target/"
     alwaysRun = True
     usePTY = False
-
-
-class DocBuild(ShellCommand):
-    name = 'docbuild'
-    description = ['building']
-    descriptionDone = ['build']
-    warnOnWarnings = True
-    command = ['make', '-C', 'Doc/', 'html']
-
-
-class DocLint(ShellCommand):
-    name = 'lint'
-    description = ['linting']
-    descriptionDone = ['lint']
-    warnOnWarnings = True
-    command = ['make', '-C', 'Doc/', 'check']
-
-
-class DocSuspicious(ShellCommand):
-    name = 'suspicious'
-    description = ['checking']
-    descriptionDone = ['suspicious']
-    warnOnWarnings = True
-    command = ['make', '-C', 'Doc/', 'suspicious']
