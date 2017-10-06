@@ -1,6 +1,1 @@
-buildbot
-buildbot-worker
-buildbot-www
-buildbot-console-view
-buildbot-grid-view
-buildbot-waterfall-view
+buildbot[bundle]
