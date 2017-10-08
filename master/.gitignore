@@ -7,3 +7,5 @@ bolen-dmg-*/
 2.7.*/
 3.*.*/
 local.py
+workers/
+gitpoller-work/
