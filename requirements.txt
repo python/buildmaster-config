@@ -3,7 +3,7 @@ autobahn==17.9.3
 Automat==0.6.0
 buildbot==0.9.12
 buildbot-console-view==0.9.12
-buildbot-grid-view==0.9.12
+buildbot-grid-view==0.9.12.post1
 buildbot-waterfall-view==0.9.12
 buildbot-worker==0.9.12
 buildbot-www==0.9.12
