@@ -1,9 +1,8 @@
 language: python
 python:
-  - 2.7
+  - 3.4
 cache:
   - pip
-install: pip install -r requirements.in
-script: buildbot checkconfig master/master.cfg
+script: make check PIP=pip BUILDBOT=buildbot
 notifications:
   email: false
