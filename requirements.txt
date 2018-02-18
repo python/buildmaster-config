@@ -1,12 +1,12 @@
 attrs==17.4.0
 autobahn==17.10.1
 Automat==0.6.0
-buildbot==0.9.15.post1
-buildbot-console-view==0.9.15.post1
-buildbot-grid-view==0.9.15.post1
-buildbot-waterfall-view==0.9.15.post1
-buildbot-worker==0.9.15.post1
-buildbot-www==0.9.15.post1
+buildbot==1.0.0
+buildbot-console-view==1.0.0
+buildbot-grid-view==1.0.0
+buildbot-waterfall-view==1.0.0
+buildbot-worker==1.0.0
+buildbot-www==1.0.0
 constantly==15.1.0
 decorator==4.2.1
 future==0.16.0
@@ -18,7 +18,7 @@ pbr==3.1.1
 PyJWT==1.5.3
 python-dateutil==2.6.1
 six==1.11.0
-SQLAlchemy==1.2.2
+SQLAlchemy==1.2.3
 sqlalchemy-migrate==0.11.0
 sqlparse==0.2.4
 Tempita==0.5.2
