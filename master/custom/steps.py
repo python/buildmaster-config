@@ -32,9 +32,9 @@ class Test(BaseTest):
         # test_os leaked [6, 6, 6] memory blocks, sum=18,
         r'test_[^ ]+ leaked ',
         # FAIL: test_stdin_broken_pipe (test.test_asyncio...)
-        r'\bFAIL: ',
+        r'FAIL: ',
         # ERROR: test_pipe_handle (test.test_asyncio...)
-        r'\bERROR: ',
+        r'ERROR: ',
     )
     # Use ".*" prefix to search the regex anywhere since stdout is mixed
     # with stderr, so warnings are not always written at the start
