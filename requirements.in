@@ -1,2 +1,3 @@
-buildbot[bundle]
+buildbot[bundle,tls]
+requests
 treq
