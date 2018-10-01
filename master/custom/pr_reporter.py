@@ -25,19 +25,19 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
 
     @defer.inlineCallbacks
     def send(self, build):
-        props = Properties.fromDict(build['properties'])
+        props = Properties.fromDict(build["properties"])
         props.master = self.master
 
-        if build['complete']:
+        if build["complete"]:
             state = {
-                SUCCESS: 'success',
-                WARNINGS: 'success',
-                FAILURE: 'failure',
-                SKIPPED: 'success',
-                EXCEPTION: 'error',
-                RETRY: 'pending',
-                CANCELLED: 'error'
-            }.get(build['results'], 'error')
+                SUCCESS: "success",
+                WARNINGS: "success",
+                FAILURE: "failure",
+                SKIPPED: "success",
+                EXCEPTION: "error",
+                RETRY: "pending",
+                CANCELLED: "error",
+            }.get(build["results"], "error")
         else:
             return
 
@@ -46,13 +46,12 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
 
         context = yield props.render(self.context)
 
-        sourcestamps = build['buildset'].get('sourcestamps')
+        sourcestamps = build["buildset"].get("sourcestamps")
 
         if not sourcestamps or not sourcestamps[0]:
             return
 
-        changes = yield self.master.data.get(
-                ("builds", build["buildid"], "changes"))
+        changes = yield self.master.data.get(("builds", build["buildid"], "changes"))
 
         if len(changes) > 1:
             return
@@ -66,24 +65,27 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
 
         issue = m.groups()[-1]
 
-        project = sourcestamps[0]['project']
+        project = sourcestamps[0]["project"]
 
         if "/" in project:
-            repoOwner, repoName = project.split('/')
+            repoOwner, repoName = project.split("/")
         else:
-            giturl = giturlparse(sourcestamps[0]['repository'])
+            giturl = giturlparse(sourcestamps[0]["repository"])
             repoOwner = giturl.owner
             repoName = giturl.repo
 
         if self.verbose:
-            log.msg("Updating github status: repoOwner={repoOwner}, repoName={repoName}".format(
-                repoOwner=repoOwner, repoName=repoName))
+            log.msg(
+                "Updating github status: repoOwner={repoOwner}, repoName={repoName}".format(
+                    repoOwner=repoOwner, repoName=repoName
+                )
+            )
 
         try:
             repo_user = unicode2NativeString(repoOwner)
             repo_name = unicode2NativeString(repoName)
             sha = unicode2NativeString(change["revision"])
-            target_url = unicode2NativeString(build['url'])
+            target_url = unicode2NativeString(build["url"])
             context = unicode2NativeString(context)
             yield self.createStatus(
                 build=build,
@@ -97,41 +99,62 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
             )
             if self.verbose:
                 log.msg(
-                    'Issued a Pull Request comment for {repoOwner}/{repoName} '
+                    "Issued a Pull Request comment for {repoOwner}/{repoName} "
                     'at {sha}, context "{context}", issue {issue}.'.format(
-                        repoOwner=repoOwner, repoName=repoName,
-                        sha=sha, issue=issue, context=context))
+                        repoOwner=repoOwner,
+                        repoName=repoName,
+                        sha=sha,
+                        issue=issue,
+                        context=context,
+                    )
+                )
         except Exception as e:
             log.err(
                 e,
-                'Failed to issue a Pull Request comment for {repoOwner}/{repoName} '
+                "Failed to issue a Pull Request comment for {repoOwner}/{repoName} "
                 'at {sha}, context "{context}", issue {issue}.'.format(
-                    repoOwner=repoOwner, repoName=repoName,
-                    sha=sha, issue=issue, context=context))
+                    repoOwner=repoOwner,
+                    repoName=repoName,
+                    sha=sha,
+                    issue=issue,
+                    context=context,
+                ),
+            )
 
     def _getURLForBuild(self, builderid, build_number):
         prefix = self.master.config.buildbotURL
-        return prefix + "#builders/%d/builds/%d" % (
-            builderid,
-            build_number)
+        return prefix + "#builders/%d/builds/%d" % (builderid, build_number)
 
-
-    def createStatus(self,
-                     build, repo_user, repo_name, sha, state, target_url=None,
-                     context=None, issue=None):
-        message = textwrap.dedent("""\
+    def createStatus(
+        self,
+        build,
+        repo_user,
+        repo_name,
+        sha,
+        state,
+        target_url=None,
+        context=None,
+        issue=None,
+    ):
+        message = textwrap.dedent(
+            """\
         Hi! The buildbot {buildername} has failed when building commit {sha}.
 
         You can take a look here:
 
         {build_url}
         """.format(
-            buildername=build['builder']['name'],
-            build_url=self._getURLForBuild(build['builder']['builderid'], build['number']),
-            sha=sha,
+                buildername=build["builder"]["name"],
+                build_url=self._getURLForBuild(
+                    build["builder"]["builderid"], build["number"]
+                ),
+                sha=sha,
             )
         )
 
-        payload = {'body': message}
+        payload = {"body": message}
 
-        return self._http.post( '/'.join(['/repos', repo_user, repo_name, 'issues', issue, 'comments']), json=payload)
+        return self._http.post(
+            "/".join(["/repos", repo_user, repo_name, "issues", issue, "comments"]),
+            json=payload,
+        )
