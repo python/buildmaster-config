@@ -1,6 +1,3 @@
-from __future__ import absolute_import
-from __future__ import print_function
-
 import textwrap
 import re
 
@@ -8,19 +5,24 @@ from twisted.internet import defer
 from twisted.python import log
 
 from buildbot.process.properties import Properties
-from buildbot.process.results import CANCELLED
-from buildbot.process.results import EXCEPTION
-from buildbot.process.results import FAILURE
-from buildbot.process.results import RETRY
-from buildbot.process.results import SKIPPED
-from buildbot.process.results import SUCCESS
-from buildbot.process.results import WARNINGS
+from buildbot.process.results import (
+    CANCELLED,
+    EXCEPTION,
+    FAILURE,
+    RETRY,
+    SKIPPED,
+    SUCCESS,
+    WARNINGS,
+)
 from buildbot.util import unicode2NativeString
 from buildbot.util.giturlparse import giturlparse
 from buildbot.plugins import reporters
 
 
 class GitHubPullRequestReporter(reporters.GitHubStatusPush):
+
+    name = "GitHubPullRequestReporter"
+
     @defer.inlineCallbacks
     def send(self, build):
         props = Properties.fromDict(build['properties'])
