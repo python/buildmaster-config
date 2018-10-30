@@ -17,6 +17,47 @@ from buildbot.process.results import (
 from buildbot.util import unicode2NativeString
 from buildbot.util.giturlparse import giturlparse
 from buildbot.plugins import reporters
+from buildbot.reporters.utils import getDetailsForBuild
+
+TRACEBACK_REGEX = re.compile(
+    r"""
+     ^Traceback # Lines starting with "Traceback"
+     [\s\S]+? # Match greedy any text (preserving ASCII flags).
+     (?=^(?:\d|test|\Z)) # Stop matching in lines starting with
+                         # a number (log time), "test" or the end
+                         # of the string.
+    """, re.MULTILINE | re.VERBOSE,
+)
+
+PR_MESSAGE = """\
+:warning::warning::warning: Buildbot failure :warning::warning::warning:
+------------------------------------------------------------------------
+
+Hi! The buildbot **{buildername}** has failed when building commit {sha}.
+
+What do you need to do:
+
+1. Don't panic.
+2. Check [the buildbot page in the devguide](https://devguide.python.org/buildbots/) \
+if you don't know what the buildbots are or how they work.
+3. Go to the page of the buildbot that failed ({build_url}) \
+and take a look at the build logs.
+4. Check if the failure is related to this commit ({sha}) or \
+if it is a false positive.
+5. If the failure is related to this commit, please, reflect \
+that on the issue and make a new Pull Request with a fix.
+
+You can take a look at the buildbot page here:
+
+{build_url}
+
+<details>
+<summary>Click to see traceback logs</summary>
+
+{tracebacks}
+
+</details>
+"""
 
 
 class GitHubPullRequestReporter(reporters.GitHubStatusPush):
@@ -43,6 +84,16 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
 
         if state != "failure":
             return
+
+        yield getDetailsForBuild(self.master, build, wantLogs=True, wantSteps=True)
+
+        tracebacks = list()
+        try:
+            test_log = build["steps"][3]["logs"][0]["content"]["content"]
+            test_log = "\n".join([line.lstrip("eo") for line in test_log.splitlines()])
+            tracebacks = TRACEBACK_REGEX.findall(test_log)
+        except IndexError:
+            pass
 
         context = yield props.render(self.context)
 
@@ -96,6 +147,7 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
                 target_url=target_url,
                 context=context,
                 issue=issue,
+                tracebacks=tracebacks,
             )
             if self.verbose:
                 log.msg(
@@ -135,21 +187,15 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
         target_url=None,
         context=None,
         issue=None,
+        tracebacks=None,
     ):
-        message = textwrap.dedent(
-            """\
-        Hi! The buildbot {buildername} has failed when building commit {sha}.
-
-        You can take a look here:
-
-        {build_url}
-        """.format(
-                buildername=build["builder"]["name"],
-                build_url=self._getURLForBuild(
-                    build["builder"]["builderid"], build["number"]
-                ),
-                sha=sha,
-            )
+        message = PR_MESSAGE.format(
+            buildername=build["builder"]["name"],
+            build_url=self._getURLForBuild(
+                build["builder"]["builderid"], build["number"]
+            ),
+            sha=sha,
+            tracebacks="```python-traceback\n{}\n```".format("\n\n".join(tracebacks)),
         )
 
         payload = {"body": message}
