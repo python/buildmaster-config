@@ -19,6 +19,8 @@ from buildbot.util.giturlparse import giturlparse
 from buildbot.plugins import reporters
 from buildbot.reporters.utils import getDetailsForBuild
 
+TESTS_STEP = 4
+
 TRACEBACK_REGEX = re.compile(
     r"""
      ^Traceback # Lines starting with "Traceback"
@@ -89,11 +91,14 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
 
         tracebacks = list()
         try:
-            test_log = build["steps"][3]["logs"][0]["content"]["content"]
+            test_log = build["steps"][TESTS_STEP]["logs"][0]["content"]["content"]
             test_log = "\n".join([line.lstrip("eo") for line in test_log.splitlines()])
             tracebacks = TRACEBACK_REGEX.findall(test_log)
         except IndexError:
             pass
+
+        if not tracebacks:
+            tracebacks = list(self._construct_tracebacks_from_stderr(build))
 
         context = yield props.render(self.context)
 
@@ -176,6 +181,18 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
     def _getURLForBuild(self, builderid, build_number):
         prefix = self.master.config.buildbotURL
         return prefix + "#builders/%d/builds/%d" % (builderid, build_number)
+
+    def _construct_tracebacks_from_stderr(self, build):
+        for step in build["steps"]:
+            try:
+                test_log = step["logs"][0]["content"]["content"]
+            except IndexError:
+                continue
+            test_log = "\n".join([line.lstrip("e") for line in test_log.splitlines()
+                                  if line.startswith("e")])
+            if not test_log:
+                continue
+            yield test_log
 
     def createStatus(
         self,
