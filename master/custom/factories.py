@@ -1,6 +1,5 @@
 from buildbot.process import factory
 from buildbot.steps.shell import Configure, Compile, ShellCommand
-from buildbot.steps.transfer import DirectoryUpload
 
 from .steps import Test, Clean, Install, LockInstall, Uninstall
 
@@ -363,35 +362,3 @@ class Windows64ICCReleaseBuild(Windows64ReleaseBuild):
     buildersuffix = ".nondebug"
     buildFlags = Windows64ReleaseBuild.buildFlags + windows_icc_build_flags
     factory_tags = ["win64", "icc", "nondebug"]
-
-
-##############################################################################
-##############################  OTHER BUILDS  ################################
-##############################################################################
-
-
-class DMG(factory.BuildFactory):
-    def __init__(self, source, branch, upload_dir):
-        factory.BuildFactory.__init__(
-            self,
-            [
-                source,
-                ShellCommand(
-                    name="umask",
-                    description="umask",
-                    command=["/bin/sh", "-c", "umask"],
-                ),
-                Compile(
-                    workdir="build/Mac/BuildScript",
-                    command=[
-                        "python2.5",
-                        "./build-installer.py",
-                        "--build-dir",
-                        "../../dmg",
-                    ],
-                ),
-                DirectoryUpload(
-                    workdir="build/dmg", workersrc="diskimage", masterdest=upload_dir
-                ),
-            ],
-        )
