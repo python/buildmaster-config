@@ -1,6 +1,15 @@
 import re
 
 from buildbot.steps.shell import ShellCommand, Test as BaseTest
+from buildbot.steps.source.git import Git as _Git
+
+
+class Git(_Git):
+    # GH-68: If "git clone" fails, mark the whole build as WARNING
+    # (warnOnFailure), not as "FAILURE" (flunkOnFailure)
+    haltOnFailure = True
+    flunkOnFailure = False
+    warnOnFailure = True
 
 
 class Test(BaseTest):
@@ -44,7 +53,7 @@ class Test(BaseTest):
 
     # if tests have warnings, mark the overall build as WARNINGS (orange)
     warnOnWarnings = True
-    
+
     # 3 hours should be enough even for refleak builds.
     maxTime = 3 * 60 * 60
     # Give SIGTERM 30 seconds to shut things down before SIGKILL.
