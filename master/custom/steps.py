@@ -62,7 +62,8 @@ class Test(BaseTest):
 
 class Clean(ShellCommand):
     name = "clean"
-    warnOnFailure = 1
+    flunkOnFailure = False
+    warnOnFailure = True
     description = ["cleaning"]
     descriptionDone = ["clean"]
     command = ["make", "distclean"]
