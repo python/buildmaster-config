@@ -191,7 +191,7 @@ class UnixBuildWithoutDocStrings(UnixBuild):
     configureFlags = ["--with-pydebug", "--without-doc-strings"]
 
 
-class AIXBuild(UnixBuild):
+class AIXBuildWithoutComputedGotos(UnixBuild):
     configureFlags = [
         "--with-pydebug",
         "--with-openssl=/opt/aixtools",
@@ -199,11 +199,10 @@ class AIXBuild(UnixBuild):
     ]
 
 
-class AIXBuildWithGcc(UnixBuild):
+class AIXBuild(UnixBuild):
     configureFlags = [
         "--with-pydebug",
         "--with-openssl=/opt/aixtools",
-        "--with-gcc=yes",
     ]
 
 
