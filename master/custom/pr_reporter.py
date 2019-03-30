@@ -1,4 +1,3 @@
-import textwrap
 import re
 
 from twisted.internet import defer
@@ -14,7 +13,6 @@ from buildbot.process.results import (
     SUCCESS,
     WARNINGS,
 )
-from buildbot.util import unicode2NativeString
 from buildbot.util.giturlparse import giturlparse
 from buildbot.plugins import reporters
 from buildbot.reporters.utils import getDetailsForBuild
@@ -138,11 +136,11 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
             )
 
         try:
-            repo_user = unicode2NativeString(repoOwner)
-            repo_name = unicode2NativeString(repoName)
-            sha = unicode2NativeString(change["revision"])
-            target_url = unicode2NativeString(build["url"])
-            context = unicode2NativeString(context)
+            repo_user = repoOwner
+            repo_name = repoName
+            sha = change["revision"]
+            target_url = build["url"]
+            context = context
             yield self.createStatus(
                 build=build,
                 repo_user=repo_user,
