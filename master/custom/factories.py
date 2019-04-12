@@ -209,6 +209,12 @@ class ClangUbsanLinuxBuild(UnixBuild):
     testFlags = "-j4"
     factory_tags = ["clang", "ubsan", "sanitizer"]
 
+class ClangUnixInstalledBuild(UnixInstalledBuild):
+    configureFlags = [
+        "CC=clang",
+        "LD=clang",
+    ]
+    factory_tags = ["clang", "installed"]
 
 class SharedUnixBuild(UnixBuild):
     configureFlags = ["--with-pydebug", "--enable-shared"]
