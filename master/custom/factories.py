@@ -304,6 +304,7 @@ class WindowsRefleakBuild(WindowsBuild):
 
 
 class SlowWindowsBuild(WindowsBuild):
+    test_timeout = TEST_TIMEOUT * 2
     testFlags = ["-j2", "-u-cpu", "-u-largefile"]
 
 
