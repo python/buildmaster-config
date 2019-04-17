@@ -369,3 +369,17 @@ class Windows64ICCReleaseBuild(Windows64ReleaseBuild):
     buildersuffix = ".nondebug"
     buildFlags = Windows64ReleaseBuild.buildFlags + windows_icc_build_flags
     factory_tags = ["win64", "icc", "nondebug"]
+
+class WindowsArm32Build(WindowsBuild):
+    buildFlags = ["-p", "ARM", "--no-tkinter", "--no-ssl"]
+    # test_multiprocessing_spawn doesn't complete over simple ssh connection
+    # skip test_multiprocessing_spawn for now
+    testFlags = ["-arm32", "-j2", "-x", "test_multiprocessing_spawn"]
+    cleanFlags = ["-p", "ARM", "--no-tkinter", "--no-ssl"]
+    factory_tags = ["arm32"]
+
+class WindowsArm32ReleaseBuild(WindowsArm32Build):
+    buildFlags = WindowsArm32Build.buildFlags + ["-c", "Release"]
+    testFlags = WindowsArm32Build.testFlags + ["+d"]
+    # keep default cleanFlags, both configurations get cleaned
+    factory_tags = ["arm32", "nondebug"]
