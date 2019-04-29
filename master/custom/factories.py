@@ -374,7 +374,7 @@ class WindowsArm32Build(WindowsBuild):
     buildFlags = ["-p", "ARM", "--no-tkinter", "--no-ssl"]
     # test_multiprocessing_spawn doesn't complete over simple ssh connection
     # skip test_multiprocessing_spawn for now
-    testFlags = ["-arm32", "-j2", "-x", "test_multiprocessing_spawn"]
+    testFlags = ["-arm32", "-j2", "-x", "test_multiprocessing_spawn", "-x", "test_winconsoleio"]
     cleanFlags = ["-p", "ARM", "--no-tkinter", "--no-ssl"]
     factory_tags = ["arm32"]
 
