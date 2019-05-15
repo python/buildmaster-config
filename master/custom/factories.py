@@ -376,10 +376,10 @@ class WindowsArm32Build(WindowsBuild):
     # skip test_multiprocessing_spawn for now
     testFlags = ["-arm32", "-j2", "-x", "test_multiprocessing_spawn", "-x", "test_winconsoleio", "-x", "test_distutils"]
     cleanFlags = ["-p", "ARM", "--no-tkinter"]
-    factory_tags = ["arm32"]
+    factory_tags = ["win-arm32"]
 
 class WindowsArm32ReleaseBuild(WindowsArm32Build):
     buildFlags = WindowsArm32Build.buildFlags + ["-c", "Release"]
     testFlags = WindowsArm32Build.testFlags + ["+d"]
     # keep default cleanFlags, both configurations get cleaned
-    factory_tags = ["arm32", "nondebug"]
+    factory_tags = ["win-arm32", "nondebug"]
