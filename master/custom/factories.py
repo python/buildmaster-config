@@ -209,12 +209,14 @@ class ClangUbsanLinuxBuild(UnixBuild):
     testFlags = "-j4"
     factory_tags = ["clang", "ubsan", "sanitizer"]
 
+
 class ClangUnixInstalledBuild(UnixInstalledBuild):
     configureFlags = [
         "CC=clang",
         "LD=clang",
     ]
     factory_tags = ["clang", "installed"]
+
 
 class SharedUnixBuild(UnixBuild):
     configureFlags = ["--with-pydebug", "--enable-shared"]
@@ -351,6 +353,7 @@ class Windows64RefleakBuild(Windows64Build):
 
 
 class Windows64ReleaseBuild(Windows64Build):
+    buildersuffix = ".nondebug"
     buildFlags = Windows64Build.buildFlags + ["-c", "Release"]
     testFlags = Windows64Build.testFlags + ["+d"]
     # keep default cleanFlags, both configurations get cleaned
@@ -370,6 +373,7 @@ class Windows64ICCReleaseBuild(Windows64ReleaseBuild):
     buildFlags = Windows64ReleaseBuild.buildFlags + windows_icc_build_flags
     factory_tags = ["win64", "icc", "nondebug"]
 
+
 class WindowsArm32Build(WindowsBuild):
     buildFlags = ["-p", "ARM", "--no-tkinter"]
     # test_multiprocessing_spawn doesn't complete over simple ssh connection
@@ -378,7 +382,9 @@ class WindowsArm32Build(WindowsBuild):
     cleanFlags = ["-p", "ARM", "--no-tkinter"]
     factory_tags = ["win-arm32"]
 
+
 class WindowsArm32ReleaseBuild(WindowsArm32Build):
+    buildersuffix = ".nondebug"
     buildFlags = WindowsArm32Build.buildFlags + ["-c", "Release"]
     testFlags = WindowsArm32Build.testFlags + ["+d"]
     # keep default cleanFlags, both configurations get cleaned
