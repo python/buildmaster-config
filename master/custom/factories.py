@@ -260,14 +260,19 @@ class DTraceCLangBuild(UnixBuild):
 
 class WindowsBuild(TaggedBuildFactory):
     build_command = [r"Tools\buildbot\build.bat"]
+    remote_deploy_command = [r"Tools\buildbot\remoteDeploy.bat"]
+    remote_pythonInfo_command = [r"Tools\buildbot\remotePythoninfo.bat"]
     test_command = [r"Tools\buildbot\test.bat"]
     clean_command = [r"Tools\buildbot\clean.bat"]
     python_command = [r"python.bat"]
     buildFlags = []
+    remoteDeployFlags = []
+    remotePythonInfoFlags = []
     testFlags = ["-j2"]
     cleanFlags = []
     test_timeout = None
     factory_tags = ["win32"]
+    remoteTest = False
 
     def setup(self, parallel, branch, **kwargs):
         build_command = self.build_command + self.buildFlags
@@ -276,14 +281,34 @@ class WindowsBuild(TaggedBuildFactory):
         if parallel:
             test_command.append(parallel)
         self.addStep(Compile(command=build_command))
-        self.addStep(
-            ShellCommand(
-                name="pythoninfo",
-                description="pythoninfo",
-                command=self.python_command + ["-m", "test.pythoninfo"],
-                warnOnFailure=True,
+        if self.remoteTest:
+            # deploy
+            self.addStep(
+                ShellCommand(
+                    name="remotedeploy",
+                    description="remotedeploy",
+                    command=self.remote_deploy_command + self.remoteDeployFlags,
+                    warnOnFailure=True,
+                )
             )
-        )
+            # pythonInfo
+            self.addStep(
+                ShellCommand(
+                    name="remotepythoninfo",
+                    description="remotepythoninfo",
+                    command=self.remote_pythonInfo_command + self.remotePythonInfoFlags,
+                    warnOnFailure=True,
+                )
+            )
+        else:
+            self.addStep(
+                ShellCommand(
+                    name="pythoninfo",
+                    description="pythoninfo",
+                    command=self.python_command + ["-m", "test.pythoninfo"],
+                    warnOnFailure=True,
+                )
+            )
         # timeout is a bit more than the regrtest default timeout
         if self.test_timeout:
             timeout = self.test_timeout
@@ -378,6 +403,9 @@ class WindowsArm32Build(WindowsBuild):
     buildFlags = ["-p", "ARM", "--no-tkinter"]
     # test_multiprocessing_spawn doesn't complete over simple ssh connection
     # skip test_multiprocessing_spawn for now
+    remoteTest = True
+    remoteDeployFlags = ["-arm32"]
+    remotePythonInfoFlags = ["-arm32"]
     testFlags = ["-arm32", "-j2", "-x", "test_multiprocessing_spawn", "-x", "test_winconsoleio", "-x", "test_distutils"]
     cleanFlags = ["-p", "ARM", "--no-tkinter"]
     factory_tags = ["win-arm32"]
@@ -386,6 +414,7 @@ class WindowsArm32Build(WindowsBuild):
 class WindowsArm32ReleaseBuild(WindowsArm32Build):
     buildersuffix = ".nondebug"
     buildFlags = WindowsArm32Build.buildFlags + ["-c", "Release"]
+    remotePythonInfoFlags = WindowsArm32Build.remotePythonInfoFlags + ["-d"]
     testFlags = WindowsArm32Build.testFlags + ["+d"]
     # keep default cleanFlags, both configurations get cleaned
     factory_tags = ["win-arm32", "nondebug"]
