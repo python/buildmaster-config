@@ -414,7 +414,7 @@ class WindowsArm32Build(WindowsBuild):
 class WindowsArm32ReleaseBuild(WindowsArm32Build):
     buildersuffix = ".nondebug"
     buildFlags = WindowsArm32Build.buildFlags + ["-c", "Release"]
-    remotePythonInfoFlags = WindowsArm32Build.remotePythonInfoFlags + ["-d"]
+    remotePythonInfoFlags = WindowsArm32Build.remotePythonInfoFlags + ["+d"]
     testFlags = WindowsArm32Build.testFlags + ["+d"]
     # keep default cleanFlags, both configurations get cleaned
     factory_tags = ["win-arm32", "nondebug"]
