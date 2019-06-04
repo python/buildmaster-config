@@ -3,7 +3,7 @@ from buildbot.steps.shell import Configure, Compile, ShellCommand
 
 from .steps import Test, Clean, Install, LockInstall, Uninstall
 
-master_branch_version = "3.8"
+master_branch_version = "3.9"
 
 # This (default) timeout is for each individual test file.
 # It is a bit more than the default faulthandler timeout in regrtest.py
