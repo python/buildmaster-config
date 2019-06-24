@@ -23,11 +23,108 @@ TRACEBACK_REGEX = re.compile(
     r"""
      ^Traceback # Lines starting with "Traceback"
      [\s\S]+? # Match greedy any text (preserving ASCII flags).
-     (?=^(?:\d|test|\Z)) # Stop matching in lines starting with
-                         # a number (log time), "test" or the end
-                         # of the string.
+     (?=^(?:\d|test|\Z|\n|ok)) # Stop matching in lines starting with
+                               # a number (log time), "test" or the end
+                               # of the string.
     """, re.MULTILINE | re.VERBOSE,
 )
+
+LEAKS_REGEX = re.compile(r"(test_\w+) leaked \[.*]\ (.*),.*", re.MULTILINE)
+
+
+class Logs:
+    def __init__(self, raw_logs):
+        self._logs = raw_logs
+
+    @property
+    def raw_logs(self):
+        return self._logs
+
+    def _get_test_results(self, header):
+        test_regexp = re.compile(
+            rf"""
+             ^\d+\s{header}: # Lines starting with "header"
+             [\s\S]+? # Match greedy any text (preserving ASCII flags).
+             (?=^(?:\d|test|\Z|Total)) # Stop matching in lines starting with
+                                       # a number (log time), "test" or the end
+                                       # of the string.
+            """,
+            re.MULTILINE | re.VERBOSE,
+        )
+
+        failed_blocks = list(set(test_regexp.findall(self._logs)))
+        if not failed_blocks:
+            return set()
+        # Pick the last re-run of the test
+        block = failed_blocks[-1]
+        tests = []
+        for line in block.split("\n")[1:]:
+            if not line:
+                continue
+            test_names = line.split(" ")
+            tests.extend(test for test in test_names if test)
+        return set(tests)
+
+    def get_tracebacks(self):
+        for traceback in set(TRACEBACK_REGEX.findall(self._logs)):
+            yield traceback
+
+    def get_leaks(self):
+        for test_name, resource in set(LEAKS_REGEX.findall(self._logs)):
+            yield (test_name, resource)
+
+    def get_failed_tests(self):
+        for test_name in set(self._get_test_results(r"tests?\sfailed")):
+            yield test_name
+
+    def get_rerun_tests(self):
+        for test_name in set(self._get_test_results(r"re-run\stests?")):
+            yield test_name
+
+    def get_failed_subtests(self):
+        failed_subtest_regexp = re.compile(
+            r"=+"  # Decoration prefix
+            r"\n[A-Z]+:"  # Test result (e.g. FAIL:)
+            r"\s(\w+)\s"  # test name (e.g. test_tools)
+            r"\((.*?)\)"  # subtest name (e.g. test.test_tools.test_unparse.DirectoryTestCase)
+            r".*"  # Trailing text (e.g. filename)
+            r"\n*"  # End of the line
+            r".*" # Maybe some test description
+            r"-+",  # Trailing decoration
+            re.MULTILINE | re.VERBOSE
+        )
+        for test, subtest in set(failed_subtest_regexp.findall(self._logs)):
+            yield (test, subtest)
+
+    def test_summary(self):
+        result_start = [
+            match.start() for match in re.finditer("== Tests result", self._logs)
+        ][-1]
+        result_end = [
+            match.start() for match in re.finditer("Tests result:", self._logs)
+        ][-1]
+        return self._logs[result_start:result_end]
+
+    def format_failing_tests(self):
+
+        text = []
+        failed = list(self.get_failed_tests())
+        if failed:
+            text.append("Failed tests:\n")
+            text.extend([f"- {test_name}" for test_name in failed])
+            text.append("")
+        failed_subtests = list(self.get_failed_subtests())
+        if failed_subtests:
+            text.append("Failed subtests:\n")
+            text.extend([f"- {test} - {subtest}" for test, subtest in failed_subtests])
+            text.append("")
+        leaked = list(self.get_leaks())
+        if leaked:
+            text.append("Test leaking resources:\n")
+            text.extend([f"- {test_name}: {resource}" for test_name, resource in leaked])
+            text.append("")
+        return "\n".join(text)
+
 
 PR_MESSAGE = """\
 :warning::warning::warning: Buildbot failure :warning::warning::warning:
@@ -50,6 +147,12 @@ that on the issue and make a new Pull Request with a fix.
 You can take a look at the buildbot page here:
 
 {build_url}
+
+{failed_test_text}
+
+Summary of the results of the build (if available):
+
+{summary_text}
 
 <details>
 <summary>Click to see traceback logs</summary>
@@ -87,13 +190,15 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
 
         yield getDetailsForBuild(self.master, build, wantLogs=True, wantSteps=True)
 
-        tracebacks = list()
+        test_log = ""
         try:
             test_log = build["steps"][TESTS_STEP]["logs"][0]["content"]["content"]
             test_log = "\n".join([line.lstrip("eo") for line in test_log.splitlines()])
-            tracebacks = TRACEBACK_REGEX.findall(test_log)
         except IndexError:
             pass
+
+        logs = Logs(test_log)
+        tracebacks = list(logs.get_tracebacks())
 
         if not tracebacks:
             tracebacks = list(self._construct_tracebacks_from_stderr(build))
@@ -151,6 +256,7 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
                 context=context,
                 issue=issue,
                 tracebacks=tracebacks,
+                logs=logs,
             )
             if self.verbose:
                 log.msg(
@@ -203,7 +309,9 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
         context=None,
         issue=None,
         tracebacks=None,
+        logs=None,
     ):
+
         message = PR_MESSAGE.format(
             buildername=build["builder"]["name"],
             build_url=self._getURLForBuild(
@@ -211,6 +319,8 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
             ),
             sha=sha,
             tracebacks="```python-traceback\n{}\n```".format("\n\n".join(tracebacks)),
+            summary_text=logs.test_summary(),
+            failed_test_text=logs.format_failing_tests(),
         )
 
         payload = {"body": message}
