@@ -1,14 +1,21 @@
 from buildbot.process import factory
 from buildbot.steps.shell import Configure, Compile, ShellCommand
 
-from .steps import Test, Clean, Install, LockInstall, Uninstall
+from .steps import Test, Clean, CleanupTest, Install, LockInstall, Uninstall
 
 master_branch_version = "3.9"
+CUSTOM_BRANCH_NAME = "custom"
 
 # This (default) timeout is for each individual test file.
 # It is a bit more than the default faulthandler timeout in regrtest.py
 # (the latter isn't easily changed under Windows).
 TEST_TIMEOUT = 20 * 60
+
+
+def regrtest_has_cleanup(branch):
+    # "python -m test --cleanup" is available in Python 3.7 and newer,
+    # and in Python 2.7.
+    return (branch not in ("3.4", "3.5", "3.6", CUSTOM_BRANCH_NAME))
 
 
 class TaggedBuildFactory(factory.BuildFactory):
@@ -58,7 +65,7 @@ class UnixBuild(TaggedBuildFactory):
     makeTarget = "all"
     test_timeout = None
 
-    def setup(self, parallel, test_with_PTY=False, **kwargs):
+    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         self.addStep(
             Configure(
                 command=["./configure", "--prefix", "$(PWD)/target"]
@@ -76,6 +83,13 @@ class UnixBuild(TaggedBuildFactory):
             testopts = testopts + " " + parallel
         if "-j" not in testopts:
             testopts = "-j2 " + testopts
+        cleantest = [
+            "make",
+            "cleantest",
+            "TESTOPTS=" + testopts + " ${BUILDBOT_TESTOPTS}",
+            "TESTPYTHONOPTS=" + self.interpreterFlags,
+            "TESTTIMEOUT=" + str(faulthandler_timeout),
+        ]
         test = [
             "make",
             "buildbottest",
@@ -93,6 +107,8 @@ class UnixBuild(TaggedBuildFactory):
                 warnOnFailure=True,
             )
         )
+        if regrtest_has_cleanup(branch):
+            self.addStep(CleanupTest(command=cleantest))
         self.addStep(
             Test(command=test, timeout=self.test_timeout, usePTY=test_with_PTY)
         )
@@ -316,6 +332,9 @@ class WindowsBuild(TaggedBuildFactory):
             timeout = TEST_TIMEOUT
         if branch != "2.7":
             test_command += ["--timeout", timeout - (5 * 60)]
+        if regrtest_has_cleanup(branch):
+            cleantest = test_command + ["--cleanup"]
+            self.addStep(CleanupTest(command=cleantest))
         self.addStep(Test(command=test_command, timeout=timeout))
         self.addStep(Clean(command=clean_command))
 
