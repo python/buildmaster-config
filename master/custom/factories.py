@@ -156,12 +156,17 @@ class UnixInstalledBuild(TaggedBuildFactory):
             compile = ["make", parallel, self.makeTarget]
             install = ["make", parallel, self.installTarget]
             testopts = testopts + [parallel]
+
         test = [installed_python] + self.interpreterFlags
         test += ["-m", "test.regrtest"] + testopts
+
+        cleantest = test + ["--cleanup"]
 
         self.addStep(Compile(command=compile))
         self.addStep(Install(command=install))
         self.addStep(LockInstall())
+        if regrtest_has_cleanup(branch):
+            self.addStep(CleanupTest(command=cleantest))
         self.addStep(
             Test(command=test, timeout=self.test_timeout, usePTY=test_with_PTY)
         )
