@@ -70,6 +70,14 @@ class Clean(ShellCommand):
     alwaysRun = True
 
 
+class CleanupTest(ShellCommand):
+    name = "cleantest"
+    description = ["cleaning previous tests"]
+    descriptionDone = ["clean previous tests"]
+    flunkOnFailure = False
+    warnOnFailure = True
+
+
 class Install(ShellCommand):
     name = "install"
     description = ["installing"]
