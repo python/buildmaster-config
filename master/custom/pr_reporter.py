@@ -99,10 +99,16 @@ class Logs:
     def test_summary(self):
         result_start = [
             match.start() for match in re.finditer("== Tests result", self._logs)
-        ][-1]
+        ]
+        if not result_start:
+            return ""
+        result_start = result_start[-1]
         result_end = [
             match.start() for match in re.finditer("Tests result:", self._logs)
-        ][-1]
+        ]
+        if not result_end:
+            return ""
+        result_end = result_end[-1]
         return self._logs[result_start:result_end]
 
     def format_failing_tests(self):
