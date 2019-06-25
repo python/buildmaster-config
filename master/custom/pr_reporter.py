@@ -17,7 +17,7 @@ from buildbot.util.giturlparse import giturlparse
 from buildbot.plugins import reporters
 from buildbot.reporters.utils import getDetailsForBuild
 
-TESTS_STEP = 4
+TESTS_STEP = "test"
 
 TRACEBACK_REGEX = re.compile(
     r"""
@@ -192,7 +192,8 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
 
         test_log = ""
         try:
-            test_log = build["steps"][TESTS_STEP]["logs"][0]["content"]["content"]
+            test_step = [step for step in build["steps"] if step["name"] == TESTS_STEP][0]
+            test_log = test_step["logs"][0]["content"]["content"]
             test_log = "\n".join([line.lstrip("eo") for line in test_log.splitlines()])
         except IndexError:
             pass
@@ -212,12 +213,15 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
 
         changes = yield self.master.data.get(("builds", build["buildid"], "changes"))
 
-        if len(changes) > 1:
+        if len(changes) != 1:
             return
 
-        change, = changes
+        change_comments = changes["comments"]
 
-        m = re.search(r"\((?:GH-|#)(\d+)\)", change["comments"])
+        if not change_comments:
+            return
+
+        m = re.search(r"\((?:GH-|#)(\d+)\)", change_comments)
 
         if m is None:
             return
