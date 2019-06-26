@@ -107,8 +107,9 @@ class UnixBuild(TaggedBuildFactory):
                 warnOnFailure=True,
             )
         )
-        if regrtest_has_cleanup(branch):
-            self.addStep(CleanupTest(command=cleantest))
+        # FIXME: https://bugs.python.org/issue37359#msg346686
+        #if regrtest_has_cleanup(branch):
+        #    self.addStep(CleanupTest(command=cleantest))
         self.addStep(
             Test(command=test, timeout=self.test_timeout, usePTY=test_with_PTY)
         )
@@ -165,8 +166,9 @@ class UnixInstalledBuild(TaggedBuildFactory):
         self.addStep(Compile(command=compile))
         self.addStep(Install(command=install))
         self.addStep(LockInstall())
-        if regrtest_has_cleanup(branch):
-            self.addStep(CleanupTest(command=cleantest))
+        # FIXME: https://bugs.python.org/issue37359#msg346686
+        #if regrtest_has_cleanup(branch):
+        #    self.addStep(CleanupTest(command=cleantest))
         self.addStep(
             Test(command=test, timeout=self.test_timeout, usePTY=test_with_PTY)
         )
@@ -337,9 +339,10 @@ class WindowsBuild(TaggedBuildFactory):
             timeout = TEST_TIMEOUT
         if branch != "2.7":
             test_command += ["--timeout", timeout - (5 * 60)]
-        if regrtest_has_cleanup(branch):
-            cleantest = test_command + ["--cleanup"]
-            self.addStep(CleanupTest(command=cleantest))
+        # FIXME: https://bugs.python.org/issue37359#msg346686
+        #if regrtest_has_cleanup(branch):
+        #    cleantest = test_command + ["--cleanup"]
+        #    self.addStep(CleanupTest(command=cleantest))
         self.addStep(Test(command=test_command, timeout=timeout))
         self.addStep(Clean(command=clean_command))
 
