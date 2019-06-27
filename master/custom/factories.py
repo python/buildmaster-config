@@ -433,7 +433,7 @@ class WindowsArm32Build(WindowsBuild):
     remoteTest = True
     remoteDeployFlags = ["-arm32"]
     remotePythonInfoFlags = ["-arm32"]
-    testFlags = ["-arm32", "-j2", "-x", "test_multiprocessing_spawn", "-x", "test_winconsoleio", "-x", "test_distutils"]
+    testFlags = ["-arm32", "-x", "test_multiprocessing_spawn", "-x", "test_winconsoleio", "-x", "test_distutils"]
     cleanFlags = ["-p", "ARM", "--no-tkinter"]
     factory_tags = ["win-arm32"]
 
