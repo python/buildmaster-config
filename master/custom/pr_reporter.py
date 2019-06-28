@@ -222,7 +222,8 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
         if len(changes) != 1:
             return
 
-        change_comments = changes[0]["comments"]
+        change = changes[0]
+        change_comments = change["comments"]
 
         if not change_comments:
             return
