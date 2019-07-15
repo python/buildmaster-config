@@ -33,7 +33,7 @@ class FreezeBuild(TaggedBuildFactory):
     factory_tags = ["freeze"]
 
     def setup(self, **kwargs):
-        self.addStep(Configure(command=["./configure", "--prefix", "${PWD}/target"]))
+        self.addStep(Configure(command=["./configure", "--prefix", "$(PWD)/target"]))
         self.addStep(Compile(command=["make"]))
         self.addStep(
             ShellCommand(
@@ -68,7 +68,7 @@ class UnixBuild(TaggedBuildFactory):
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         self.addStep(
             Configure(
-                command=["./configure", "--prefix", "${PWD}/target"]
+                command=["./configure", "--prefix", "$(PWD)/target"]
                 + self.configureFlags
             )
         )
@@ -142,7 +142,7 @@ class UnixInstalledBuild(TaggedBuildFactory):
         installed_python = "./target/bin/python%s" % branch
         self.addStep(
             Configure(
-                command=["./configure", "--prefix", "${PWD}/target"]
+                command=["./configure", "--prefix", "$(PWD)/target"]
                 + self.configureFlags
             )
         )
