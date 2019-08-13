@@ -29,7 +29,7 @@ PyJWT==1.7.1
 pyOpenSSL==19.0.0
 python-dateutil==2.8.0
 PyYAML==5.1.2
-requests==2.21.0
+requests==2.22.0
 service-identity==18.1.0
 six==1.12.0
 SQLAlchemy==1.3.6
@@ -37,7 +37,7 @@ sqlalchemy-migrate==0.12.0
 sqlparse==0.3.0
 Tempita==0.5.2
 treq==18.6.0
-Twisted==19.2.1
+Twisted==19.7.0
 txaio==18.8.1
-urllib3==1.24.3
+urllib3==1.25.3
 zope.interface==4.6.0
