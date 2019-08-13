@@ -12,6 +12,9 @@ LOGLINES=50
 
 venv: $(VENV_CHECK)
 
+clean:
+	rm -rf venv
+
 $(VENV_CHECK): requirements.txt
 	$(SYSTEM_PYTHON) -m venv --clear venv
 	$(PIP) install -U pip setuptools wheel
