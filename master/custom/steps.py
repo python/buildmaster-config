@@ -35,7 +35,7 @@ class Test(BaseTest):
         # passed on the second try, to notify that a test is unstable.
         r'Re-running failed tests in verbose mode',
         # Re-running test 'test_multiprocessing_fork' in verbose mode
-        r'Re-running test .* in verbose mode',
+        r'Re-running test.* in verbose mode',
         # Thread last resort exception handler in t_bootstrap()
         r'Unhandled exception in thread started by ',
         # test_os leaked [6, 6, 6] memory blocks, sum=18,
