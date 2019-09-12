@@ -44,6 +44,8 @@ class Test(BaseTest):
         r'FAIL: ',
         # ERROR: test_pipe_handle (test.test_asyncio...)
         r'ERROR: ',
+        # test.* ... unexpected success
+        r'unexpected success',
     )
     # Use ".*" prefix to search the regex anywhere since stdout is mixed
     # with stderr, so warnings are not always written at the start
