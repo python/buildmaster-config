@@ -244,6 +244,19 @@ class SharedUnixBuild(UnixBuild):
     configureFlags = ["--with-pydebug", "--enable-shared"]
     factory_tags = ["shared"]
 
+class LTONonDebugUnixBuild(NonDebugUnixBuild):
+    configureFlags = [
+        "--with-lto"
+    ]
+    factory_tags = ["lto", "nondebug"]
+
+class LTOPGONonDebugBuild(NonDebugUnixBuild):
+    configureFlags = [
+         "--with-lto"
+         "--enable-optimizations"
+    ]
+    factory_tags = ["lto", "pgo", "nondebug"]
+
 
 class UniversalOSXBuild(UnixBuild):
     configureFlags = [
