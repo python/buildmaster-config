@@ -20,3 +20,11 @@ On the server (this method include downtime):
     make start-master
 
 Note: starting the server takes 10 seconds until it answers on HTTP.
+
+## Add a worker
+
+The list of workers is stored in master/local.py on the server. A worker
+password should be made of 14 characters (a-z, A-Z, 0-9 and special
+characters), for example using KeePassX.
+
+Documentation: http://docs.buildbot.net/current/manual/configuration/workers.html#defining-workers
