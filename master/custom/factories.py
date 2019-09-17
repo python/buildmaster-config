@@ -217,11 +217,13 @@ class OptimizeUnixBuild(UnixBuild):
 
 
 class PGOUnixBuild(NonDebugUnixBuild):
+    buildersuffix = ".pgo"
     configureFlags = ["--enable-optimizations"]
     factory_tags = ["pgo"]
 
 
 class ClangUbsanLinuxBuild(UnixBuild):
+    buildersuffix = ".clang-usban"
     configureFlags = [
         "CC=clang",
         "LD=clang",
@@ -233,6 +235,7 @@ class ClangUbsanLinuxBuild(UnixBuild):
 
 
 class ClangUnixInstalledBuild(UnixInstalledBuild):
+    buildersuffix = ".clang-installed"
     configureFlags = [
         "CC=clang",
         "LD=clang",
@@ -245,12 +248,14 @@ class SharedUnixBuild(UnixBuild):
     factory_tags = ["shared"]
 
 class LTONonDebugUnixBuild(NonDebugUnixBuild):
+    buildersuffix = ".lto"
     configureFlags = [
         "--with-lto"
     ]
     factory_tags = ["lto", "nondebug"]
 
 class LTOPGONonDebugBuild(NonDebugUnixBuild):
+    buildersuffix = ".lto-pgo"
     configureFlags = [
          "--with-lto"
          "--enable-optimizations"
