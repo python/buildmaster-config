@@ -176,17 +176,6 @@ class UnixInstalledBuild(TaggedBuildFactory):
         self.addStep(Clean())
 
 
-class UnixBuildWithICC(UnixBuild):
-    configureFlags = ["--with-pydebug", "--with-icc"]
-    factory_tags = ["icc"]
-
-
-class NonDebugUnixBuildWithICC(UnixBuildWithICC):
-    buildersuffix = ".nondebug"
-    configureFlags = ["--with-icc"]
-    factory_tags = ["icc", "nondebug"]
-
-
 class UnixBuildWithoutDocStrings(UnixBuild):
     configureFlags = ["--with-pydebug", "--without-doc-strings"]
 
@@ -210,10 +199,6 @@ class NonDebugUnixBuild(UnixBuild):
     buildersuffix = ".nondebug"
     configureFlags = []
     factory_tags = ["nondebug"]
-
-
-class OptimizeUnixBuild(UnixBuild):
-    interpreterFlags = "-OO"
 
 
 class PGOUnixBuild(NonDebugUnixBuild):
@@ -261,36 +246,6 @@ class LTOPGONonDebugBuild(NonDebugUnixBuild):
          "--enable-optimizations"
     ]
     factory_tags = ["lto", "pgo", "nondebug"]
-
-
-class UniversalOSXBuild(UnixBuild):
-    configureFlags = [
-        "--with-pydebug",
-        "--enable-universalsdk=/",
-        "--with-universal-archs=intel",
-    ]
-    # Disabled until issues with test_bigmem get solved
-    # We could put more but it would make test_bigmem even longer
-    # testFlags = "-M5.5G"
-
-
-class CLangBuild(UnixBuild):
-    configureFlags = ["--with-pydebug", "CC=clang"]
-    factory_tags = ["clang"]
-
-
-class OptimizedCLangBuild(CLangBuild):
-    interpreterFlags = "-OO"
-
-
-class DTraceBuild(UnixBuild):
-    configureFlags = ["--with-pydebug", "--with-dtrace"]
-    factory_tags = ["dtrace"]
-
-
-class DTraceCLangBuild(UnixBuild):
-    configureFlags = ["--with-pydebug", "--with-dtrace", "CC=clang"]
-    factory_tags = ["dtrace", "clang"]
 
 
 ##############################################################################
@@ -430,17 +385,6 @@ class Windows64ReleaseBuild(Windows64Build):
 
 
 windows_icc_build_flags = ["--no-tkinter", "/p:PlatformToolset=Intel C++ Compiler 16.0"]
-
-
-class Windows64ICCBuild(Windows64Build):
-    buildFlags = Windows64Build.buildFlags + windows_icc_build_flags
-    factory_tags = ["win64", "icc"]
-
-
-class Windows64ICCReleaseBuild(Windows64ReleaseBuild):
-    buildersuffix = ".nondebug"
-    buildFlags = Windows64ReleaseBuild.buildFlags + windows_icc_build_flags
-    factory_tags = ["win64", "icc", "nondebug"]
 
 
 class WindowsArm32Build(WindowsBuild):
