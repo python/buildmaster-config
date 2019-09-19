@@ -235,15 +235,15 @@ class SharedUnixBuild(UnixBuild):
 class LTONonDebugUnixBuild(NonDebugUnixBuild):
     buildersuffix = ".lto"
     configureFlags = [
-        "--with-lto"
+        "--with-lto",
     ]
     factory_tags = ["lto", "nondebug"]
 
 class LTOPGONonDebugBuild(NonDebugUnixBuild):
     buildersuffix = ".lto-pgo"
     configureFlags = [
-         "--with-lto"
-         "--enable-optimizations"
+         "--with-lto",
+         "--enable-optimizations",
     ]
     factory_tags = ["lto", "pgo", "nondebug"]
 
