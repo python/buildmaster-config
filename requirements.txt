@@ -2,13 +2,13 @@ asn1crypto==0.24.0
 attrs==19.1.0
 autobahn==19.9.3
 Automat==0.7.0
-buildbot==2.4.0
-buildbot-console-view==2.4.0
-buildbot-grid-view==2.4.0
-buildbot-waterfall-view==2.4.0
-buildbot-worker==2.4.0
-buildbot-www==2.4.0
-certifi==2019.6.16
+buildbot==2.4.1
+buildbot-console-view==2.4.1
+buildbot-grid-view==2.4.1
+buildbot-waterfall-view==2.4.1
+buildbot-worker==2.4.1
+buildbot-www==2.4.1
+certifi==2019.9.11
 cffi==1.12.3
 chardet==3.0.4
 constantly==15.1.0
@@ -39,5 +39,5 @@ Tempita==0.5.2
 treq==18.6.0
 Twisted==19.7.0
 txaio==18.8.1
-urllib3==1.25.3
+urllib3==1.25.5
 zope.interface==4.6.0
