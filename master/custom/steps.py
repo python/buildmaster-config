@@ -46,6 +46,8 @@ class Test(BaseTest):
         r'ERROR: ',
         # test.* ... unexpected success
         r'unexpected success',
+        # Kill worker process 15215 running for 1350.1 sec
+        r'Kill worker process ',
     )
     # Use ".*" prefix to search the regex anywhere since stdout is mixed
     # with stderr, so warnings are not always written at the start
