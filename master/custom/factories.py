@@ -170,6 +170,14 @@ class UnixInstalledBuild(TaggedBuildFactory):
         #if regrtest_has_cleanup(branch):
         #    self.addStep(CleanupTest(command=cleantest))
         self.addStep(
+            ShellCommand(
+                name="pythoninfo",
+                description="pythoninfo",
+                command=[installed_python, "-m", "test.pythoninfo"],
+                warnOnFailure=True,
+            )
+        )
+        self.addStep(
             Test(command=test, timeout=self.test_timeout, usePTY=test_with_PTY)
         )
         self.addStep(Uninstall())
