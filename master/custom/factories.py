@@ -216,7 +216,7 @@ class PGOUnixBuild(NonDebugUnixBuild):
 
 
 class ClangUbsanLinuxBuild(UnixBuild):
-    buildersuffix = ".clang-usban"
+    buildersuffix = ".clang-ubsan"
     configureFlags = [
         "CC=clang",
         "LD=clang",
