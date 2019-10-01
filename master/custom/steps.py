@@ -48,6 +48,8 @@ class Test(BaseTest):
         r'unexpected success',
         # Kill worker process 15215 running for 1350.1 sec
         r'Kill worker process ',
+        # test test_ssl failed -- multiple errors occurred; run in verbose mode for details
+        r'test .* failed -- multiple errors occurred; run in verbose mode for details',
     )
     # Use ".*" prefix to search the regex anywhere since stdout is mixed
     # with stderr, so warnings are not always written at the start
