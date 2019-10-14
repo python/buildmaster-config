@@ -213,6 +213,7 @@ class PGOUnixBuild(NonDebugUnixBuild):
     buildersuffix = ".pgo"
     configureFlags = ["--enable-optimizations"]
     factory_tags = ["pgo"]
+    testFlags = ["-u-largefile"]
 
 
 class ClangUbsanLinuxBuild(UnixBuild):
