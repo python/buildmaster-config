@@ -1,3 +1,4 @@
 buildbot[bundle,tls]
+PyYAML
 requests
 treq
