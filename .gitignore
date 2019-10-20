@@ -7,3 +7,4 @@ buildbot.sh
 buildbot/
 lib/
 venv/
+worker/
