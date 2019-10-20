@@ -6,7 +6,7 @@ custom.*/
 bolen-dmg-*/
 2.7.*/
 3.*.*/
-local.py
+settings.yaml
 workers/
 gitpoller-work/
 master.cfg.sample
