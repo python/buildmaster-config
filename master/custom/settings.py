@@ -27,7 +27,7 @@ class Settings:
     def __init__(self, value=..., path=None):
         if value is not ...:
             self.value = value
-        self.path = path
+        self.path = path or []
 
     @classmethod
     def from_file(cls, filename):
