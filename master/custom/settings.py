@@ -8,12 +8,17 @@ from twisted.python import log
 DEFAULTS = dict(
     web_port=9011,
     worker_port=9021,
+    irc_notice=False,
+    irc_host='irc.freenode.org',
     irc_channel='#buildbot-test',
     irc_nick='py-bb-test',
     buildbot_url='http://localhost:9011/',
     db_url='sqlite:///state.sqlite',
     do_auth=True,
     send_mail=False,
+    status_email='example@example.org',
+    email_relay_host='mail.example.org',
+    from_email='buildbot@example.org',
     verbosity=1,
     git_url='https://github.com/python/cpython',
 )
