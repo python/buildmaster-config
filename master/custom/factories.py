@@ -139,6 +139,8 @@ class UnixInstalledBuild(TaggedBuildFactory):
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         if branch == "3.x":
             branch = master_branch_version
+        elif branch == "custom":
+            branch = "3"
         installed_python = "./target/bin/python%s" % branch
         self.addStep(
             Configure(
