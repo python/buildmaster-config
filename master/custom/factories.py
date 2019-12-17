@@ -155,8 +155,9 @@ class UnixInstalledBuild(TaggedBuildFactory):
         # Timeout for the buildworker process
         self.test_timeout = self.test_timeout or TEST_TIMEOUT
         # Timeout for faulthandler
-        faulthandler_timeout = self.test_timeout - 5 * 60
-        testopts += [f'--timeout={faulthandler_timeout}']
+        if branch != "2.7":
+            faulthandler_timeout = self.test_timeout - 5 * 60
+            testopts += [f'--timeout={faulthandler_timeout}']
         if parallel:
             compile = ["make", parallel, self.makeTarget]
             install = ["make", parallel, self.installTarget]
