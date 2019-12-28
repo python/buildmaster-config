@@ -148,6 +148,11 @@ def get_workers(settings):
             branches=['3.x'],
         ),
         cpw(
+            name="pablogsal-arch-x86_64",
+            tags=['linux', 'unix', 'arch', 'x86-64'],
+            parallel_tests=10,
+        ),
+        cpw(
             name="ware-alpine",
             tags=['linux', 'unix', 'alpine', 'docker', 'amd64', 'x86-64'],
             branches=['3.x'],
