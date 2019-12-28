@@ -150,7 +150,6 @@ def get_workers(settings):
         cpw(
             name="pablogsal-arch-x86_64",
             tags=['linux', 'unix', 'arch', 'x86-64'],
-            parallel_tests=10,
         ),
         cpw(
             name="ware-alpine",
