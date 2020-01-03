@@ -2,9 +2,18 @@ import re
 
 from buildbot.steps.shell import ShellCommand, Test as BaseTest
 from buildbot.steps.source.git import Git as _Git
+from buildbot.steps.source.github import GitHub as _GitHub
 
 
 class Git(_Git):
+    # GH-68: If "git clone" fails, mark the whole build as WARNING
+    # (warnOnFailure), not as "FAILURE" (flunkOnFailure)
+    haltOnFailure = True
+    flunkOnFailure = False
+    warnOnFailure = True
+
+
+class GitHub(_GitHub):
     # GH-68: If "git clone" fails, mark the whole build as WARNING
     # (warnOnFailure), not as "FAILURE" (flunkOnFailure)
     haltOnFailure = True
