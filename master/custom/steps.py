@@ -1,6 +1,7 @@
 import re
 
 from buildbot.steps.shell import ShellCommand, Test as BaseTest
+from buildbot.plugins import steps, util
 from buildbot.steps.source.git import Git as _Git
 from buildbot.steps.source.github import GitHub as _GitHub
 
@@ -115,3 +116,16 @@ class Uninstall(ShellCommand):
     command = "chmod -R +w target/ &&  rm -rf target/"
     alwaysRun = True
     usePTY = False
+
+class UploadTestResults(steps.FileUpload):
+    warnOnFailure = True
+    haltOnFailure = False
+    flunkOnFailure = False
+    alwaysRun = True
+
+    def __init__(self):
+        super().__init__(
+                workersrc="test-results.xml",
+                masterdest=util.Interpolate("/data/www/buildbot/test-results/%(prop:buildername)s_%(prop:buildnumber)s.xml")
+        )
+
