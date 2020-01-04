@@ -1,7 +1,7 @@
 from buildbot.process import factory
 from buildbot.steps.shell import Configure, Compile, ShellCommand
 
-from .steps import Test, Clean, CleanupTest, Install, LockInstall, Uninstall
+from .steps import Test, Clean, CleanupTest, Install, LockInstall, Uninstall, UploadTestResults
 
 master_branch_version = "3.9"
 CUSTOM_BRANCH_NAME = "custom"
@@ -74,6 +74,8 @@ class UnixBuild(TaggedBuildFactory):
         )
         compile = ["make", self.makeTarget]
         testopts = self.testFlags
+        if branch != "2.7":
+            testopts += " --junit-xml test-results.xml"
         # Timeout for the buildworker process
         self.test_timeout = self.test_timeout or TEST_TIMEOUT
         # Timeout for faulthandler
@@ -113,6 +115,8 @@ class UnixBuild(TaggedBuildFactory):
         self.addStep(
             Test(command=test, timeout=self.test_timeout, usePTY=test_with_PTY)
         )
+        if branch != "2.7":
+            self.addStep(UploadTestResults())
         self.addStep(Clean())
 
 
@@ -285,6 +289,8 @@ class WindowsBuild(TaggedBuildFactory):
     def setup(self, parallel, branch, **kwargs):
         build_command = self.build_command + self.buildFlags
         test_command = self.test_command + self.testFlags
+        if branch != "2.7":
+            test_command += " --junit-xml test-results.xml"
         clean_command = self.clean_command + self.cleanFlags
         if parallel:
             test_command.append(parallel)
@@ -329,6 +335,8 @@ class WindowsBuild(TaggedBuildFactory):
         #    cleantest = test_command + ["--cleanup"]
         #    self.addStep(CleanupTest(command=cleantest))
         self.addStep(Test(command=test_command, timeout=timeout))
+        if branch != "2.7":
+            self.addStep(UploadTestResults())
         self.addStep(Clean(command=clean_command))
 
 
