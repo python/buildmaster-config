@@ -39,8 +39,8 @@ def get_workers(settings):
             tags=['linux', 'unix', 'debian', 'amd64', 'x86-64'],
         ),
         cpw(
-            name="billenstein-sierra",
-            tags=['macOS', 'unix', 'sierra', 'amd64', 'x86-64'],
+            name="billenstein-macos",
+            tags=['macOS', 'unix', 'amd64', 'x86-64'],
         ),
         cpw(
             name="bolen-ubuntu",
