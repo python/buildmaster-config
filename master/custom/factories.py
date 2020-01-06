@@ -116,7 +116,7 @@ class UnixBuild(TaggedBuildFactory):
             Test(command=test, timeout=self.test_timeout, usePTY=test_with_PTY)
         )
         if branch != "2.7":
-            self.addStep(UploadTestResults())
+            self.addStep(UploadTestResults(branch))
         self.addStep(Clean())
 
 
@@ -336,7 +336,7 @@ class WindowsBuild(TaggedBuildFactory):
         #    self.addStep(CleanupTest(command=cleantest))
         self.addStep(Test(command=test_command, timeout=timeout))
         if branch != "2.7":
-            self.addStep(UploadTestResults())
+            self.addStep(UploadTestResults(branch))
         self.addStep(Clean(command=clean_command))
 
 

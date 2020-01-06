@@ -123,9 +123,9 @@ class UploadTestResults(steps.FileUpload):
     flunkOnFailure = False
     alwaysRun = True
 
-    def __init__(self):
+    def __init__(self, branch):
         super().__init__(
                 workersrc="test-results.xml",
-                masterdest=util.Interpolate("/data/www/buildbot/test-results/%(prop:buildername)s_%(prop:buildnumber)s.xml")
+                masterdest=util.Interpolate(f"/data/www/buildbot/test-results/{branch}/%(prop:buildername)s/build_%(prop:buildnumber)s.xml")
         )
 
