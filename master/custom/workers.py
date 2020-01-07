@@ -11,7 +11,8 @@ class CPythonWorker:
 
     def __init__(self, settings, name,
                  tags=None, branches=None,
-                 parallel_builders=None, parallel_tests=None):
+                 parallel_builders=None, parallel_tests=None,
+                 local=False):
         self.name = name
         self.tags = tags or set()
         self.branches = branches
@@ -23,7 +24,10 @@ class CPythonWorker:
         pw = worker_settings.get('password', None) or owner_settings.password
         owner_email = owner_settings.get('email', None)
         emails = list(map(str, filter(None, (settings.get('status_email', None), owner_email))))
-        self.bb_worker = _worker.Worker(name, str(pw), notify_on_missing=emails)
+        if settings.value == ...:
+            self.bb_worker = _worker.LocalWorker(name)
+        else:
+            self.bb_worker = _worker.Worker(name, str(pw), notify_on_missing=emails)
 
 
 def get_workers(settings):
