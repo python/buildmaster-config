@@ -6,27 +6,51 @@ from dateutil.parser import parse as dateparse
 from twisted.internet import defer
 from twisted.python import log
 
+from buildbot.util import httpclientservice
 from buildbot.www.hooks.github import GitHubEventHandler
 
 TESTING_LABEL = ":hammer: test-with-buildbots"
 
 GITHUB_PROPERTIES_WHITELIST = ["*.labels"]
 
+BUILD_SCHEDULED_MESSAGE = f"""\
+:robot: A new build with the buildbot fleet has been scheduled by @{{user}} :robot:
+
+If you want to schedule another build, you need to add the "{TESTING_LABEL}" label again.
+"""
+
 
 def should_pr_be_tested(change):
-    if TESTING_LABEL in {
-        label["name"]
-        for label in change.properties.asDict().get("github.labels", [set()])[0]
-    }:
-        log.msg(f"Label detected in PR {change.branch} (commit {change.revision})",
-                logLevel=logging.DEBUG)
-        return True
-    log.msg(f"Label not found in PR {change.branch} (commit {change.revision})",
-            logLevel=logging.DEBUG)
-    return False
+    return change.properties.getProperty("should_test_pr", False)
 
 
 class CustomGitHubEventHandler(GitHubEventHandler):
+    @defer.inlineCallbacks
+    def _remove_label_and_comment(self, payload):
+        headers = {"User-Agent": "Buildbot"}
+        if self._token:
+            headers["Authorization"] = "token " + self._token
+
+        http = yield httpclientservice.HTTPClientService.getService(
+            self.master,
+            self.github_api_endpoint,
+            headers=headers,
+            debug=self.debug,
+            verify=self.verify,
+        )
+
+        # Create the comment
+        url = payload["pull_request"]["comments_url"]
+        username = payload["sender"]["login"]
+        yield http.post(
+            url.replace(self.github_api_endpoint, ""),
+            json={"body": BUILD_SCHEDULED_MESSAGE.format(user=username)},
+        )
+
+        # Remove the label
+        url = payload["pull_request"]["issue_url"] + f"/labels/{TESTING_LABEL}"
+        yield http.delete(url.replace(self.github_api_endpoint, ""))
+
     @defer.inlineCallbacks
     def handle_pull_request(self, payload, event):
         changes = []
@@ -50,20 +74,18 @@ class CustomGitHubEventHandler(GitHubEventHandler):
             return ([], "git")
 
         action = payload.get("action")
-        if action not in ("opened", "reopened", "synchronize", "labeled"):
+        if action != "labeled":
             log.msg("GitHub PR #{} {}, ignoring".format(number, action))
             return (changes, "git")
 
-        if action == "labeled" and payload.get("label")["name"] != TESTING_LABEL:
-            log.msg("Invalid label in PR #{}, ignoring".format(number))
-            return (changes, "git")
-        elif TESTING_LABEL not in {
-            label["name"] for label in payload.get("pull_request")["labels"]
-        }:
+        if payload.get("label")["name"] != TESTING_LABEL:
             log.msg("Invalid label in PR #{}, ignoring".format(number))
             return (changes, "git")
 
+        yield self._remove_label_and_comment(payload)
+
         properties = self.extractProperties(payload["pull_request"])
+        properties.update({"should_test_pr": True})
         properties.update({"event": event})
         properties.update({"basename": basename})
         change = {
