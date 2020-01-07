@@ -290,7 +290,7 @@ class WindowsBuild(TaggedBuildFactory):
         build_command = self.build_command + self.buildFlags
         test_command = self.test_command + self.testFlags
         if branch != "2.7":
-            test_command += " --junit-xml test-results.xml"
+            test_command += [r"--junit-xml", r"test-results.xml"]
         clean_command = self.clean_command + self.cleanFlags
         if parallel:
             test_command.append(parallel)
