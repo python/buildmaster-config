@@ -14,7 +14,7 @@ TESTING_LABEL = ":hammer: test-with-buildbots"
 GITHUB_PROPERTIES_WHITELIST = ["*.labels"]
 
 BUILD_SCHEDULED_MESSAGE = f"""\
-:robot: A new build with the buildbot fleet has been scheduled by @{{user}} :robot:
+:robot: A new build with the buildbot fleet has been scheduled by @{{user}} for commit {{commit}} :robot:
 
 If you want to schedule another build, you need to add the "{TESTING_LABEL}" label again.
 """
@@ -42,9 +42,10 @@ class CustomGitHubEventHandler(GitHubEventHandler):
         # Create the comment
         url = payload["pull_request"]["comments_url"]
         username = payload["sender"]["login"]
+        commit = payload["pull_request"]["head"]["sha"]
         yield http.post(
             url.replace(self.github_api_endpoint, ""),
-            json={"body": BUILD_SCHEDULED_MESSAGE.format(user=username)},
+            json={"body": BUILD_SCHEDULED_MESSAGE.format(user=username, commit=commit)},
         )
 
         # Remove the label
