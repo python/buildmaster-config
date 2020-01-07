@@ -75,6 +75,11 @@ class Test(BaseTest):
     # Give SIGTERM 30 seconds to shut things down before SIGKILL.
     sigtermTime = 30
 
+    def evaluateCommand(self, cmd):
+        if cmd.didFail():
+            self.setProperty('test_failed_to_build', True)
+        return super().evaluateCommand(cmd)
+
 
 class Clean(ShellCommand):
     name = "clean"
@@ -123,9 +128,12 @@ class UploadTestResults(steps.FileUpload):
     flunkOnFailure = False
     alwaysRun = True
 
+    def _has_the_build_failed(self, build):
+        return self.getProperty('test_failed_to_build')
+
     def __init__(self, branch):
         super().__init__(
+                doStepIf=self._has_the_build_failed,
                 workersrc="test-results.xml",
                 masterdest=util.Interpolate(f"/data/www/buildbot/test-results/{branch}/%(prop:buildername)s/build_%(prop:buildnumber)s.xml")
         )
-
