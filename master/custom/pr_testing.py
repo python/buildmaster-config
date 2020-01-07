@@ -14,7 +14,7 @@ TESTING_LABEL = ":hammer: test-with-buildbots"
 GITHUB_PROPERTIES_WHITELIST = ["*.labels"]
 
 BUILD_SCHEDULED_MESSAGE = f"""\
-:robot: A new build with the buildbot fleet has been scheduled by @{{user}} for commit {{commit}} :robot:
+:robot: New build scheduled with the buildbot fleet by @{{user}} for commit {{commit}} :robot:
 
 If you want to schedule another build, you need to add the "{TESTING_LABEL}" label again.
 """
