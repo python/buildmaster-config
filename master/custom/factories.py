@@ -74,7 +74,7 @@ class UnixBuild(TaggedBuildFactory):
         )
         compile = ["make", self.makeTarget]
         testopts = self.testFlags
-        if branch != "2.7":
+        if branch != "2.7" and "-R" not in self.testFlags:
             testopts += " --junit-xml test-results.xml"
         # Timeout for the buildworker process
         self.test_timeout = self.test_timeout or TEST_TIMEOUT
@@ -115,7 +115,7 @@ class UnixBuild(TaggedBuildFactory):
         self.addStep(
             Test(command=test, timeout=self.test_timeout, usePTY=test_with_PTY)
         )
-        if branch not in ("2.7", "3"):
+        if branch not in ("2.7", "3") and "-R" not in self.testFlags:
             self.addStep(UploadTestResults(branch))
         self.addStep(Clean())
 
@@ -289,7 +289,7 @@ class WindowsBuild(TaggedBuildFactory):
     def setup(self, parallel, branch, **kwargs):
         build_command = self.build_command + self.buildFlags
         test_command = self.test_command + self.testFlags
-        if branch != "2.7":
+        if branch != "2.7" and "-R" not in self.testFlags:
             test_command += [r"--junit-xml", r"test-results.xml"]
         clean_command = self.clean_command + self.cleanFlags
         if parallel:
@@ -335,7 +335,7 @@ class WindowsBuild(TaggedBuildFactory):
         #    cleantest = test_command + ["--cleanup"]
         #    self.addStep(CleanupTest(command=cleantest))
         self.addStep(Test(command=test_command, timeout=timeout))
-        if branch not in ("2.7", "3"):
+        if branch not in ("2.7", "3") and "-R" not in self.testFlags:
             self.addStep(UploadTestResults(branch))
         self.addStep(Clean(command=clean_command))
 
