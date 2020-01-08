@@ -2,3 +2,4 @@ buildbot[bundle,tls]
 PyYAML
 requests
 treq
+sentry-sdk
