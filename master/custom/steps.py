@@ -136,5 +136,5 @@ class UploadTestResults(steps.FileUpload):
                 doStepIf=self._has_the_build_failed,
                 workersrc="test-results.xml",
                 masterdest=util.Interpolate(f"/data/www/buildbot/test-results/{branch}/%(prop:buildername)s/build_%(prop:buildnumber)s.xml"),
-                mode=755,
+                mode=0o755,
         )
