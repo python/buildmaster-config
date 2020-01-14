@@ -21,7 +21,7 @@ DEFAULTS = dict(
     from_email='buildbot@example.org',
     verbosity=1,
     git_url='https://github.com/python/cpython',
-    use_local_worker=True,
+    use_local_worker=False,
 )
 
 
