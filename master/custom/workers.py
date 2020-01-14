@@ -24,7 +24,7 @@ class CPythonWorker:
         pw = worker_settings.get('password', None) or owner_settings.password
         owner_email = owner_settings.get('email', None)
         emails = list(map(str, filter(None, (settings.get('status_email', None), owner_email))))
-        if settings.value == ...:
+        if settings.use_local_worker:
             self.bb_worker = _worker.LocalWorker(name)
         else:
             self.bb_worker = _worker.Worker(name, str(pw), notify_on_missing=emails)
@@ -32,6 +32,8 @@ class CPythonWorker:
 
 def get_workers(settings):
     cpw = partial(CPythonWorker, settings)
+    if settings.use_local_worker:
+        return [cpw(name="local-worker")]
     return [
         cpw(
             name="aixtools-aix-power6",
