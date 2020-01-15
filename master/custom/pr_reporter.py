@@ -21,7 +21,7 @@ TESTS_STEP = "test"
 
 TRACEBACK_REGEX = re.compile(
     r"""
-     ^Traceback # Lines starting with "Traceback"
+     Traceback # Lines containing "Traceback"
      [\s\S]+? # Match greedy any text (preserving ASCII flags).
      (?=^(?:\d|test|\Z|\n|ok)) # Stop matching in lines starting with
                                # a number (log time), "test" or the end
