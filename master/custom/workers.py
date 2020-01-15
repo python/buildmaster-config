@@ -11,8 +11,7 @@ class CPythonWorker:
 
     def __init__(self, settings, name,
                  tags=None, branches=None,
-                 parallel_builders=None, parallel_tests=None,
-                 local=False):
+                 parallel_builders=None, parallel_tests=None):
         self.name = name
         self.tags = tags or set()
         self.branches = branches
