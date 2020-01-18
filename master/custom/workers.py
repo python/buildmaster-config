@@ -115,6 +115,10 @@ def get_workers(settings):
             tags=['linux', 'unix', 'rhel', 's390x'],
         ),
         cpw(
+            name="edelsohn-rhel8-z",
+            tags=['linux', 'unix', 'rhel', 's390x'],
+        ),
+        cpw(
             name="einat-ubuntu",
             tags=['linux', 'unix', 'ubuntu', 'amd64', 'x86-64'],
         ),
