@@ -6,43 +6,43 @@
     </div>
 
     <div class="container">
-        <table class="table">
-            <tr>
+        <div class="col-sm-12">
+            <div class="row">
                 {% for branch, info in failed_builders %}
-                    <th>
-                        {% if not info %}
-                            <div class="panel panel-success">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <div style="text-align: center;">
-                                        Branch {{ branch }} status: Releaseable
-                                    </div>
-                                </h4>
-                            </div>
-                            <div class="panel-body">
+                    <div class="col-md-4 ng-scope">
+                    {% if not info %}
+                        <div class="panel panel-success">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
                                 <div style="text-align: center;">
-                                    <i class="fa fa-check" style="font-size:48px;color:green;"></i>
+                                    Branch {{ branch }} status: Releaseable
                                 </div>
-                            </div>
-                        {% else %}
-                            <div class="panel panel-danger">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <div style="text-align: center;">
-                                        Branch {{ branch }} status: Not Releaseable
-                                    </div>
-                                </h4>
-                            </div>
-                            <div class="panel-body">
-                                {% for builder, build in info %}
-                                    <buildsummary buildid="{{ build.buildid }}" condensed="1"/>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
+                            </h4>
                         </div>
-                    </th>
+                        <div class="panel-body">
+                            <div style="text-align: center;">
+                                <i class="fa fa-check" style="font-size:48px;color:green;"></i>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="panel panel-danger">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <div style="text-align: center;">
+                                    Branch {{ branch }} status: Not Releaseable
+                                </div>
+                            </h4>
+                        </div>
+                        <div class="panel-body">
+                            {% for builder, build in info %}
+                                <buildsummary buildid="{{ build.buildid }}" condensed="1"/>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                </div>
                 {% endfor %}
-            </tr>
-        </table>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
