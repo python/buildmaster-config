@@ -4,3 +4,4 @@ flask
 PyYAML
 requests
 treq
+sentry-sdk
