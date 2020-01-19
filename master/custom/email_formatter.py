@@ -85,7 +85,7 @@ class CustomMessageFormatter(reporters.MessageFormatter):
 
 MESSAGE_FORMATTER = CustomMessageFormatter(
     template=MAIL_TEMPLATE,
-    template_type="html",
+    template_type="plain",
     wantLogs=True,
     wantProperties=True,
     wantSteps=True,
