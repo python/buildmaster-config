@@ -13,32 +13,32 @@
                         {% if not info %}
                             <div class="panel panel-success">
                                 <div class="panel-heading">
-                                    <h4 class="panel-title">
-                                        <div style="text-align: center;">
+                                    <div style="text-align: center;">
+                                        <h4 class="panel-title">
                                             Branch {{ branch }} status: Releaseable
-                                        </div>
-                                    </h4>
+                                        </h4>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="panel-body">
-                                <div style="text-align: center;">
-                                    <i class="fa fa-check" style="font-size:48px;color:green;"></i>
+                                <div class="panel-body">
+                                    <div style="text-align: center;">
+                                        <i class="fa fa-check" style="font-size:48px;color:green;"></i>
+                                    </div>
                                 </div>
                             </div>
                         {% else %}
                             <div class="panel panel-danger">
                                 <div class="panel-heading">
-                                    <h4 class="panel-title">
-                                        <div style="text-align: center;">
+                                    <div style="text-align: center;">
+                                        <h4 class="panel-title">
                                             Branch {{ branch }} status: Not Releaseable
+                                        </h4>
                                     </div>
-                                </h4>
                                 </div>
-                            </div>
-                            <div class="panel-body">
-                                {% for builder, build in info %}
-                                    <buildsummary buildid="{{ build.buildid }}" condensed="1"/>
-                                {% endfor %}
+                                <div class="panel-body">
+                                    {% for builder, build in info %}
+                                        <buildsummary buildid="{{ build.buildid }}" condensed="1"/>
+                                    {% endfor %}
+                                </div>
                             </div>
                         {% endif %}
                     </div>
