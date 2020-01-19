@@ -1,4 +1,6 @@
 buildbot[bundle,tls]
+buildbot_wsgi_dashboards
+flask
 PyYAML
 requests
 treq
