@@ -8,21 +8,28 @@ from buildbot.plugins import worker as _worker
 
 
 class CPythonWorker:
-
-    def __init__(self, settings, name,
-                 tags=None, branches=None,
-                 parallel_builders=None, parallel_tests=None):
+    def __init__(
+        self,
+        settings,
+        name,
+        tags=None,
+        branches=None,
+        parallel_builders=None,
+        parallel_tests=None,
+    ):
         self.name = name
         self.tags = tags or set()
         self.branches = branches
         self.parallel_builders = parallel_builders
         self.parallel_tests = parallel_tests
         worker_settings = settings.workers[name]
-        owner = name.split('-')[0]
+        owner = name.split("-")[0]
         owner_settings = settings.owners[owner]
-        pw = worker_settings.get('password', None) or owner_settings.password
-        owner_email = owner_settings.get('email', None)
-        emails = list(map(str, filter(None, (settings.get('status_email', None), owner_email))))
+        pw = worker_settings.get("password", None) or owner_settings.password
+        owner_email = owner_settings.get("email", None)
+        emails = list(
+            map(str, filter(None, (settings.get("status_email", None), owner_email)))
+        )
         if settings.use_local_worker:
             self.bb_worker = _worker.LocalWorker(name)
         else:
