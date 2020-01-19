@@ -1,0 +1,48 @@
+<div class="container release_status">
+    <div style="text-align: center;">
+        <img src="https://www.python.org/static/community_logos/python-logo-master-v3-TM.png" ,
+             width="480" height="162">
+        <h1>Branch release status dashboard </h1>
+    </div>
+
+    <div class="container">
+        <table class="table">
+            <tr>
+                {% for branch, info in failed_builders %}
+                    <th>
+                        {% if not info %}
+                            <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <div style="text-align: center;">
+                                        Branch {{ branch }} status: Releaseable
+                                    </div>
+                                </h4>
+                            </div>
+                            <div class="panel-body">
+                                <div style="text-align: center;">
+                                    <i class="fa fa-check" style="font-size:48px;color:green;"></i>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="panel panel-danger">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <div style="text-align: center;">
+                                        Branch {{ branch }} status: Not Releaseable
+                                    </div>
+                                </h4>
+                            </div>
+                            <div class="panel-body">
+                                {% for builder, build in info %}
+                                    <buildsummary buildid="{{ build.buildid }}" condensed="1"/>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        </div>
+                    </th>
+                {% endfor %}
+            </tr>
+        </table>
+    </div>
+</div>
