@@ -1,6 +1,6 @@
 from buildbot.plugins import reporters
 
-from custom.pr_reporter import Logs
+from custom.testsuite_utils import get_logs_and_tracebacks_from_build
 
 MAIL_TEMPLATE = """\
 The Buildbot has detected a {{ status_detected }} on builder {{ buildername }} while building {{ projects }}.
@@ -44,40 +44,11 @@ TESTS_STEP = "test"
 
 
 class CustomMessageFormatter(reporters.MessageFormatter):
-    def _construct_tracebacks_from_stderr(self, build):
-        for step in build["steps"]:
-            try:
-                test_log = step["logs"][0]["content"]["content"]
-            except IndexError:
-                continue
-            test_log = "\n".join(
-                [
-                    line.lstrip("e")
-                    for line in test_log.splitlines()
-                    if line.startswith("e")
-                ]
-            )
-            if not test_log:
-                continue
-            yield test_log
-
     def buildAdditionalContext(self, master, ctx):
         ctx.update(self.ctx)
         build = ctx["build"]
 
-        test_log = ""
-        try:
-            test_step = [step for step in build["steps"] if step["name"] == TESTS_STEP][0]
-            test_log = test_step["logs"][0]["content"]["content"]
-            test_log = "\n".join([line.lstrip("eo") for line in test_log.splitlines()])
-        except IndexError:
-            pass
-
-        logs = Logs(test_log)
-        tracebacks = list(logs.get_tracebacks())
-
-        if not tracebacks:
-            tracebacks = list(self._construct_tracebacks_from_stderr(build))
+        logs, tracebacks = get_logs_and_tracebacks_from_build(build)
 
         ctx["build"]["tracebacks"] = tracebacks
         ctx["build"]["final_log"] = logs

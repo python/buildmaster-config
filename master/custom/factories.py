@@ -1,7 +1,15 @@
 from buildbot.process import factory
 from buildbot.steps.shell import Configure, Compile, ShellCommand
 
-from .steps import Test, Clean, CleanupTest, Install, LockInstall, Uninstall, UploadTestResults
+from .steps import (
+    Test,
+    Clean,
+    CleanupTest,
+    Install,
+    LockInstall,
+    Uninstall,
+    UploadTestResults,
+)
 
 master_branch_version = "3.9"
 CUSTOM_BRANCH_NAME = "custom"
@@ -15,7 +23,7 @@ TEST_TIMEOUT = 20 * 60
 def regrtest_has_cleanup(branch):
     # "python -m test --cleanup" is available in Python 3.7 and newer,
     # and in Python 2.7.
-    return (branch not in ("3.4", "3.5", "3.6", CUSTOM_BRANCH_NAME))
+    return branch not in {CUSTOM_BRANCH_NAME}
 
 
 class TaggedBuildFactory(factory.BuildFactory):
@@ -110,7 +118,7 @@ class UnixBuild(TaggedBuildFactory):
             )
         )
         # FIXME: https://bugs.python.org/issue37359#msg346686
-        #if regrtest_has_cleanup(branch):
+        # if regrtest_has_cleanup(branch):
         #    self.addStep(CleanupTest(command=cleantest))
         self.addStep(
             Test(command=test, timeout=self.test_timeout, usePTY=test_with_PTY)
@@ -161,7 +169,7 @@ class UnixInstalledBuild(TaggedBuildFactory):
         # Timeout for faulthandler
         if branch != "2.7":
             faulthandler_timeout = self.test_timeout - 5 * 60
-            testopts += [f'--timeout={faulthandler_timeout}']
+            testopts += [f"--timeout={faulthandler_timeout}"]
         if parallel:
             compile = ["make", parallel, self.makeTarget]
             install = ["make", parallel, self.installTarget]
@@ -176,7 +184,7 @@ class UnixInstalledBuild(TaggedBuildFactory):
         self.addStep(Install(command=install))
         self.addStep(LockInstall())
         # FIXME: https://bugs.python.org/issue37359#msg346686
-        #if regrtest_has_cleanup(branch):
+        # if regrtest_has_cleanup(branch):
         #    self.addStep(CleanupTest(command=cleantest))
         self.addStep(
             ShellCommand(
@@ -249,6 +257,7 @@ class SharedUnixBuild(UnixBuild):
     configureFlags = ["--with-pydebug", "--enable-shared"]
     factory_tags = ["shared"]
 
+
 class LTONonDebugUnixBuild(NonDebugUnixBuild):
     buildersuffix = ".lto"
     configureFlags = [
@@ -256,11 +265,12 @@ class LTONonDebugUnixBuild(NonDebugUnixBuild):
     ]
     factory_tags = ["lto", "nondebug"]
 
+
 class LTOPGONonDebugBuild(NonDebugUnixBuild):
     buildersuffix = ".lto-pgo"
     configureFlags = [
-         "--with-lto",
-         "--enable-optimizations",
+        "--with-lto",
+        "--enable-optimizations",
     ]
     factory_tags = ["lto", "pgo", "nondebug"]
 
@@ -289,7 +299,7 @@ class WindowsBuild(TaggedBuildFactory):
     def setup(self, parallel, branch, **kwargs):
         build_command = self.build_command + self.buildFlags
         test_command = self.test_command + self.testFlags
-        if branch != "2.7" and "-R" not in self.testFlags:
+        if not (branch == "2.7" or "-R" in self.testFlags):
             test_command += [r"--junit-xml", r"test-results.xml"]
         clean_command = self.clean_command + self.cleanFlags
         if parallel:
@@ -323,15 +333,11 @@ class WindowsBuild(TaggedBuildFactory):
                     warnOnFailure=True,
                 )
             )
-        # timeout is a bit more than the regrtest default timeout
-        if self.test_timeout:
-            timeout = self.test_timeout
-        else:
-            timeout = TEST_TIMEOUT
+        timeout = self.test_timeout if self.test_timeout else TEST_TIMEOUT
         if branch != "2.7":
             test_command += ["--timeout", timeout - (5 * 60)]
         # FIXME: https://bugs.python.org/issue37359#msg346686
-        #if regrtest_has_cleanup(branch):
+        # if regrtest_has_cleanup(branch):
         #    cleantest = test_command + ["--cleanup"]
         #    self.addStep(CleanupTest(command=cleantest))
         self.addStep(Test(command=test_command, timeout=timeout))
@@ -415,7 +421,15 @@ class WindowsArm32Build(WindowsBuild):
     remoteTest = True
     remoteDeployFlags = ["-arm32"]
     remotePythonInfoFlags = ["-arm32"]
-    testFlags = ["-arm32", "-x", "test_multiprocessing_spawn", "-x", "test_winconsoleio", "-x", "test_distutils"]
+    testFlags = [
+        "-arm32",
+        "-x",
+        "test_multiprocessing_spawn",
+        "-x",
+        "test_winconsoleio",
+        "-x",
+        "test_distutils",
+    ]
     cleanFlags = ["-p", "ARM", "--no-tkinter"]
     factory_tags = ["win-arm32"]
 

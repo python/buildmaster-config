@@ -43,23 +43,23 @@ class Test(BaseTest):
         r"ResourceWarning",
         # regrtest: At least one test failed. Log a warning even if the test
         # passed on the second try, to notify that a test is unstable.
-        r'Re-running failed tests in verbose mode',
+        r"Re-running failed tests in verbose mode",
         # Re-running test 'test_multiprocessing_fork' in verbose mode
-        r'Re-running test.* in verbose mode',
+        r"Re-running test.* in verbose mode",
         # Thread last resort exception handler in t_bootstrap()
-        r'Unhandled exception in thread started by ',
+        r"Unhandled exception in thread started by ",
         # test_os leaked [6, 6, 6] memory blocks, sum=18,
-        r'test_[^ ]+ leaked ',
+        r"test_[^ ]+ leaked ",
         # FAIL: test_stdin_broken_pipe (test.test_asyncio...)
-        r'FAIL: ',
+        r"FAIL: ",
         # ERROR: test_pipe_handle (test.test_asyncio...)
-        r'ERROR: ',
+        r"ERROR: ",
         # test.* ... unexpected success
-        r'unexpected success',
+        r"unexpected success",
         # Kill worker process 15215 running for 1350.1 sec
-        r'Kill worker process ',
+        r"Kill worker process ",
         # test test_ssl failed -- multiple errors occurred; run in verbose mode for details
-        r'test .* failed -- multiple errors occurred; run in verbose mode for details',
+        r"test .* failed -- multiple errors occurred; run in verbose mode for details",
     )
     # Use ".*" prefix to search the regex anywhere since stdout is mixed
     # with stderr, so warnings are not always written at the start
@@ -77,7 +77,7 @@ class Test(BaseTest):
 
     def evaluateCommand(self, cmd):
         if cmd.didFail():
-            self.setProperty('test_failed_to_build', True)
+            self.setProperty("test_failed_to_build", True)
         return super().evaluateCommand(cmd)
 
 
@@ -122,6 +122,7 @@ class Uninstall(ShellCommand):
     alwaysRun = True
     usePTY = False
 
+
 class UploadTestResults(steps.FileUpload):
     warnOnFailure = True
     haltOnFailure = False
@@ -129,12 +130,14 @@ class UploadTestResults(steps.FileUpload):
     alwaysRun = True
 
     def _has_the_build_failed(self, build):
-        return self.getProperty('test_failed_to_build')
+        return self.getProperty("test_failed_to_build")
 
     def __init__(self, branch):
         super().__init__(
-                doStepIf=self._has_the_build_failed,
-                workersrc="test-results.xml",
-                masterdest=util.Interpolate(f"/data/www/buildbot/test-results/{branch}/%(prop:buildername)s/build_%(prop:buildnumber)s.xml"),
-                mode=0o755,
+            doStepIf=self._has_the_build_failed,
+            workersrc="test-results.xml",
+            masterdest=util.Interpolate(
+                f"/data/www/buildbot/test-results/{branch}/%(prop:buildername)s/build_%(prop:buildnumber)s.xml"
+            ),
+            mode=0o755,
         )

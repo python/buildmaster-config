@@ -9,18 +9,18 @@ DEFAULTS = dict(
     web_port=9011,
     worker_port=9021,
     irc_notice=False,
-    irc_host='irc.freenode.org',
-    irc_channel='#buildbot-test',
-    irc_nick='py-bb-test',
-    buildbot_url='http://localhost:9011/',
-    db_url='sqlite:///state.sqlite',
+    irc_host="irc.freenode.org",
+    irc_channel="#buildbot-test",
+    irc_nick="py-bb-test",
+    buildbot_url="http://localhost:9011/",
+    db_url="sqlite:///state.sqlite",
     do_auth=False,
     send_mail=False,
-    status_email='example@example.org',
-    email_relay_host='mail.example.org',
-    from_email='buildbot@example.org',
+    status_email="example@example.org",
+    email_relay_host="mail.example.org",
+    from_email="buildbot@example.org",
     verbosity=1,
-    git_url='https://github.com/python/cpython',
+    git_url="https://github.com/python/cpython",
     use_local_worker=False,
 )
 
@@ -45,7 +45,7 @@ class Settings:
         if isinstance(key, type(self)):
             path_key = real_key = key.value
             if real_key is ...:
-                real_key = 'unknown'
+                real_key = "unknown"
                 path_key = key.path
         new_path = self.path + [path_key]
         if self.value is not ... and real_key in self.value:
@@ -69,10 +69,10 @@ class Settings:
     def _convert(self, func, default):
         if self.value is not ...:
             return func(self.value)
-        default = DEFAULTS.get('.'.join(map(str, self.path)), default)
-        if not os.getenv('CI'):
+        default = DEFAULTS.get(".".join(map(str, self.path)), default)
+        if not os.getenv("CI"):
             # Note: We use log.err to make this show up during `checkconfig`
-            log.err(f'WARNING: No setting at {self.path}, returning {default}')
+            log.err(f"WARNING: No setting at {self.path}, returning {default}")
         return func(default)
 
     def __int__(self):
