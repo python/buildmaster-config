@@ -128,6 +128,14 @@ class UnixBuild(TaggedBuildFactory):
         self.addStep(Clean())
 
 
+class UnixTraceRefsBuild(UnixBuild):
+    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+        # Only Python >3.8 has --with-trace-refs
+        if branch in {"3.8", '3.x'}:
+            self.configureFlags = ["--with-pydebug", "--with-trace-refs"]
+        return super().setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
+
+
 class UnixRefleakBuild(UnixBuild):
     buildersuffix = ".refleak"
     testFlags = "-R 3:3 -u-cpu"
