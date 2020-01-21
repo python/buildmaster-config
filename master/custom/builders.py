@@ -1,5 +1,6 @@
 from custom.factories import (
     UnixBuild,
+    UnixTraceRefsBuild,
     UnixRefleakBuild,
     UnixInstalledBuild,
     AIXBuild,
@@ -94,7 +95,7 @@ def get_builders(settings):
         ("AMD64 Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-x86_64", ClangUnixInstalledBuild, UNSTABLE,),
         ("AMD64 Fedora Rawhide LTO", "cstratak-fedora-rawhide-x86_64", LTONonDebugUnixBuild, UNSTABLE,),
         ("AMD64 Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-x86_64", LTOPGONonDebugBuild, UNSTABLE,),
-        ("AMD64 Arch Linux", "pablogsal-arch-x86_64", UnixBuild, UNSTABLE),
+        ("AMD64 Arch Linux TraceRefs", "pablogsal-arch-x86_64", UnixTraceRefsBuild, STABLE),
         # Linux other archs
         # macOS
         # Other Unix
