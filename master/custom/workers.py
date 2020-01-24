@@ -106,6 +106,10 @@ def get_workers(settings):
             tags=['linux', 'unix', 'debian', 's390x'],
         ),
         cpw(
+            name="edelsohn-fedora-rawhide-z",
+            tags=['linux', 'unix', 'fedora', 's390x'],
+        ),
+        cpw(
             name="edelsohn-fedora-ppc64",
             tags=['linux', 'unix', 'fedora', 'ppc64'],
         ),
