@@ -52,6 +52,7 @@ def get_builders(settings):
         ("PPC64LE Fedora", "edelsohn-fedora-ppc64le", UnixBuild, STABLE),
         ("s390x SLES", "edelsohn-sles-z", UnixBuild, STABLE),
         ("s390x Debian", "edelsohn-debian-z", UnixBuild, STABLE),
+        ("s390x Fedora", "edelsohn-fedora-z", UnixBuild, STABLE),
         ("s390x RHEL7", "edelsohn-rhel-z", UnixBuild, STABLE),
         ("s390x RHEL8", "edelsohn-rhel8-z", UnixBuild, STABLE),
         ("x86 Gentoo Non-Debug with X", "ware-gentoo-x86", NonDebugUnixBuild, STABLE),
