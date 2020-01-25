@@ -122,12 +122,16 @@ def get_workers(settings):
             tags=['linux', 'unix', 'fedora', 's390x'],
         ),
         cpw(
-            name="edelsohn-sles-z",
-            tags=['linux', 'unix', 'sles', 's390x'],
-        ),
-        cpw(
             name="edelsohn-rhel-z",
             tags=['linux', 'unix', 'rhel', 's390x'],
+        ),
+        cpw(
+            name="edelsohn-rhel8-z",
+            tags=['linux', 'unix', 'rhel', 's390x'],
+        ),
+        cpw(
+            name="edelsohn-sles-z",
+            tags=['linux', 'unix', 'sles', 's390x'],
         ),
         cpw(
             name="einat-ubuntu",
