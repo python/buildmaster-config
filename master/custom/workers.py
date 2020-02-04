@@ -104,10 +104,12 @@ def get_workers(settings):
         cpw(
             name="edelsohn-debian-z",
             tags=['linux', 'unix', 'debian', 's390x'],
+            parallel_tests=6,
         ),
         cpw(
             name="edelsohn-fedora-rawhide-z",
             tags=['linux', 'unix', 'fedora', 's390x'],
+            parallel_tests=6,
         ),
         cpw(
             name="edelsohn-fedora-ppc64",
@@ -120,18 +122,22 @@ def get_workers(settings):
         cpw(
             name="edelsohn-fedora-z",
             tags=['linux', 'unix', 'fedora', 's390x'],
+            parallel_tests=6,
         ),
         cpw(
             name="edelsohn-rhel-z",
             tags=['linux', 'unix', 'rhel', 's390x'],
+            parallel_tests=6,
         ),
         cpw(
             name="edelsohn-rhel8-z",
             tags=['linux', 'unix', 'rhel', 's390x'],
+            parallel_tests=6,
         ),
         cpw(
             name="edelsohn-sles-z",
             tags=['linux', 'unix', 'sles', 's390x'],
+            parallel_tests=6,
         ),
         cpw(
             name="einat-ubuntu",
