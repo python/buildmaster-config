@@ -72,6 +72,20 @@ def get_builders(settings):
         ("AMD64 RHEL8 Refleaks", "cstratak-RHEL8-x86_64", UnixRefleakBuild, STABLE),
         ("AMD64 RHEL8 LTO", "cstratak-RHEL8-x86_64", LTONonDebugUnixBuild, STABLE),
         ("AMD64 RHEL8 LTO + PGO", "cstratak-RHEL8-x86_64", LTOPGONonDebugBuild, STABLE),
+        ("PPC64LE Fedora Stable", "cstratak-fedora-stable-ppc64le", UnixBuild, STABLE),
+        ("PPC64LE Fedora Stable Refleaks", "cstratak-fedora-stable-ppc64le", UnixRefleakBuild, STABLE,),
+        ("PPC64LE Fedora Stable Clang", "cstratak-fedora-stable-ppc64le", ClangUbsanLinuxBuild, STABLE,),
+        ("PPC64LE Fedora Stable Clang Installed", "cstratak-fedora-stable-ppc64le", ClangUnixInstalledBuild, STABLE,),
+        ("PPC64LE Fedora Stable LTO", "cstratak-fedora-stable-ppc64le", LTONonDebugUnixBuild, STABLE,),
+        ("PPC64LE Fedora Stable LTO + PGO", "cstratak-fedora-stable-ppc64le", LTOPGONonDebugBuild, STABLE,),
+        ("PPC64LE RHEL7", "cstratak-RHEL7-ppc64le", UnixBuild, STABLE),
+        ("PPC64LE RHEL7 Refleaks", "cstratak-RHEL7-ppc64le", UnixRefleakBuild, STABLE),
+        ("PPC64LE RHEL7 LTO", "cstratak-RHEL7-ppc64le", LTONonDebugUnixBuild, STABLE),
+        ("PPC64LE RHEL7 LTO + PGO", "cstratak-RHEL7-ppc64le", LTOPGONonDebugBuild, STABLE),
+        ("PPC64LE RHEL8", "cstratak-RHEL8-ppc64le", UnixBuild, STABLE),
+        ("PPC64LE RHEL8 Refleaks", "cstratak-RHEL8-ppc64le", UnixRefleakBuild, STABLE),
+        ("PPC64LE RHEL8 LTO", "cstratak-RHEL8-ppc64le", LTONonDebugUnixBuild, STABLE),
+        ("PPC64LE RHEL8 LTO + PGO", "cstratak-RHEL8-ppc64le", LTOPGONonDebugBuild, STABLE),
         # macOS
         ("x86-64 macOS", "billenstein-macos", UnixBuild, STABLE),
         # Other Unix
@@ -98,6 +112,13 @@ def get_builders(settings):
         ("AMD64 Fedora Rawhide LTO", "cstratak-fedora-rawhide-x86_64", LTONonDebugUnixBuild, UNSTABLE,),
         ("AMD64 Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-x86_64", LTOPGONonDebugBuild, UNSTABLE,),
         ("AMD64 Arch Linux TraceRefs", "pablogsal-arch-x86_64", UnixTraceRefsBuild, STABLE),
+        # Linux PPC64le
+        ("PPC64LE Fedora Rawhide", "cstratak-fedora-rawhide-ppc64le", UnixBuild, UNSTABLE),
+        ("PPC64LE Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-ppc64le", UnixRefleakBuild, UNSTABLE,),
+        ("PPC64LE Fedora Rawhide Clang", "cstratak-fedora-rawhide-ppc64le", ClangUbsanLinuxBuild, UNSTABLE,),
+        ("PPC64LE Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-ppc64le", ClangUnixInstalledBuild, UNSTABLE,),
+        ("PPC64LE Fedora Rawhide LTO", "cstratak-fedora-rawhide-ppc64le", LTONonDebugUnixBuild, UNSTABLE,),
+        ("PPC64LE Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-ppc64le", LTOPGONonDebugBuild, UNSTABLE,),
         # Linux other archs
         ("s390x Fedora Rawhide", "edelsohn-fedora-rawhide-z", UnixBuild, UNSTABLE),
         # macOS
@@ -118,6 +139,11 @@ DAILYBUILDERS = [
     "AMD64 Fedora Stable Refleaks",
     "AMD64 RHEL7 Refleaks",
     "AMD64 RHEL8 Refleaks",
+    # Linux PPC64LE
+    "PPC64LE Fedora Rawhide Refleaks",
+    "PPC64LE Fedora Stable Refleaks",
+    "PPC64LE RHEL7 Refleaks",
+    "PPC64LE RHEL8 Refleaks",
 ]
 
 # Match builder name (excluding the branch name) of builders that should only
