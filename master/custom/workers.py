@@ -136,10 +136,6 @@ def get_workers(settings):
             tags=['linux', 'unix', 'fedora', 'ppc64'],
         ),
         cpw(
-            name="edelsohn-fedora-ppc64le",
-            tags=['linux', 'unix', 'fedora', 'ppc64le'],
-        ),
-        cpw(
             name="edelsohn-fedora-z",
             tags=['linux', 'unix', 'fedora', 's390x'],
             parallel_tests=6,
