@@ -53,8 +53,19 @@ def get_builders(settings):
         ("s390x SLES", "edelsohn-sles-z", UnixBuild, STABLE),
         ("s390x Debian", "edelsohn-debian-z", UnixBuild, STABLE),
         ("s390x Fedora", "edelsohn-fedora-z", UnixBuild, STABLE),
+        ("s390x Fedora Refleaks", "edelsohn-fedora-z", UnixRefleakBuild, STABLE),
+        ("s390x Fedora Clang", "edelsohn-fedora-z", ClangUbsanLinuxBuild, STABLE),
+        ("s390x Fedora Clang Installed", "edelsohn-fedora-z", ClangUnixInstalledBuild, STABLE),
+        ("s390x Fedora LTO", "edelsohn-fedora-z", LTONonDebugUnixBuild, STABLE),
+        ("s390x Fedora LTO + PGO", "edelsohn-fedora-z", LTOPGONonDebugBuild, STABLE),
         ("s390x RHEL7", "edelsohn-rhel-z", UnixBuild, STABLE),
+        ("s390x RHEL7 Refleaks", "edelsohn-rhel-z", UnixRefleakBuild, STABLE),
+        ("s390x RHEL7 LTO", "edelsohn-rhel-z", LTONonDebugUnixBuild, STABLE),
+        ("s390x RHEL7 LTO + PGO", "edelsohn-rhel-z", LTOPGONonDebugBuild, STABLE),
         ("s390x RHEL8", "edelsohn-rhel8-z", UnixBuild, STABLE),
+        ("s390x RHEL8 Refleaks", "edelsohn-rhel8-z", UnixRefleakBuild, STABLE),
+        ("s390x RHEL8 LTO", "edelsohn-rhel8-z", LTONonDebugUnixBuild, STABLE),
+        ("s390x RHEL8 LTO + PGO", "edelsohn-rhel8-z", LTOPGONonDebugBuild, STABLE),
         ("x86 Gentoo Non-Debug with X", "ware-gentoo-x86", NonDebugUnixBuild, STABLE),
         ("x86 Gentoo Installed with X", "ware-gentoo-x86", UnixInstalledBuild, STABLE),
         ("x86 Gentoo Refleaks", "ware-gentoo-x86", UnixRefleakBuild, STABLE),
@@ -121,6 +132,11 @@ def get_builders(settings):
         ("PPC64LE Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-ppc64le", LTOPGONonDebugBuild, UNSTABLE,),
         # Linux other archs
         ("s390x Fedora Rawhide", "edelsohn-fedora-rawhide-z", UnixBuild, UNSTABLE),
+        ("s390x Fedora Rawhide Refleaks", "edelsohn-fedora-rawhide-z", UnixRefleakBuild, UNSTABLE),
+        ("s390x Fedora Rawhide Clang", "edelsohn-fedora-rawhide-z", ClangUbsanLinuxBuild, UNSTABLE),
+        ("s390x Fedora Rawhide Clang Installed", "edelsohn-fedora-rawhide-z", ClangUnixInstalledBuild, UNSTABLE),
+        ("s390x Fedora Rawhide LTO", "edelsohn-fedora-rawhide-z", LTONonDebugUnixBuild, UNSTABLE),
+        ("s390x Fedora Rawhide LTO + PGO", "edelsohn-fedora-rawhide-z", LTOPGONonDebugBuild, UNSTABLE),
         # macOS
         # Other Unix
         ("AMD64 Cygwin64 on Windows 10", "bray-win10-cygwin-amd64", UnixBuild, UNSTABLE,),
@@ -144,6 +160,11 @@ DAILYBUILDERS = [
     "PPC64LE Fedora Stable Refleaks",
     "PPC64LE RHEL7 Refleaks",
     "PPC64LE RHEL8 Refleaks",
+    # Linux s390x
+    "s390x Fedora Rawhide Refleaks",
+    "s390x Fedora Refleaks",
+    "s390x RHEL7 Refleaks",
+    "s390x RHEL8 Refleaks",
 ]
 
 # Match builder name (excluding the branch name) of builders that should only
