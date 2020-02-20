@@ -129,6 +129,31 @@ def get_builders(settings):
         ("PPC64LE Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-ppc64le", ClangUnixInstalledBuild, UNSTABLE),
         ("PPC64LE Fedora Rawhide LTO", "cstratak-fedora-rawhide-ppc64le", LTONonDebugUnixBuild, UNSTABLE),
         ("PPC64LE Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-ppc64le", LTOPGONonDebugBuild, UNSTABLE),
+        # Linux aarch64
+        ("aarch64 Fedora Rawhide", "cstratak-fedora-rawhide-aarch64", UnixBuild, UNSTABLE),
+        ("aarch64 Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-aarch64", UnixRefleakBuild, UNSTABLE),
+        ("aarch64 Fedora Rawhide Clang", "cstratak-fedora-rawhide-aarch64", ClangUbsanLinuxBuild, UNSTABLE),
+        ("aarch64 Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-aarch64", ClangUnixInstalledBuild, UNSTABLE),
+        ("aarch64 Fedora Rawhide LTO", "cstratak-fedora-rawhide-aarch64", LTONonDebugUnixBuild, UNSTABLE),
+        ("aarch64 Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-aarch64", LTOPGONonDebugBuild, UNSTABLE),
+
+        ("aarch64 Fedora Stable", "cstratak-fedora-stable-aarch64", UnixBuild, UNSTABLE),
+        ("aarch64 Fedora Stable Refleaks", "cstratak-fedora-stable-aarch64", UnixRefleakBuild, UNSTABLE),
+        ("aarch64 Fedora Stable Clang", "cstratak-fedora-stable-aarch64", ClangUbsanLinuxBuild, UNSTABLE),
+        ("aarch64 Fedora Stable Clang Installed", "cstratak-fedora-stable-aarch64", ClangUnixInstalledBuild, UNSTABLE),
+        ("aarch64 Fedora Stable LTO", "cstratak-fedora-stable-aarch64", LTONonDebugUnixBuild, UNSTABLE),
+        ("aarch64 Fedora Stable LTO + PGO", "cstratak-fedora-stable-aarch64", LTOPGONonDebugBuild, UNSTABLE),
+
+        ("aarch64 RHEL7", "cstratak-RHEL7-aarch64", UnixBuild, UNSTABLE),
+        ("aarch64 RHEL7 Refleaks", "cstratak-RHEL7-aarch64", UnixRefleakBuild, UNSTABLE),
+        ("aarch64 RHEL7 LTO", "cstratak-RHEL7-aarch64", LTONonDebugUnixBuild, UNSTABLE),
+        ("aarch64 RHEL7 LTO + PGO", "cstratak-RHEL7-aarch64", LTOPGONonDebugBuild, UNSTABLE),
+
+        ("aarch64 RHEL8", "cstratak-RHEL8-aarch64", UnixBuild, UNSTABLE),
+        ("aarch64 RHEL8 Refleaks", "cstratak-RHEL8-aarch64", UnixRefleakBuild, UNSTABLE),
+        ("aarch64 RHEL8 LTO", "cstratak-RHEL8-aarch64", LTONonDebugUnixBuild, UNSTABLE),
+        ("aarch64 RHEL8 LTO + PGO", "cstratak-RHEL8-aarch64", LTOPGONonDebugBuild, UNSTABLE),
+
         # Linux other archs
         ("s390x Fedora Rawhide", "edelsohn-fedora-rawhide-z", UnixBuild, UNSTABLE),
         ("s390x Fedora Rawhide Refleaks", "edelsohn-fedora-rawhide-z", UnixRefleakBuild, UNSTABLE),
