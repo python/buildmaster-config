@@ -189,6 +189,11 @@ DAILYBUILDERS = [
     "s390x Fedora Refleaks",
     "s390x RHEL7 Refleaks",
     "s390x RHEL8 Refleaks",
+    # Linux aarch64
+    "aarch64 Fedora Rawhide Refleaks",
+    "aarch64 Fedora Stable Refleaks",
+    "aarch64 RHEL7 Refleaks",
+    "aarch64 RHEL8 Refleaks",
 ]
 
 # Match builder name (excluding the branch name) of builders that should only
