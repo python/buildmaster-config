@@ -161,6 +161,7 @@ def get_builders(settings):
         ("s390x Fedora Rawhide Clang Installed", "edelsohn-fedora-rawhide-z", ClangUnixInstalledBuild, UNSTABLE),
         ("s390x Fedora Rawhide LTO", "edelsohn-fedora-rawhide-z", LTONonDebugUnixBuild, UNSTABLE),
         ("s390x Fedora Rawhide LTO + PGO", "edelsohn-fedora-rawhide-z", LTOPGONonDebugBuild, UNSTABLE),
+        ("POWER8E CentOS", "isidentical-centos-power8", UnixBuild, UNSTABLE),
         # macOS
         # Other Unix
         ("AMD64 Cygwin64 on Windows 10", "bray-win10-cygwin-amd64", UnixBuild, UNSTABLE),
