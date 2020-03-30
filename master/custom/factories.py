@@ -226,6 +226,7 @@ class AIXBuild(UnixBuild):
         "--with-pydebug",
         "--with-openssl=/opt/aixtools",
     ]
+    testFlags = "-j8"
 
 
 class NonDebugUnixBuild(UnixBuild):
