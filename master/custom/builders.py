@@ -47,7 +47,6 @@ def get_builders(settings):
         ("AMD64 Debian root", "angelico-debian-amd64", UnixBuild, STABLE),
         ("AMD64 Debian PGO", "gps-debian-profile-opt", PGOUnixBuild, STABLE),
         ("AMD64 Ubuntu Shared", "bolen-ubuntu", SharedUnixBuild, STABLE),
-        ("ARMv7 Debian buster", "gps-ubuntu-exynos5-armv7l", UnixBuild, STABLE),
         ("PPC64 Fedora", "edelsohn-fedora-ppc64", UnixBuild, STABLE),
         ("s390x SLES", "edelsohn-sles-z", UnixBuild, STABLE),
         ("s390x Debian", "edelsohn-debian-z", UnixBuild, STABLE),
