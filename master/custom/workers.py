@@ -140,6 +140,7 @@ def get_workers(settings):
             name="edelsohn-aix-ppc64",
             tags=['aix', 'unix', 'ppc64'],
             branches=['3.8', '3.x'],
+            parallel_tests=10,
         ),
         cpw(
             name="edelsohn-debian-z",
