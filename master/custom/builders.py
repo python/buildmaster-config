@@ -128,6 +128,8 @@ def get_builders(settings):
         ("PPC64LE Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-ppc64le", ClangUnixInstalledBuild, UNSTABLE),
         ("PPC64LE Fedora Rawhide LTO", "cstratak-fedora-rawhide-ppc64le", LTONonDebugUnixBuild, UNSTABLE),
         ("PPC64LE Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-ppc64le", LTOPGONonDebugBuild, UNSTABLE),
+        # Linux aarch32
+        ("ARM Raspbian", "gps-raspbian", UnixBuild, UNSTABLE),
         # Linux aarch64
         ("aarch64 Fedora Rawhide", "cstratak-fedora-rawhide-aarch64", UnixBuild, UNSTABLE),
         ("aarch64 Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-aarch64", UnixRefleakBuild, UNSTABLE),
