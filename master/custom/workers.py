@@ -189,6 +189,11 @@ def get_workers(settings):
             tags=['linux', 'unix', 'debian', 'amd64', 'x86-64'],
         ),
         cpw(
+            name="gps-raspbian",
+            tags=['linux', 'unix', 'raspbian', 'debian', 'armv6', 'armv7l',
+                  'aarch32', 'arm'],
+        ),
+        cpw(
             name="isidentical-centos-power8",
             tags=['linux', 'unix', 'centos', 'power8'],
             parallel_tests=4,
