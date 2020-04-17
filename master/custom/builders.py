@@ -81,20 +81,40 @@ def get_builders(settings):
         ("AMD64 RHEL8 Refleaks", "cstratak-RHEL8-x86_64", UnixRefleakBuild, STABLE),
         ("AMD64 RHEL8 LTO", "cstratak-RHEL8-x86_64", LTONonDebugUnixBuild, STABLE),
         ("AMD64 RHEL8 LTO + PGO", "cstratak-RHEL8-x86_64", LTOPGONonDebugBuild, STABLE),
+        # Linux PPC64le
         ("PPC64LE Fedora Stable", "cstratak-fedora-stable-ppc64le", UnixBuild, STABLE),
         ("PPC64LE Fedora Stable Refleaks", "cstratak-fedora-stable-ppc64le", UnixRefleakBuild, STABLE),
         ("PPC64LE Fedora Stable Clang", "cstratak-fedora-stable-ppc64le", ClangUbsanLinuxBuild, STABLE),
         ("PPC64LE Fedora Stable Clang Installed", "cstratak-fedora-stable-ppc64le", ClangUnixInstalledBuild, STABLE),
         ("PPC64LE Fedora Stable LTO", "cstratak-fedora-stable-ppc64le", LTONonDebugUnixBuild, STABLE),
         ("PPC64LE Fedora Stable LTO + PGO", "cstratak-fedora-stable-ppc64le", LTOPGONonDebugBuild, STABLE),
+
         ("PPC64LE RHEL7", "cstratak-RHEL7-ppc64le", UnixBuild, STABLE),
         ("PPC64LE RHEL7 Refleaks", "cstratak-RHEL7-ppc64le", UnixRefleakBuild, STABLE),
         ("PPC64LE RHEL7 LTO", "cstratak-RHEL7-ppc64le", LTONonDebugUnixBuild, STABLE),
         ("PPC64LE RHEL7 LTO + PGO", "cstratak-RHEL7-ppc64le", LTOPGONonDebugBuild, STABLE),
+
         ("PPC64LE RHEL8", "cstratak-RHEL8-ppc64le", UnixBuild, STABLE),
         ("PPC64LE RHEL8 Refleaks", "cstratak-RHEL8-ppc64le", UnixRefleakBuild, STABLE),
         ("PPC64LE RHEL8 LTO", "cstratak-RHEL8-ppc64le", LTONonDebugUnixBuild, STABLE),
         ("PPC64LE RHEL8 LTO + PGO", "cstratak-RHEL8-ppc64le", LTOPGONonDebugBuild, STABLE),
+        # Linux aarch64
+        ("aarch64 Fedora Stable", "cstratak-fedora-stable-aarch64", UnixBuild, STABLE),
+        ("aarch64 Fedora Stable Refleaks", "cstratak-fedora-stable-aarch64", UnixRefleakBuild, STABLE),
+        ("aarch64 Fedora Stable Clang", "cstratak-fedora-stable-aarch64", ClangUbsanLinuxBuild, STABLE),
+        ("aarch64 Fedora Stable Clang Installed", "cstratak-fedora-stable-aarch64", ClangUnixInstalledBuild, STABLE),
+        ("aarch64 Fedora Stable LTO", "cstratak-fedora-stable-aarch64", LTONonDebugUnixBuild, STABLE),
+        ("aarch64 Fedora Stable LTO + PGO", "cstratak-fedora-stable-aarch64", LTOPGONonDebugBuild, STABLE),
+
+        ("aarch64 RHEL7", "cstratak-RHEL7-aarch64", UnixBuild, STABLE),
+        ("aarch64 RHEL7 Refleaks", "cstratak-RHEL7-aarch64", UnixRefleakBuild, STABLE),
+        ("aarch64 RHEL7 LTO", "cstratak-RHEL7-aarch64", LTONonDebugUnixBuild, STABLE),
+        ("aarch64 RHEL7 LTO + PGO", "cstratak-RHEL7-aarch64", LTOPGONonDebugBuild, STABLE),
+
+        ("aarch64 RHEL8", "cstratak-RHEL8-aarch64", UnixBuild, STABLE),
+        ("aarch64 RHEL8 Refleaks", "cstratak-RHEL8-aarch64", UnixRefleakBuild, STABLE),
+        ("aarch64 RHEL8 LTO", "cstratak-RHEL8-aarch64", LTONonDebugUnixBuild, STABLE),
+        ("aarch64 RHEL8 LTO + PGO", "cstratak-RHEL8-aarch64", LTOPGONonDebugBuild, STABLE),
         # macOS
         ("x86-64 macOS", "billenstein-macos", UnixBuild, STABLE),
         # Other Unix
@@ -137,24 +157,6 @@ def get_builders(settings):
         ("aarch64 Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-aarch64", ClangUnixInstalledBuild, UNSTABLE),
         ("aarch64 Fedora Rawhide LTO", "cstratak-fedora-rawhide-aarch64", LTONonDebugUnixBuild, UNSTABLE),
         ("aarch64 Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-aarch64", LTOPGONonDebugBuild, UNSTABLE),
-
-        ("aarch64 Fedora Stable", "cstratak-fedora-stable-aarch64", UnixBuild, UNSTABLE),
-        ("aarch64 Fedora Stable Refleaks", "cstratak-fedora-stable-aarch64", UnixRefleakBuild, UNSTABLE),
-        ("aarch64 Fedora Stable Clang", "cstratak-fedora-stable-aarch64", ClangUbsanLinuxBuild, UNSTABLE),
-        ("aarch64 Fedora Stable Clang Installed", "cstratak-fedora-stable-aarch64", ClangUnixInstalledBuild, UNSTABLE),
-        ("aarch64 Fedora Stable LTO", "cstratak-fedora-stable-aarch64", LTONonDebugUnixBuild, UNSTABLE),
-        ("aarch64 Fedora Stable LTO + PGO", "cstratak-fedora-stable-aarch64", LTOPGONonDebugBuild, UNSTABLE),
-
-        ("aarch64 RHEL7", "cstratak-RHEL7-aarch64", UnixBuild, UNSTABLE),
-        ("aarch64 RHEL7 Refleaks", "cstratak-RHEL7-aarch64", UnixRefleakBuild, UNSTABLE),
-        ("aarch64 RHEL7 LTO", "cstratak-RHEL7-aarch64", LTONonDebugUnixBuild, UNSTABLE),
-        ("aarch64 RHEL7 LTO + PGO", "cstratak-RHEL7-aarch64", LTOPGONonDebugBuild, UNSTABLE),
-
-        ("aarch64 RHEL8", "cstratak-RHEL8-aarch64", UnixBuild, UNSTABLE),
-        ("aarch64 RHEL8 Refleaks", "cstratak-RHEL8-aarch64", UnixRefleakBuild, UNSTABLE),
-        ("aarch64 RHEL8 LTO", "cstratak-RHEL8-aarch64", LTONonDebugUnixBuild, UNSTABLE),
-        ("aarch64 RHEL8 LTO + PGO", "cstratak-RHEL8-aarch64", LTOPGONonDebugBuild, UNSTABLE),
-
         # Linux other archs
         ("s390x Fedora Rawhide", "edelsohn-fedora-rawhide-z", UnixBuild, UNSTABLE),
         ("s390x Fedora Rawhide Refleaks", "edelsohn-fedora-rawhide-z", UnixRefleakBuild, UNSTABLE),
