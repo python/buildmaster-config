@@ -21,8 +21,7 @@ TEST_TIMEOUT = 20 * 60
 
 
 def regrtest_has_cleanup(branch):
-    # "python -m test --cleanup" is available in Python 3.7 and newer,
-    # and in Python 2.7.
+    # "python -m test --cleanup" is available in Python 3.7 and newer
     return branch not in {CUSTOM_BRANCH_NAME}
 
 
@@ -82,7 +81,7 @@ class UnixBuild(TaggedBuildFactory):
         )
         compile = ["make", self.makeTarget]
         testopts = self.testFlags
-        if branch != "2.7" and "-R" not in self.testFlags:
+        if "-R" not in self.testFlags:
             testopts += " --junit-xml test-results.xml"
         # Timeout for the buildworker process
         self.test_timeout = self.test_timeout or TEST_TIMEOUT
@@ -123,7 +122,7 @@ class UnixBuild(TaggedBuildFactory):
         self.addStep(
             Test(command=test, timeout=self.test_timeout, usePTY=test_with_PTY)
         )
-        if branch not in ("2.7", "3") and "-R" not in self.testFlags:
+        if branch not in ("3",) and "-R" not in self.testFlags:
             self.addStep(UploadTestResults(branch))
         self.addStep(Clean())
 
@@ -175,9 +174,8 @@ class UnixInstalledBuild(TaggedBuildFactory):
         # Timeout for the buildworker process
         self.test_timeout = self.test_timeout or TEST_TIMEOUT
         # Timeout for faulthandler
-        if branch != "2.7":
-            faulthandler_timeout = self.test_timeout - 5 * 60
-            testopts += [f"--timeout={faulthandler_timeout}"]
+        faulthandler_timeout = self.test_timeout - 5 * 60
+        testopts += [f"--timeout={faulthandler_timeout}"]
         if parallel:
             compile = ["make", parallel, self.makeTarget]
             install = ["make", parallel, self.installTarget]
@@ -307,7 +305,7 @@ class WindowsBuild(TaggedBuildFactory):
     def setup(self, parallel, branch, **kwargs):
         build_command = self.build_command + self.buildFlags
         test_command = self.test_command + self.testFlags
-        if not (branch == "2.7" or "-R" in self.testFlags):
+        if "-R" not in self.testFlags:
             test_command += [r"--junit-xml", r"test-results.xml"]
         clean_command = self.clean_command + self.cleanFlags
         if parallel:
@@ -342,14 +340,13 @@ class WindowsBuild(TaggedBuildFactory):
                 )
             )
         timeout = self.test_timeout if self.test_timeout else TEST_TIMEOUT
-        if branch != "2.7":
-            test_command += ["--timeout", timeout - (5 * 60)]
+        test_command += ["--timeout", timeout - (5 * 60)]
         # FIXME: https://bugs.python.org/issue37359#msg346686
         # if regrtest_has_cleanup(branch):
         #    cleantest = test_command + ["--cleanup"]
         #    self.addStep(CleanupTest(command=cleantest))
         self.addStep(Test(command=test_command, timeout=timeout))
-        if branch not in ("2.7", "3") and "-R" not in self.testFlags:
+        if branch not in ("3",) and "-R" not in self.testFlags:
             self.addStep(UploadTestResults(branch))
         self.addStep(Clean(command=clean_command))
 
@@ -367,31 +364,6 @@ class WindowsRefleakBuild(WindowsBuild):
 class SlowWindowsBuild(WindowsBuild):
     test_timeout = TEST_TIMEOUT * 2
     testFlags = ["-j2", "-u-cpu", "-u-largefile"]
-
-
-class Windows27VS9Build(WindowsBuild):
-    buildersuffix = "vs9"
-    build_command = [r"PC\VS9.0\build.bat", "-e", "-k", "-d"]
-    test_command = [r"PC\VS9.0\rt.bat", "-q", "-d", "-uall", "-rwW", "--slowest"]
-    clean_command = [r"PC\VS9.0\build.bat", "-t", "Clean", "-d"]
-    python_command = [r"PC\VS9.0\python_d.exe"]
-    factory_tags = ["win32", "vs9"]
-
-
-class Windows6427VS9Build(Windows27VS9Build):
-    test_command = [
-        r"PC\VS9.0\rt.bat",
-        "-x64",
-        "-q",
-        "-d",
-        "-uall",
-        "-rwW",
-        "--slowest",
-    ]
-    buildFlags = ["-p", "x64"]
-    cleanFlags = ["-p", "x64"]
-    python_command = [r"PC\VS9.0\amd64\python_d.exe"]
-    factory_tags = ["win64", "vs9"]
 
 
 class Windows64Build(WindowsBuild):

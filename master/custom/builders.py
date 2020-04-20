@@ -14,8 +14,6 @@ from custom.factories import (
     LTOPGONonDebugBuild,
     WindowsBuild,
     SlowWindowsBuild,
-    Windows27VS9Build,
-    Windows6427VS9Build,
     Windows64Build,
     Windows64RefleakBuild,
     Windows64ReleaseBuild,
@@ -102,13 +100,10 @@ def get_builders(settings):
         ("AMD64 FreeBSD Shared", "koobs-freebsd-564d", SlowSharedUnixBuild, STABLE),
         # Windows
         ("AMD64 Windows7 SP1", "kloth-win64", Windows64Build, STABLE),
-        ("AMD64 Windows7 SP1 VS9.0", "kloth-win64", Windows6427VS9Build, STABLE),
         ("AMD64 Windows10", "bolen-windows10", Windows64Build, STABLE),
         ("AMD64 Windows8.1 Non-Debug", "ware-win81-release", Windows64ReleaseBuild, STABLE),
         ("AMD64 Windows8.1 Refleaks", "ware-win81-release", Windows64RefleakBuild, STABLE),
         ("x86 Windows7", "bolen-windows7", SlowWindowsBuild, STABLE),
-        ("x86 Windows XP", "bolen-windows", WindowsBuild, STABLE),
-        ("x86 Windows XP VS9.0", "bolen-windows", Windows27VS9Build, STABLE),
         # -- Unstable builders --
         # Linux x86 / AMD64
         ("AMD64 Clang UBSan", "gps-clang-ubsan", ClangUbsanLinuxBuild, UNSTABLE),
