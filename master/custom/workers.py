@@ -66,12 +66,6 @@ def get_workers(settings):
             name="bolen-windows7",
             tags=['windows', 'win7', 'x86'],
         ),
-        # XXX: To be retired, having served its purpose faithfully for many years
-        cpw(
-            name="bolen-windows",
-            tags=['windows', 'winXP', 'x86'],
-            branches=[],
-        ),
         cpw(
             name="bray-win10-cygwin-amd64",
             tags=['windows', 'win10', 'cygwin', 'unix', 'amd64', 'x86-64'],
