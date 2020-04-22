@@ -115,8 +115,8 @@ class UnixBuild(TaggedBuildFactory):
                 description="pythoninfo",
                 command=["make", "pythoninfo"],
                 warnOnFailure=True,
+                env=self.test_environ,
             )
-            env=self.test_environ
         )
         # FIXME: https://bugs.python.org/issue37359#msg346686
         # if regrtest_has_cleanup(branch):
