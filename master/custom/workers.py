@@ -193,6 +193,7 @@ def get_workers(settings):
             name="isidentical-centos-power8",
             tags=['linux', 'unix', 'centos', 'power8'],
             parallel_tests=4,
+            branches=['3.8', '3.x'],
         ),
         cpw(
             name="kloth-win64",
