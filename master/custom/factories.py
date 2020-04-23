@@ -71,6 +71,7 @@ class UnixBuild(TaggedBuildFactory):
     testFlags = "-j2"
     makeTarget = "all"
     test_timeout = None
+    test_environ = {}
 
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         self.addStep(
@@ -114,6 +115,7 @@ class UnixBuild(TaggedBuildFactory):
                 description="pythoninfo",
                 command=["make", "pythoninfo"],
                 warnOnFailure=True,
+                env=self.test_environ,
             )
         )
         # FIXME: https://bugs.python.org/issue37359#msg346686
@@ -133,6 +135,11 @@ class UnixTraceRefsBuild(UnixBuild):
         if branch in {"3.8", '3.x'}:
             self.configureFlags = ["--with-pydebug", "--with-trace-refs"]
         return super().setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
+
+
+class UnixVintageParserBuild(UnixBuild):
+    buildersuffix = ".oldparser"  # to get unique directory names on master
+    test_environ = {'PYTHONOLDPARSER': 'old'}
 
 
 class UnixRefleakBuild(UnixBuild):
