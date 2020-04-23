@@ -138,6 +138,7 @@ class UnixTraceRefsBuild(UnixBuild):
 
 
 class UnixVintageParserBuild(UnixBuild):
+    buildersuffix = ".oldparser"  # to get unique directory names on master
     test_environ = {'PYTHONOLDPARSER': 'old'}
 
 
