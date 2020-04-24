@@ -132,6 +132,11 @@ def get_workers(settings):
             parallel_tests=10,
         ),
         cpw(
+            name="cstratak-RHEL8-fips-x86_64",
+            tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
+            parallel_tests=6,
+        ),
+        cpw(
             name="edelsohn-aix-ppc64",
             tags=['aix', 'unix', 'ppc64'],
             branches=['3.8', '3.x'],
