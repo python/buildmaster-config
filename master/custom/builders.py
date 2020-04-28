@@ -35,6 +35,14 @@ class SlowSharedUnixBuild(SharedUnixBuild):
     test_timeout = 30 * 60
 
 
+class SlowUnixInstalledBuild(UnixInstalledBuild):
+    test_timeout = 30 * 60
+
+
+class SlowUnixRefleakBuild(UnixRefleakBuild):
+    test_timeout = 30 * 60
+
+
 def get_builders(settings):
     # Override with a default simple worker if we are using local workers
     if settings.use_local_worker:
@@ -63,9 +71,9 @@ def get_builders(settings):
         ("s390x RHEL8 Refleaks", "edelsohn-rhel8-z", UnixRefleakBuild, STABLE),
         ("s390x RHEL8 LTO", "edelsohn-rhel8-z", LTONonDebugUnixBuild, STABLE),
         ("s390x RHEL8 LTO + PGO", "edelsohn-rhel8-z", LTOPGONonDebugBuild, STABLE),
-        ("x86 Gentoo Non-Debug with X", "ware-gentoo-x86", NonDebugUnixBuild, STABLE),
-        ("x86 Gentoo Installed with X", "ware-gentoo-x86", UnixInstalledBuild, STABLE),
-        ("x86 Gentoo Refleaks", "ware-gentoo-x86", UnixRefleakBuild, STABLE),
+        ("x86 Gentoo Non-Debug with X", "ware-gentoo-x86", SlowNonDebugUnixBuild, STABLE),
+        ("x86 Gentoo Installed with X", "ware-gentoo-x86", SlowUnixInstalledBuild, STABLE),
+        ("x86 Gentoo Refleaks", "ware-gentoo-x86", SlowUnixRefleakBuild, STABLE),
         ("AMD64 Fedora Stable", "cstratak-fedora-stable-x86_64", UnixBuild, STABLE),
         ("AMD64 Fedora Stable Refleaks", "cstratak-fedora-stable-x86_64", UnixRefleakBuild, STABLE),
         ("AMD64 Fedora Stable Clang", "cstratak-fedora-stable-x86_64", ClangUbsanLinuxBuild, STABLE),
