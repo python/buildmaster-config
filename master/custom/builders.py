@@ -40,7 +40,10 @@ class SlowUnixInstalledBuild(UnixInstalledBuild):
 
 
 class SlowUnixRefleakBuild(UnixRefleakBuild):
-    test_timeout = 30 * 60
+    # -R 3:3 is supposed to only require timeout x 6, but in practice,
+    # it's much more slower. Use timeout x 10 to prevent timeout
+    # caused by --huntrleaks.
+    test_timeout = SlowUnixInstalledBuild.test_timeout * 10
 
 
 def get_builders(settings):
