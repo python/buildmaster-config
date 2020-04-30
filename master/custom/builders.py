@@ -8,6 +8,7 @@ from custom.factories import (
     AIXBuildWithoutComputedGotos,
     NonDebugUnixBuild,
     PGOUnixBuild,
+    ClangUnixBuild,
     ClangUbsanLinuxBuild,
     ClangUnixInstalledBuild,
     SharedUnixBuild,
