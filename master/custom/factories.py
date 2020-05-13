@@ -244,6 +244,14 @@ class PGOUnixBuild(NonDebugUnixBuild):
     configureFlags = ["--enable-optimizations"]
     factory_tags = ["pgo"]
 
+class ClangUnixBuild(UnixBuild):
+    buildersuffix = ".clang"
+    configureFlags = [
+        "CC=clang",
+        "LD=clang",
+    ]
+    factory_tags = ["clang"]
+
 
 class ClangUbsanLinuxBuild(UnixBuild):
     buildersuffix = ".clang-ubsan"
