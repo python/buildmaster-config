@@ -122,7 +122,12 @@ class UnixBuild(TaggedBuildFactory):
         # if regrtest_has_cleanup(branch):
         #    self.addStep(CleanupTest(command=cleantest))
         self.addStep(
-            Test(command=test, timeout=self.test_timeout, usePTY=test_with_PTY)
+            Test(
+                command=test,
+                timeout=self.test_timeout,
+                usePTY=test_with_PTY,
+                env=self.test_environ,
+            )
         )
         if branch not in ("3",) and "-R" not in self.testFlags:
             self.addStep(UploadTestResults(branch))
