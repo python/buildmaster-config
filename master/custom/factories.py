@@ -137,7 +137,7 @@ class UnixBuild(TaggedBuildFactory):
 class UnixTraceRefsBuild(UnixBuild):
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         # Only Python >3.8 has --with-trace-refs
-        if branch in {"3.8", '3.x'}:
+        if branch not in {'3.7'}:
             self.configureFlags = ["--with-pydebug", "--with-trace-refs"]
         return super().setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
 

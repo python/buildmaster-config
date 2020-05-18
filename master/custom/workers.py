@@ -44,7 +44,7 @@ def get_workers(settings):
         cpw(
             name="aixtools-aix-power6",
             tags=['aix', 'unix', 'power6'],
-            branches=['3.8', '3.x'],
+            branches=['3.8', '3.9', '3.x'],
         ),
         cpw(
             name="angelico-debian-amd64",
@@ -139,7 +139,7 @@ def get_workers(settings):
         cpw(
             name="edelsohn-aix-ppc64",
             tags=['aix', 'unix', 'ppc64'],
-            branches=['3.8', '3.x'],
+            branches=['3.8', '3.9', '3.x'],
             parallel_tests=10,
         ),
         cpw(
@@ -198,7 +198,7 @@ def get_workers(settings):
             name="isidentical-centos-power8",
             tags=['linux', 'unix', 'centos', 'power8'],
             parallel_tests=4,
-            branches=['3.8', '3.x'],
+            branches=['3.8', '3.9', '3.x'],
         ),
         cpw(
             name="kloth-win64",
