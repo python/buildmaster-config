@@ -11,7 +11,7 @@ from .steps import (
     UploadTestResults,
 )
 
-master_branch_version = "3.9"
+master_branch_version = "3.10"
 CUSTOM_BRANCH_NAME = "custom"
 
 # This (default) timeout is for each individual test file.
