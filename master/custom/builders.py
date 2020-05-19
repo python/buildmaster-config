@@ -40,13 +40,6 @@ class SlowUnixInstalledBuild(UnixInstalledBuild):
     test_timeout = 30 * 60
 
 
-class SlowUnixRefleakBuild(UnixRefleakBuild):
-    # -R 3:3 is supposed to only require timeout x 6, but in practice,
-    # it's much more slower. Use timeout x 10 to prevent timeout
-    # caused by --huntrleaks.
-    test_timeout = SlowUnixInstalledBuild.test_timeout * 10
-
-
 def get_builders(settings):
     # Override with a default simple worker if we are using local workers
     if settings.use_local_worker:
@@ -77,7 +70,6 @@ def get_builders(settings):
         ("s390x RHEL8 LTO + PGO", "edelsohn-rhel8-z", LTOPGONonDebugBuild, STABLE),
         ("x86 Gentoo Non-Debug with X", "ware-gentoo-x86", SlowNonDebugUnixBuild, STABLE),
         ("x86 Gentoo Installed with X", "ware-gentoo-x86", SlowUnixInstalledBuild, STABLE),
-        ("x86 Gentoo Refleaks", "ware-gentoo-x86", SlowUnixRefleakBuild, STABLE),
         ("AMD64 Fedora Stable", "cstratak-fedora-stable-x86_64", UnixBuild, STABLE),
         ("AMD64 Fedora Stable Refleaks", "cstratak-fedora-stable-x86_64", UnixRefleakBuild, STABLE),
         ("AMD64 Fedora Stable Clang", "cstratak-fedora-stable-x86_64", ClangUnixBuild, STABLE),
