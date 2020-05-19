@@ -177,10 +177,6 @@ def get_workers(settings):
             parallel_tests=6,
         ),
         cpw(
-            name="einat-ubuntu",
-            tags=['linux', 'unix', 'ubuntu', 'amd64', 'x86-64'],
-        ),
-        cpw(
             name="gps-clang-ubsan",
             tags=['linux', 'unix', 'amd64', 'x86-64'],
         ),
