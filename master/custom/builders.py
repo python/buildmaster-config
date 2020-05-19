@@ -128,7 +128,6 @@ def get_builders(settings):
         # Linux x86 / AMD64
         ("AMD64 Clang UBSan", "gps-clang-ubsan", ClangUbsanLinuxBuild, UNSTABLE),
         ("AMD64 Alpine Linux", "ware-alpine", UnixBuild, UNSTABLE),
-        ("AMD64 Ubuntu", "einat-ubuntu", UnixBuild, UNSTABLE),
         ("AMD64 Fedora Rawhide", "cstratak-fedora-rawhide-x86_64", UnixBuild, UNSTABLE),
         ("AMD64 Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-x86_64", UnixRefleakBuild, UNSTABLE),
         ("AMD64 Fedora Rawhide Clang", "cstratak-fedora-rawhide-x86_64", ClangUnixBuild, UNSTABLE),
