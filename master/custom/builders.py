@@ -14,6 +14,8 @@ from custom.factories import (
     SharedUnixBuild,
     LTONonDebugUnixBuild,
     LTOPGONonDebugBuild,
+    NoBuiltinHashesUnixBuild,
+    NoBuiltinHashesUnixBuildExceptBlake2,
     WindowsBuild,
     SlowWindowsBuild,
     Windows64Build,
@@ -128,7 +130,8 @@ def get_builders(settings):
         ("AMD64 Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-x86_64", LTOPGONonDebugBuild, UNSTABLE),
         ("AMD64 Arch Linux TraceRefs", "pablogsal-arch-x86_64", UnixTraceRefsBuild, STABLE),
         ("AMD64 Arch Linux VintageParser", "pablogsal-arch-x86_64", UnixVintageParserBuild, UNSTABLE),
-        ("AMD64 RHEL8 FIPS", "cstratak-RHEL8-fips-x86_64", UnixBuild, UNSTABLE),
+        ("AMD64 RHEL8 FIPS No Builtin Hashes", "cstratak-RHEL8-fips-x86_64", NoBuiltinHashesUnixBuild, UNSTABLE),
+        ("AMD64 RHEL8 FIPS Only Blake2 Builtin Hash", "cstratak-RHEL8-fips-x86_64", NoBuiltinHashesUnixBuildExceptBlake2, UNSTABLE),
         # Linux PPC64le
         ("PPC64LE Fedora Rawhide", "cstratak-fedora-rawhide-ppc64le", UnixBuild, UNSTABLE),
         ("PPC64LE Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-ppc64le", UnixRefleakBuild, UNSTABLE),
@@ -213,6 +216,4 @@ ONLY_MASTER_BRANCH = (
     "ARM32 Windows",
     # Only the master branch has two parsers
     "VintageParser",
-    # Test under FIPS mode only on the master branch
-    "AMD64 RHEL8 FIPS",
 )

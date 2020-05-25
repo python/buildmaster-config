@@ -301,6 +301,24 @@ class LTOPGONonDebugBuild(NonDebugUnixBuild):
     factory_tags = ["lto", "pgo", "nondebug"]
 
 
+class NoBuiltinHashesUnixBuild(UnixBuild):
+    buildersuffix = ".no-builtin-hashes"
+    configureFlags = [
+        "--with-pydebug",
+        "--without-builtin-hashlib-hashes"
+    ]
+    factory_tags = ["no-builtin-hashes"]
+
+
+class NoBuiltinHashesUnixBuildExceptBlake2(UnixBuild):
+    buildersuffix = ".no-builtin-hashes-except-blake2"
+    configureFlags = [
+        "--with-pydebug",
+        "--with-builtin-hashlib-hashes=blake2"
+    ]
+    factory_tags = ["no-builtin-hashes-except-blake2"]
+
+
 ##############################################################################
 ############################  WINDOWS BUILDS  ################################
 ##############################################################################
