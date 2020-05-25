@@ -14,6 +14,8 @@ from custom.factories import (
     SharedUnixBuild,
     LTONonDebugUnixBuild,
     LTOPGONonDebugBuild,
+    NoBuiltinHashesUnixBuild,
+    NoBuiltinHashesUnixBuildExceptBlake2,
     WindowsBuild,
     SlowWindowsBuild,
     Windows64Build,
