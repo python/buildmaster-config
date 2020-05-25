@@ -216,6 +216,4 @@ ONLY_MASTER_BRANCH = (
     "ARM32 Windows",
     # Only the master branch has two parsers
     "VintageParser",
-    # Test under FIPS mode only on the master branch
-    "AMD64 RHEL8 FIPS",
 )
