@@ -214,6 +214,4 @@ ONLY_MASTER_BRANCH = (
     "Cygwin",
     # ARM32 Windows support is 3.8+ only
     "ARM32 Windows",
-    # Only the master branch has two parsers
-    "VintageParser",
 )
