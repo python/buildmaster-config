@@ -7,7 +7,7 @@
 
 ## Update requirements
 
-Run locally:
+To run locally:
 
     make regen-requirements
     # create a pull request to update requirements.txt
