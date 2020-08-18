@@ -5,3 +5,4 @@ PyYAML
 requests
 treq
 sentry-sdk
+psycopg2
