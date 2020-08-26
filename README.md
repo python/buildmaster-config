@@ -7,10 +7,20 @@
 
 ## Update requirements
 
-To run locally:
+Run locally:
 
     make regen-requirements
-    # create a pull request to update requirements.txt
+
+Create a PR. Merge the PR. Then recreate the venv on the server:
+
+    make stop-master
+    mv venv old-venv
+    make venv
+    make start-master
+
+Make sure that the server is running, and then remove the old virtual environment:
+
+    rm -rf old-venv
 
 ## Hosting
 
