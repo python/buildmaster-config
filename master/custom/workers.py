@@ -7,6 +7,17 @@ from functools import partial
 from buildbot.plugins import worker as _worker
 
 
+# By default, the buildmaster sends a simple, non-blocking message to each
+# worker every hour. These keepalives ensure that traffic is flowing over the
+# underlying TCP connection, allowing the system’s network stack to detect any
+# problems before a build is started.
+#
+# The default is 3600 seconds. Use a shorter interval to avoid
+# "lost remote step" on the worker side.
+# https://bugs.python.org/issue41642
+KEEPALIVE = 60
+
+
 class CPythonWorker:
     def __init__(
         self,
@@ -33,7 +44,9 @@ class CPythonWorker:
         if settings.use_local_worker:
             self.bb_worker = _worker.LocalWorker(name)
         else:
-            self.bb_worker = _worker.Worker(name, str(pw), notify_on_missing=emails)
+            self.bb_worker = _worker.Worker(name, str(pw),
+                                            notify_on_missing=emails,
+                                            keepalive_interval=KEEPALIVE)
 
 
 def get_workers(settings):
