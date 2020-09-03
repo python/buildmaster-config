@@ -219,6 +219,12 @@ class UnixInstalledBuild(TaggedBuildFactory):
         self.addStep(Clean())
 
 
+class UnixAsanBuild(UnixBuild):
+    buildersuffix = ".asan"
+    configureFlags = ["--with-pydebug", "--with-address-sanitizer"]
+    factory_tags = ["asan", "sanitizer"]
+
+
 class UnixBuildWithoutDocStrings(UnixBuild):
     configureFlags = ["--with-pydebug", "--without-doc-strings"]
 
