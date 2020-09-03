@@ -221,7 +221,7 @@ class UnixInstalledBuild(TaggedBuildFactory):
 
 class UnixAsanBuild(UnixBuild):
     buildersuffix = ".asan"
-    configureFlags = ["--with-pydebug", "--with-address-sanitizer"]
+    configureFlags = ["--with-pydebug", "--without-pymalloc", "--with-address-sanitizer"]
     factory_tags = ["asan", "sanitizer"]
 
 
