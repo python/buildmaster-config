@@ -223,6 +223,7 @@ class UnixAsanBuild(UnixBuild):
     buildersuffix = ".asan"
     configureFlags = ["--with-pydebug", "--without-pymalloc", "--with-address-sanitizer"]
     factory_tags = ["asan", "sanitizer"]
+    test_environ = {'ASAN_OPTIONS': 'detect_leaks=0'}
 
 
 class UnixBuildWithoutDocStrings(UnixBuild):
