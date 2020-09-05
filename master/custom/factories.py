@@ -224,8 +224,9 @@ class UnixAsanBuild(UnixBuild):
     configureFlags = ["--with-pydebug", "--without-pymalloc", "--with-address-sanitizer"]
     factory_tags = ["asan", "sanitizer"]
     test_environ = {'ASAN_OPTIONS': 'detect_leaks=0'}
-    testFlags = ("-j2 -x test_capi test_crypt test_decimal "
-                 "test_faulthandler test_interpreters")
+    # These tests are currently raising false positives or are interfering with the ASAN mechanism,
+    # so we need to skip them unfortunately.
+    testFlags = ("-j1 -x test_ctypes test_capi test_crypt test_decimal test_faulthandler test_interpreters")
 
 
 class UnixBuildWithoutDocStrings(UnixBuild):
