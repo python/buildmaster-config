@@ -223,9 +223,9 @@ class UnixInstalledBuild(TaggedBuildFactory):
 class UnixAsanBuild(UnixBuild):
     buildersuffix = ".asan"
     configureFlags = ["--without-pymalloc", "--with-address-sanitizer"]
-    compileFlags = ["ASAN_OPTIONS='detect_leaks=0"]
+    compileFlags = ["ASAN_OPTIONS='detect_leaks=0:allocator_may_return_null=1"]
     factory_tags = ["asan", "sanitizer"]
-    test_environ = {'ASAN_OPTIONS': 'detect_leaks=0'}
+    test_environ = {'ASAN_OPTIONS': 'detect_leaks=0:allocator_may_return_null=1'}
     # These tests are currently raising false positives or are interfering with the ASAN mechanism,
     # so we need to skip them unfortunately.
     testFlags = ("-j1 -x test_ctypes test_capi test_crypt test_decimal test_faulthandler test_interpreters")
