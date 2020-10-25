@@ -221,7 +221,13 @@ class UnixInstalledBuild(TaggedBuildFactory):
 
 class UnixAsanBuild(UnixBuild):
     buildersuffix = ".asan"
-    configureFlags = ["--with-pydebug", "--without-pymalloc", "--with-address-sanitizer"]
+    configureFlags = [
+        "CC=clang",
+        "LD=clang",
+        "--with-pydebug",
+        "--without-pymalloc",
+        "--with-address-sanitizer"
+    ]
     factory_tags = ["asan", "sanitizer"]
     test_environ = {'ASAN_OPTIONS': 'detect_leaks=0'}
     # These tests are currently raising false positives or are interfering with the ASAN mechanism,
