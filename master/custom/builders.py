@@ -1,6 +1,7 @@
 from custom.factories import (
     UnixBuild,
     UnixAsanBuild,
+    UnixAsanDebugBuild,
     UnixTraceRefsBuild,
     UnixVintageParserBuild,
     UnixRefleakBuild,
@@ -130,6 +131,7 @@ def get_builders(settings):
         ("AMD64 Fedora Rawhide LTO", "cstratak-fedora-rawhide-x86_64", LTONonDebugUnixBuild, UNSTABLE),
         ("AMD64 Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-x86_64", LTOPGONonDebugBuild, UNSTABLE),
         ("AMD64 Arch Linux Asan", "pablogsal-arch-x86_64", UnixAsanBuild, STABLE),
+        ("AMD64 Arch Linux Asan Debug", "pablogsal-arch-x86_64", UnixAsanDebugBuild, STABLE),
         ("AMD64 Arch Linux TraceRefs", "pablogsal-arch-x86_64", UnixTraceRefsBuild, STABLE),
         ("AMD64 Arch Linux VintageParser", "pablogsal-arch-x86_64", UnixVintageParserBuild, UNSTABLE),
         ("AMD64 RHEL8 FIPS No Builtin Hashes", "cstratak-RHEL8-fips-x86_64", NoBuiltinHashesUnixBuild, UNSTABLE),
