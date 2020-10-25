@@ -67,7 +67,7 @@ class FreezeBuild(TaggedBuildFactory):
 
 class UnixBuild(TaggedBuildFactory):
     configureFlags = ["--with-pydebug"]
-    compileFlags = []
+    compile_environ = {}
     interpreterFlags = ""
     testFlags = "-j2"
     makeTarget = "all"
@@ -109,7 +109,7 @@ class UnixBuild(TaggedBuildFactory):
             "TESTTIMEOUT=" + str(faulthandler_timeout),
         ]
 
-        self.addStep(Compile(command=compile + self.compileFlags))
+        self.addStep(Compile(command=compile, env=self.compile_environ))
         self.addStep(
             ShellCommand(
                 name="pythoninfo",
@@ -223,8 +223,8 @@ class UnixInstalledBuild(TaggedBuildFactory):
 class UnixAsanBuild(UnixBuild):
     buildersuffix = ".asan"
     configureFlags = ["--without-pymalloc", "--with-address-sanitizer"]
-    compileFlags = ["ASAN_OPTIONS='detect_leaks=0:allocator_may_return_null=1"]
     factory_tags = ["asan", "sanitizer"]
+    compile_environ = {'ASAN_OPTIONS': 'detect_leaks=0:allocator_may_return_null=1'}
     test_environ = {'ASAN_OPTIONS': 'detect_leaks=0:allocator_may_return_null=1'}
     # These tests are currently raising false positives or are interfering with the ASAN mechanism,
     # so we need to skip them unfortunately.
