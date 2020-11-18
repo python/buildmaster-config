@@ -348,10 +348,10 @@ class WindowsBuild(TaggedBuildFactory):
     test_command = [r"Tools\buildbot\test.bat"]
     clean_command = [r"Tools\buildbot\clean.bat"]
     python_command = [r"python.bat"]
-    buildFlags = []
+    buildFlags = ["-p", "Win32"]
     remoteDeployFlags = []
     remotePythonInfoFlags = []
-    testFlags = ["-j2"]
+    testFlags = ["-p", "Win32", "-j2"]
     cleanFlags = []
     test_timeout = None
     factory_tags = ["win32"]
@@ -423,14 +423,14 @@ class SlowWindowsBuild(WindowsBuild):
 
 class Windows64Build(WindowsBuild):
     buildFlags = ["-p", "x64"]
-    testFlags = ["-x64", "-j2"]
+    testFlags = ["-p", "x64", "-j2"]
     cleanFlags = ["-p", "x64"]
     factory_tags = ["win64"]
 
 
 class Windows64RefleakBuild(Windows64Build):
     buildersuffix = ".refleak"
-    testFlags = ["-x64"] + WindowsRefleakBuild.testFlags
+    testFlags = ["-p", "x64"] + WindowsRefleakBuild.testFlags
     # -R 3:3 is supposed to only require timeout x 6, but in practice,
     # it's much more slower. Use timeout x 10 to prevent timeout
     # caused by --huntrleaks.
@@ -457,7 +457,8 @@ class WindowsArm32Build(WindowsBuild):
     remoteDeployFlags = ["-arm32"]
     remotePythonInfoFlags = ["-arm32"]
     testFlags = [
-        "-arm32",
+        "-p",
+        "ARM",
         "-x",
         "test_multiprocessing_spawn",
         "-x",
