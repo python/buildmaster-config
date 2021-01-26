@@ -18,6 +18,10 @@ Create a PR. Merge the PR. Then recreate the venv on the server:
     make venv
     make start-master
 
+Upgrading buildbot sometimes requires to run the command:
+
+    ./venv/bin/buildbot upgrade-master /data/buildbot/master
+
 Make sure that the server is running, and then remove the old virtual environment:
 
     rm -rf old-venv
@@ -26,6 +30,10 @@ Make sure that the server is running, and then remove the old virtual environmen
 
 The buildbot master is hosted on the PSF Infrastructure and is managed via
 [salt](https://github.com/python/psf-salt/blob/master/salt/buildbot/init.sls).
+
+psycopg2 also requires libpq-dev:
+
+    sudo apt-get install libpq-dev
 
 - Backend host address is `buildbot.nyc1.psf.io`.
 - The host is behind the PSF HaProxy cluster which is CNAMEd by `buildbot.python.org`.
