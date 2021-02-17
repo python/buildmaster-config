@@ -267,6 +267,14 @@ class PGOUnixBuild(NonDebugUnixBuild):
     buildersuffix = ".pgo"
     configureFlags = ["--enable-optimizations"]
     factory_tags = ["pgo"]
+    
+    def setup(self, parallel, branch, *args, **kwargs):
+        # Only Python >3.10 has --with-readline=edit
+        if branch not in {'3.7', '3.8', '3.9'}:
+            # Use libedit instead of libreadline on this buildbot for
+            # some libedit Linux compilation coverage.
+            self.configureFlags = self.configureFlags + ["--with-readline=edit"]
+        return super().setup(parallel, branch, *args, **kwargs)
 
 class ClangUnixBuild(UnixBuild):
     buildersuffix = ".clang"
