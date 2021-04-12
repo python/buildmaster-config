@@ -115,7 +115,8 @@ def get_builders(settings):
         ("AMD64 FreeBSD Non-Debug", "koobs-freebsd-9e36", SlowNonDebugUnixBuild, STABLE),
         ("AMD64 FreeBSD Shared", "koobs-freebsd-564d", SlowSharedUnixBuild, STABLE),
         # Windows
-        ("AMD64 Windows7 SP1", "kloth-win64", Windows64Build, STABLE),
+        ("AMD64 Windows10 Pro", "kloth-win64", Windows64Build, STABLE),
+        ("AMD64 Windows7 SP1", "kloth-win7", Windows64Build, STABLE),
         ("AMD64 Windows10", "bolen-windows10", Windows64Build, STABLE),
         ("AMD64 Windows8.1 Non-Debug", "ware-win81-release", Windows64ReleaseBuild, STABLE),
         ("AMD64 Windows8.1 Refleaks", "ware-win81-release", Windows64RefleakBuild, STABLE),
