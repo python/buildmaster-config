@@ -45,7 +45,7 @@ TESTS_STEP = "test"
 
 class CustomMessageFormatter(reporters.MessageFormatter):
     def buildAdditionalContext(self, master, ctx):
-        ctx.update(self.ctx)
+        ctx.update(self.context)
         build = ctx["build"]
 
         logs, tracebacks = get_logs_and_tracebacks_from_build(build)
