@@ -60,7 +60,7 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
     name = "GitHubPullRequestReporter"
 
     @defer.inlineCallbacks
-    def sendMessage(self, build):
+    def sendMessage(self, reports):
         report = reports[0]
         build = reports[0]['builds'][0]
 
