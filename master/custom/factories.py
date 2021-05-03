@@ -11,7 +11,7 @@ from .steps import (
     UploadTestResults,
 )
 
-master_branch_version = "3.10"
+main_branch_version = "3.11"
 CUSTOM_BRANCH_NAME = "custom"
 
 # This (default) timeout is for each individual test file.
@@ -170,7 +170,7 @@ class UnixInstalledBuild(TaggedBuildFactory):
 
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         if branch == "3.x":
-            branch = master_branch_version
+            branch = main_branch_version
         elif branch == "custom":
             branch = "3"
         installed_python = "./target/bin/python%s" % branch
