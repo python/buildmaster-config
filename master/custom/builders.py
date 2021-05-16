@@ -7,6 +7,7 @@ from custom.factories import (
     UnixRefleakBuild,
     UnixInstalledBuild,
     AIXBuild,
+    AIXBuildWithXLC,
     AIXBuildWithoutComputedGotos,
     NonDebugUnixBuild,
     PGOUnixBuild,
@@ -181,6 +182,7 @@ def get_builders(settings):
         ("AMD64 Cygwin64 on Windows 10", "bray-win10-cygwin-amd64", UnixBuild, UNSTABLE),
         ("POWER6 AIX", "aixtools-aix-power6", AIXBuildWithoutComputedGotos, UNSTABLE),
         ("PPC64 AIX", "edelsohn-aix-ppc64", AIXBuild, UNSTABLE),
+        ("PPC64 AIX XLC", "edelsohn-aix-ppc64", AIXBuildWithXLC, UNSTABLE),
         # Windows
         ("ARM32 Windows10 1903", "monson-win-arm32", WindowsArm32Build, UNSTABLE),
         ("ARM32 Windows10 1903 Non-Debug", "monson-win-arm32", WindowsArm32ReleaseBuild, UNSTABLE),
