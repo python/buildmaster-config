@@ -255,6 +255,17 @@ class AIXBuild(UnixBuild):
         "--with-pydebug",
         "--with-openssl=/opt/aixtools",
     ]
+    
+    
+class AIXBuildWithXLC(UnixBuild):
+    buildersuffix = ".xlc"
+    configureFlags = [
+        "--with-pydebug",
+        "--with-openssl=/opt/aixtools",
+        "CC=xlc_r",
+        "LD=xlc_r",
+    ]
+    factory_tags = ["xlc"]
 
 
 class NonDebugUnixBuild(UnixBuild):
