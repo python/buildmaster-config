@@ -5,6 +5,11 @@
 
 [![Build Status](https://travis-ci.org/python/buildmaster-config.svg?branch=master)](https://travis-ci.org/python/buildmaster-config)
 
+## Private settings
+
+The production server uses /etc/buildbot/settings.yaml configuration file which
+contains secrets like the IRC nickname password.
+
 ## Update requirements
 
 Run locally:
