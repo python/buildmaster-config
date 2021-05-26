@@ -38,11 +38,11 @@ check: $(VENV_CHECK)
 .PHONY: update-master start-master restart-master stop-master
 
 update-master: stop-master
-	@if [ `git rev-parse --symbolic-full-name HEAD` = "refs/heads/master" ]; \
+	@if [ `git rev-parse --symbolic-full-name HEAD` = "refs/heads/main" ]; \
 	then \
 		git pull; \
 	else \
-		echo "Not on master, not pulling updates"; \
+		echo "Not on main, not pulling updates"; \
 	fi
 	$(MAKE) run-target TARGET=upgrade-master LOGLINES=0
 	$(MAKE) check
