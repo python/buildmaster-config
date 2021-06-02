@@ -70,8 +70,10 @@ class Test(BaseTest):
     # if tests have warnings, mark the overall build as WARNINGS (orange)
     warnOnWarnings = True
 
-    # 3 hours should be enough even for refleak builds.
-    maxTime = 3 * 60 * 60
+    # 4 hours should be enough even for refleak builds. In practice,
+    # faulthandler kills worker processes with a way shorter timeout
+    # (regrtest --timeout parameter).
+    maxTime = 4 * 60 * 60
     # Give SIGTERM 30 seconds to shut things down before SIGKILL.
     sigtermTime = 30
 
