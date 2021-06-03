@@ -108,7 +108,6 @@ def get_builders(settings):
         ("PPC64LE RHEL8 LTO + PGO", "cstratak-RHEL8-ppc64le", LTOPGONonDebugBuild, STABLE),
         # Linux aarch64
         ("aarch64 Fedora Stable", "cstratak-fedora-stable-aarch64", UnixBuild, STABLE),
-        ("aarch64 RHEL7", "cstratak-RHEL7-aarch64", UnixBuild, STABLE),
         ("aarch64 RHEL8", "cstratak-RHEL8-aarch64", UnixBuild, STABLE),
         # macOS
         ("x86-64 macOS", "billenstein-macos", UnixBuild, STABLE),
@@ -161,9 +160,6 @@ def get_builders(settings):
         ("aarch64 Fedora Stable LTO", "cstratak-fedora-stable-aarch64", LTONonDebugUnixBuild, UNSTABLE),
         ("aarch64 Fedora Stable LTO + PGO", "cstratak-fedora-stable-aarch64", LTOPGONonDebugBuild, UNSTABLE),
 
-        ("aarch64 RHEL7 Refleaks", "cstratak-RHEL7-aarch64", UnixRefleakBuild, UNSTABLE),
-        ("aarch64 RHEL7 LTO", "cstratak-RHEL7-aarch64", LTONonDebugUnixBuild, UNSTABLE),
-        ("aarch64 RHEL7 LTO + PGO", "cstratak-RHEL7-aarch64", LTOPGONonDebugBuild, UNSTABLE),
 
         ("aarch64 RHEL8 Refleaks", "cstratak-RHEL8-aarch64", UnixRefleakBuild, UNSTABLE),
         ("aarch64 RHEL8 LTO", "cstratak-RHEL8-aarch64", LTONonDebugUnixBuild, UNSTABLE),
@@ -209,7 +205,6 @@ DAILYBUILDERS = [
     # Linux aarch64
     "aarch64 Fedora Rawhide Refleaks",
     "aarch64 Fedora Stable Refleaks",
-    "aarch64 RHEL7 Refleaks",
     "aarch64 RHEL8 Refleaks",
 ]
 

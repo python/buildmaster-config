@@ -135,11 +135,6 @@ def get_workers(settings):
             parallel_tests=10,
         ),
         cpw(
-            name="cstratak-RHEL7-aarch64",
-            tags=['linux', 'unix', 'rhel', 'arm', 'arm64', 'aarch64'],
-            parallel_tests=10,
-        ),
-        cpw(
             name="cstratak-RHEL8-aarch64",
             tags=['linux', 'unix', 'rhel', 'arm', 'arm64', 'aarch64'],
             parallel_tests=10,
