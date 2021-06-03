@@ -234,6 +234,10 @@ def get_workers(settings):
             tags=['linux', 'unix', 'arch', 'amd64', 'x86-64'],
         ),
         cpw(
+            name="skumaran-ubuntu-x86_64",
+            tags=['linux', 'unix', 'ubuntu', 'amd64', 'x86-64'],
+        ),
+        cpw(
             name="ware-alpine",
             tags=['linux', 'unix', 'alpine', 'docker', 'amd64', 'x86-64'],
             branches=['3.x'],
