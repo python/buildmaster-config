@@ -131,6 +131,7 @@ def get_builders(settings):
         ("AMD64 Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-x86_64", ClangUnixInstalledBuild, UNSTABLE),
         ("AMD64 Fedora Rawhide LTO", "cstratak-fedora-rawhide-x86_64", LTONonDebugUnixBuild, UNSTABLE),
         ("AMD64 Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-x86_64", LTOPGONonDebugBuild, UNSTABLE),
+        ("AMD64 Ubuntu", "skumaran-ubuntu-x86_64", UnixBuild, UNSTABLE),
         ("AMD64 Arch Linux Asan", "pablogsal-arch-x86_64", UnixAsanBuild, STABLE),
         ("AMD64 Arch Linux Asan Debug", "pablogsal-arch-x86_64", UnixAsanDebugBuild, STABLE),
         ("AMD64 Arch Linux TraceRefs", "pablogsal-arch-x86_64", UnixTraceRefsBuild, STABLE),
