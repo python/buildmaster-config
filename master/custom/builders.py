@@ -89,6 +89,7 @@ def get_builders(settings):
         ("AMD64 RHEL8 Refleaks", "cstratak-RHEL8-x86_64", UnixRefleakBuild, STABLE),
         ("AMD64 RHEL8 LTO", "cstratak-RHEL8-x86_64", LTONonDebugUnixBuild, STABLE),
         ("AMD64 RHEL8 LTO + PGO", "cstratak-RHEL8-x86_64", LTOPGONonDebugBuild, STABLE),
+        ("AMD64 RHEL8 FIPS Only Blake2 Builtin Hash", "cstratak-RHEL8-fips-x86_64", NoBuiltinHashesUnixBuildExceptBlake2, STABLE),
         # Linux PPC64le
         ("PPC64LE Fedora Stable", "cstratak-fedora-stable-ppc64le", UnixBuild, STABLE),
         ("PPC64LE Fedora Stable Refleaks", "cstratak-fedora-stable-ppc64le", UnixRefleakBuild, STABLE),
@@ -137,7 +138,6 @@ def get_builders(settings):
         ("AMD64 Arch Linux TraceRefs", "pablogsal-arch-x86_64", UnixTraceRefsBuild, STABLE),
         ("AMD64 Arch Linux VintageParser", "pablogsal-arch-x86_64", UnixVintageParserBuild, UNSTABLE),
         ("AMD64 RHEL8 FIPS No Builtin Hashes", "cstratak-RHEL8-fips-x86_64", NoBuiltinHashesUnixBuild, UNSTABLE),
-        ("AMD64 RHEL8 FIPS Only Blake2 Builtin Hash", "cstratak-RHEL8-fips-x86_64", NoBuiltinHashesUnixBuildExceptBlake2, UNSTABLE),
         # Linux PPC64le
         ("PPC64LE Fedora Rawhide", "cstratak-fedora-rawhide-ppc64le", UnixBuild, UNSTABLE),
         ("PPC64LE Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-ppc64le", UnixRefleakBuild, UNSTABLE),
