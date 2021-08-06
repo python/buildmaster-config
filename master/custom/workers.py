@@ -55,11 +55,6 @@ def get_workers(settings):
         return [cpw(name="local-worker")]
     return [
         cpw(
-            name="aixtools-aix-power6",
-            tags=['aix', 'unix', 'power6'],
-            branches=['3.8', '3.9', '3.10', '3.x'],
-        ),
-        cpw(
             name="angelico-debian-amd64",
             tags=['linux', 'unix', 'debian', 'amd64', 'x86-64'],
         ),
