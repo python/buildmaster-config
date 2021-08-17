@@ -22,13 +22,18 @@ def set_up_authorization(settings):
                 util.StopBuildEndpointMatcher(
                     role="buildbot-owners", defaultDeny=False
                 ),
+                util.StopBuildEndpointMatcher(role="python-triage", defaultDeny=False),
                 util.StopBuildEndpointMatcher(role="python-core"),
                 util.RebuildBuildEndpointMatcher(role="owner", defaultDeny=False),
+                util.RebuildBuildEndpointMatcher(
+                    role="python-triage", defaultDeny=False
+                ),
                 util.RebuildBuildEndpointMatcher(
                     role="buildbot-owners", defaultDeny=False
                 ),
                 util.RebuildBuildEndpointMatcher(role="python-core"),
                 util.ForceBuildEndpointMatcher(role="owner", defaultDeny=False),
+                util.ForceBuildEndpointMatcher(role="python-triage", defaultDeny=False),
                 util.ForceBuildEndpointMatcher(role="python-core"),
                 # Allow release managers to enable/disable schedulers.
                 util.EnableSchedulerEndpointMatcher(role="python-release-managers"),
