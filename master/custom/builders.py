@@ -30,19 +30,22 @@ from custom.factories import (
 
 STABLE = "stable"
 UNSTABLE = "unstable"
+# faulthandler uses a timeout 5 minutes smaller: it should be enough for the
+# slowest test.
+SLOW_TIMEOUT = 40 * 60
 
 
 # classes using longer timeout for koobs's very slow buildbots
 class SlowNonDebugUnixBuild(NonDebugUnixBuild):
-    test_timeout = 30 * 60
+    test_timeout = SLOW_TIMEOUT
 
 
 class SlowSharedUnixBuild(SharedUnixBuild):
-    test_timeout = 30 * 60
+    test_timeout = SLOW_TIMEOUT
 
 
 class SlowUnixInstalledBuild(UnixInstalledBuild):
-    test_timeout = 30 * 60
+    test_timeout = SLOW_TIMEOUT
 
 
 def get_builders(settings):
