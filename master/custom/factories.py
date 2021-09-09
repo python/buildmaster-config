@@ -358,10 +358,11 @@ class RHEL7Build(UnixBuild):
         # "--with-system-expat",
         # "--with-system-ffi",
         "--enable-loadable-sqlite-extensions",
-        "--with-dtrace",
         "--with-lto",
         "--with-ssl-default-suites=openssl",
         "--without-static-libpython",
+        # Not all workers have dtrace installed
+        # "--with-dtrace",
         # Not all workers have Valgrind headers installed
         # "--with-valgrind",
     ]
