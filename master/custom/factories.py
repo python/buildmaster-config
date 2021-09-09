@@ -345,30 +345,8 @@ class LTOPGONonDebugBuild(NonDebugUnixBuild):
     factory_tags = ["lto", "pgo", "nondebug"]
 
 
-class NoBuiltinHashesUnixBuild(UnixBuild):
-    buildersuffix = ".no-builtin-hashes"
-    configureFlags = [
-        "--with-pydebug",
-        "--without-builtin-hashlib-hashes"
-    ]
-    factory_tags = ["no-builtin-hashes"]
-
-
-class NoBuiltinHashesUnixBuildExceptBlake2(UnixBuild):
-    buildersuffix = ".no-builtin-hashes-except-blake2"
-    configureFlags = [
-        "--with-pydebug",
-        "--with-builtin-hashlib-hashes=blake2"
-    ]
-    factory_tags = ["no-builtin-hashes-except-blake2"]
-
-
-class FedoraBuild(UnixBuild):
-    # Build on Fedora or RHEL.
-    #
-    # Try to be as close as possible to the Fedora specfile used to build
-    # the RPM package:
-    # https://src.fedoraproject.org/rpms/python3.10/blob/rawhide/f/python3.10.spec
+class RHEL8Build(UnixBuild):
+    # Build Python on RHEL8.
     configureFlags = [
         "--with-pydebug",
         "--with-platlibdir=lib64",
@@ -385,10 +363,51 @@ class FedoraBuild(UnixBuild):
         "--with-ssl-default-suites=openssl",
         "--without-static-libpython",
         "--with-valgrind",
+    ]
+
+
+# For now it's just an alias, but maybe later RHEL8 will different flags.
+RHEL7Build = RHEL8Build
+
+
+class FedoraStableBuild(RHEL8Build):
+    # Build Python on Fedora Stable.
+    #
+    # Try to be as close as possible to the Fedora specfile used to build
+    # the RPM package:
+    # https://src.fedoraproject.org/rpms/python3.10/blob/rawhide/f/python3.10.spec
+    configureFlags = RHEL8Build.configureFlags + [
+        # Options specific to Fedora
+        "--with-system-libmpdec",
         # Don't make a buildbot fail when pip/setuptools is updated in Python,
         # whereas the buildbot uses older versions.
         # "--with-wheel-pkg-dir=/usr/share/python-wheels/",
     ]
+
+
+class FedoraRawhideBuild(FedoraStableBuild):
+    # Build on Fedora Rawhide.
+    # For now, it's the same than Fedora Stable, but later it may get different
+    # options.
+    pass
+
+
+class RHEL8NoBuiltinHashesUnixBuildExceptBlake2(RHEL8Build):
+    # Build on RHEL8 using: --with-builtin-hashlib-hashes=blake2
+    buildersuffix = ".no-builtin-hashes-except-blake2"
+    configureFlags = RHEL8Build.configureFlags + [
+        "--with-builtin-hashlib-hashes=blake2"
+    ]
+    factory_tags = ["no-builtin-hashes-except-blake2"]
+
+
+class RHEL8NoBuiltinHashesUnixBuild(RHEL8Build):
+    # Build on RHEL8 using: --without-builtin-hashlib-hashes
+    buildersuffix = ".no-builtin-hashes"
+    configureFlags = RHEL8Build.configureFlags + [
+        "--without-builtin-hashlib-hashes"
+    ]
+    factory_tags = ["no-builtin-hashes"]
 
 
 ##############################################################################
