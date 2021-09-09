@@ -362,7 +362,8 @@ class RHEL7Build(UnixBuild):
         "--with-lto",
         "--with-ssl-default-suites=openssl",
         "--without-static-libpython",
-        "--with-valgrind",
+        # Not all workers have Valgrind headers installed
+        # "--with-valgrind",
     ]
 
 
