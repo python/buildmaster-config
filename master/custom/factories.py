@@ -255,8 +255,8 @@ class AIXBuild(UnixBuild):
         "--with-pydebug",
         "--with-openssl=/opt/aixtools",
     ]
-    
-    
+
+
 class AIXBuildWithXLC(UnixBuild):
     buildersuffix = ".xlc"
     configureFlags = [
@@ -278,7 +278,7 @@ class PGOUnixBuild(NonDebugUnixBuild):
     buildersuffix = ".pgo"
     configureFlags = ["--enable-optimizations"]
     factory_tags = ["pgo"]
-    
+
     def setup(self, parallel, branch, *args, **kwargs):
         # Only Python >3.10 has --with-readline=edit
         if branch not in {'3.7', '3.8', '3.9'}:
@@ -361,6 +361,34 @@ class NoBuiltinHashesUnixBuildExceptBlake2(UnixBuild):
         "--with-builtin-hashlib-hashes=blake2"
     ]
     factory_tags = ["no-builtin-hashes-except-blake2"]
+
+
+class FedoraBuild(UnixBuild):
+    # Build on Fedora or RHEL.
+    #
+    # Try to be as close as possible to the Fedora specfile used to build
+    # the RPM package:
+    # https://src.fedoraproject.org/rpms/python3.10/blob/rawhide/f/python3.10.spec
+    configureFlags = [
+        "--with-pydebug",
+        "--with-platlibdir=lib64",
+        "--enable-ipv6",
+        "--enable-shared",
+        "--with-computed-gotos=yes",
+        "--with-dbmliborder=gdbm:ndbm:bdb",
+        "--with-system-expat",
+        "--with-system-ffi",
+        "--with-system-libmpdec",
+        "--enable-loadable-sqlite-extensions",
+        "--with-dtrace",
+        "--with-lto",
+        "--with-ssl-default-suites=openssl",
+        "--without-static-libpython",
+        "--with-valgrind",
+        # Don't make a buildbot fail when pip/setuptools is updated in Python,
+        # whereas the buildbot uses older versions.
+        # "--with-wheel-pkg-dir=/usr/share/python-wheels/",
+    ]
 
 
 ##############################################################################
