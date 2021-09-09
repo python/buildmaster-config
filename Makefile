@@ -17,12 +17,12 @@ clean:
 
 $(VENV_CHECK): requirements.txt
 	$(SYSTEM_PYTHON) -m venv --clear venv
-	$(PIP) install -U pip setuptools wheel
+	$(PIP) install -U pip 'setuptools<58.0' wheel
 	$(PIP) install -r requirements.txt
 
 regen-requirements:
 	$(SYSTEM_PYTHON) -m venv --clear venv
-	$(PIP) install -U pip setuptools wheel
+	$(PIP) install -U pip 'setuptools<58.0' wheel
 	$(PIP) install -U -r requirements.in
 	$(PIP) freeze > requirements.txt
 
