@@ -345,8 +345,8 @@ class LTOPGONonDebugBuild(NonDebugUnixBuild):
     factory_tags = ["lto", "pgo", "nondebug"]
 
 
-class RHEL8Build(UnixBuild):
-    # Build Python on RHEL8.
+class RHEL7Build(UnixBuild):
+    # Build Python on RHEL7.
     configureFlags = [
         "--with-pydebug",
         "--with-platlibdir=lib64",
@@ -354,9 +354,9 @@ class RHEL8Build(UnixBuild):
         "--enable-shared",
         "--with-computed-gotos=yes",
         "--with-dbmliborder=gdbm:ndbm:bdb",
-        "--with-system-expat",
-        "--with-system-ffi",
-        "--with-system-libmpdec",
+        # FIXME: enable these flags
+        # "--with-system-expat",
+        # "--with-system-ffi",
         "--enable-loadable-sqlite-extensions",
         "--with-dtrace",
         "--with-lto",
@@ -366,8 +366,11 @@ class RHEL8Build(UnixBuild):
     ]
 
 
-# For now it's just an alias, but maybe later RHEL8 will different flags.
-RHEL7Build = RHEL8Build
+class RHEL8Build(RHEL7Build):
+    # Build Python on RHEL8.
+    # For now, it's the same than RHEL7, but later it may get different
+    # options.
+    pass
 
 
 class FedoraStableBuild(RHEL8Build):
@@ -378,7 +381,8 @@ class FedoraStableBuild(RHEL8Build):
     # https://src.fedoraproject.org/rpms/python3.10/blob/rawhide/f/python3.10.spec
     configureFlags = RHEL8Build.configureFlags + [
         # Options specific to Fedora
-        "--with-system-libmpdec",
+        # FIXME: enable this flag
+        # "--with-system-libmpdec",
         # Don't make a buildbot fail when pip/setuptools is updated in Python,
         # whereas the buildbot uses older versions.
         # "--with-wheel-pkg-dir=/usr/share/python-wheels/",
