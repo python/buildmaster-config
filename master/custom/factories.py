@@ -346,7 +346,7 @@ class LTOPGONonDebugBuild(NonDebugUnixBuild):
 
 
 class RHEL7Build(UnixBuild):
-    # Build Python on RHEL7.
+    # Build Python on 64-bit RHEL7.
     configureFlags = [
         "--with-pydebug",
         "--with-platlibdir=lib64",
@@ -367,14 +367,14 @@ class RHEL7Build(UnixBuild):
 
 
 class RHEL8Build(RHEL7Build):
-    # Build Python on RHEL8.
+    # Build Python on 64-bit RHEL8.
     # For now, it's the same than RHEL7, but later it may get different
     # options.
     pass
 
 
 class FedoraStableBuild(RHEL8Build):
-    # Build Python on Fedora Stable.
+    # Build Python on 64-bit Fedora Stable.
     #
     # Try to be as close as possible to the Fedora specfile used to build
     # the RPM package:
@@ -390,14 +390,14 @@ class FedoraStableBuild(RHEL8Build):
 
 
 class FedoraRawhideBuild(FedoraStableBuild):
-    # Build on Fedora Rawhide.
+    # Build on 64-bit Fedora Rawhide.
     # For now, it's the same than Fedora Stable, but later it may get different
     # options.
     pass
 
 
 class RHEL8NoBuiltinHashesUnixBuildExceptBlake2(RHEL8Build):
-    # Build on RHEL8 using: --with-builtin-hashlib-hashes=blake2
+    # Build on 64-bit RHEL8 using: --with-builtin-hashlib-hashes=blake2
     buildersuffix = ".no-builtin-hashes-except-blake2"
     configureFlags = RHEL8Build.configureFlags + [
         "--with-builtin-hashlib-hashes=blake2"
@@ -406,7 +406,7 @@ class RHEL8NoBuiltinHashesUnixBuildExceptBlake2(RHEL8Build):
 
 
 class RHEL8NoBuiltinHashesUnixBuild(RHEL8Build):
-    # Build on RHEL8 using: --without-builtin-hashlib-hashes
+    # Build on 64-bit RHEL8 using: --without-builtin-hashlib-hashes
     buildersuffix = ".no-builtin-hashes"
     configureFlags = RHEL8Build.configureFlags + [
         "--without-builtin-hashlib-hashes"
