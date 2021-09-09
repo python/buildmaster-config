@@ -255,8 +255,8 @@ class AIXBuild(UnixBuild):
         "--with-pydebug",
         "--with-openssl=/opt/aixtools",
     ]
-    
-    
+
+
 class AIXBuildWithXLC(UnixBuild):
     buildersuffix = ".xlc"
     configureFlags = [
@@ -278,7 +278,7 @@ class PGOUnixBuild(NonDebugUnixBuild):
     buildersuffix = ".pgo"
     configureFlags = ["--enable-optimizations"]
     factory_tags = ["pgo"]
-    
+
     def setup(self, parallel, branch, *args, **kwargs):
         # Only Python >3.10 has --with-readline=edit
         if branch not in {'3.7', '3.8', '3.9'}:
@@ -345,22 +345,73 @@ class LTOPGONonDebugBuild(NonDebugUnixBuild):
     factory_tags = ["lto", "pgo", "nondebug"]
 
 
-class NoBuiltinHashesUnixBuild(UnixBuild):
-    buildersuffix = ".no-builtin-hashes"
+class RHEL7Build(UnixBuild):
+    # Build Python on 64-bit RHEL7.
     configureFlags = [
         "--with-pydebug",
-        "--without-builtin-hashlib-hashes"
+        "--with-platlibdir=lib64",
+        "--enable-ipv6",
+        "--enable-shared",
+        "--with-computed-gotos=yes",
+        "--with-dbmliborder=gdbm:ndbm:bdb",
+        # FIXME: enable these flags
+        # "--with-system-expat",
+        # "--with-system-ffi",
+        "--enable-loadable-sqlite-extensions",
+        "--with-dtrace",
+        "--with-lto",
+        "--with-ssl-default-suites=openssl",
+        "--without-static-libpython",
+        "--with-valgrind",
     ]
-    factory_tags = ["no-builtin-hashes"]
 
 
-class NoBuiltinHashesUnixBuildExceptBlake2(UnixBuild):
+class RHEL8Build(RHEL7Build):
+    # Build Python on 64-bit RHEL8.
+    # For now, it's the same than RHEL7, but later it may get different
+    # options.
+    pass
+
+
+class FedoraStableBuild(RHEL8Build):
+    # Build Python on 64-bit Fedora Stable.
+    #
+    # Try to be as close as possible to the Fedora specfile used to build
+    # the RPM package:
+    # https://src.fedoraproject.org/rpms/python3.10/blob/rawhide/f/python3.10.spec
+    configureFlags = RHEL8Build.configureFlags + [
+        # Options specific to Fedora
+        # FIXME: enable this flag
+        # "--with-system-libmpdec",
+        # Don't make a buildbot fail when pip/setuptools is updated in Python,
+        # whereas the buildbot uses older versions.
+        # "--with-wheel-pkg-dir=/usr/share/python-wheels/",
+    ]
+
+
+class FedoraRawhideBuild(FedoraStableBuild):
+    # Build on 64-bit Fedora Rawhide.
+    # For now, it's the same than Fedora Stable, but later it may get different
+    # options.
+    pass
+
+
+class RHEL8NoBuiltinHashesUnixBuildExceptBlake2(RHEL8Build):
+    # Build on 64-bit RHEL8 using: --with-builtin-hashlib-hashes=blake2
     buildersuffix = ".no-builtin-hashes-except-blake2"
-    configureFlags = [
-        "--with-pydebug",
+    configureFlags = RHEL8Build.configureFlags + [
         "--with-builtin-hashlib-hashes=blake2"
     ]
     factory_tags = ["no-builtin-hashes-except-blake2"]
+
+
+class RHEL8NoBuiltinHashesUnixBuild(RHEL8Build):
+    # Build on 64-bit RHEL8 using: --without-builtin-hashlib-hashes
+    buildersuffix = ".no-builtin-hashes"
+    configureFlags = RHEL8Build.configureFlags + [
+        "--without-builtin-hashlib-hashes"
+    ]
+    factory_tags = ["no-builtin-hashes"]
 
 
 ##############################################################################
