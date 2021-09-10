@@ -358,7 +358,6 @@ class RHEL7Build(UnixBuild):
         # "--with-system-expat",
         # "--with-system-ffi",
         "--enable-loadable-sqlite-extensions",
-        "--with-lto",
         "--with-ssl-default-suites=openssl",
         "--without-static-libpython",
         # Not all workers have dtrace installed
@@ -366,13 +365,15 @@ class RHEL7Build(UnixBuild):
         # Not all workers have Valgrind headers installed
         # "--with-valgrind",
     ]
+    # Don't use --with-lto: building Python with LTO doesn't work
+    # with RHEL7 GCC.
 
 
 class RHEL8Build(RHEL7Build):
     # Build Python on 64-bit RHEL8.
-    # For now, it's the same than RHEL7, but later it may get different
-    # options.
-    pass
+    configureFlags = RHEL7Build.configureFlags + [
+        "--with-lto",
+    ]
 
 
 class FedoraStableBuild(RHEL8Build):
