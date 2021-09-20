@@ -4,7 +4,6 @@ from buildbot.steps.shell import Configure, Compile, ShellCommand
 from .steps import (
     Test,
     Clean,
-    CleanupTest,
     Install,
     LockInstall,
     Uninstall,
@@ -94,13 +93,6 @@ class UnixBuild(TaggedBuildFactory):
             testopts = testopts + " " + parallel
         if "-j" not in testopts:
             testopts = "-j2 " + testopts
-        cleantest = [
-            "make",
-            "cleantest",
-            "TESTOPTS=" + testopts + " ${BUILDBOT_TESTOPTS}",
-            "TESTPYTHONOPTS=" + self.interpreterFlags,
-            "TESTTIMEOUT=" + str(faulthandler_timeout),
-        ]
         test = [
             "make",
             "buildbottest",
@@ -119,9 +111,6 @@ class UnixBuild(TaggedBuildFactory):
                 env=self.test_environ,
             )
         )
-        # FIXME: https://bugs.python.org/issue37359#msg346686
-        # if regrtest_has_cleanup(branch):
-        #    self.addStep(CleanupTest(command=cleantest))
         self.addStep(
             Test(
                 command=test,
@@ -197,14 +186,9 @@ class UnixInstalledBuild(TaggedBuildFactory):
         test = [installed_python] + self.interpreterFlags
         test += ["-m", "test.regrtest"] + testopts
 
-        cleantest = test + ["--cleanup"]
-
         self.addStep(Compile(command=compile))
         self.addStep(Install(command=install))
         self.addStep(LockInstall())
-        # FIXME: https://bugs.python.org/issue37359#msg346686
-        # if regrtest_has_cleanup(branch):
-        #    self.addStep(CleanupTest(command=cleantest))
         self.addStep(
             ShellCommand(
                 name="pythoninfo",
@@ -240,14 +224,6 @@ class UnixAsanDebugBuild(UnixAsanBuild):
 
 class UnixBuildWithoutDocStrings(UnixBuild):
     configureFlags = ["--with-pydebug", "--without-doc-strings"]
-
-
-class AIXBuildWithoutComputedGotos(UnixBuild):
-    configureFlags = [
-        "--with-pydebug",
-        "--with-openssl=/opt/aixtools",
-        "--without-computed-gotos",
-    ]
 
 
 class AIXBuild(UnixBuild):
@@ -477,10 +453,6 @@ class WindowsBuild(TaggedBuildFactory):
             )
         timeout = self.test_timeout if self.test_timeout else TEST_TIMEOUT
         test_command += ["--timeout", timeout - (5 * 60)]
-        # FIXME: https://bugs.python.org/issue37359#msg346686
-        # if regrtest_has_cleanup(branch):
-        #    cleantest = test_command + ["--cleanup"]
-        #    self.addStep(CleanupTest(command=cleantest))
         self.addStep(Test(command=test_command, timeout=timeout))
         if branch not in ("3",) and "-R" not in self.testFlags:
             self.addStep(UploadTestResults(branch))
