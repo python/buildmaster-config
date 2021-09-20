@@ -28,8 +28,6 @@ from custom.factories import (
     Windows64Build,
     Windows64RefleakBuild,
     Windows64ReleaseBuild,
-    WindowsArm32Build,
-    WindowsArm32ReleaseBuild,
 )
 
 STABLE = "stable"
@@ -219,6 +217,4 @@ ONLY_MASTER_BRANCH = (
     "Alpine Linux",
     # Cygwin is not supported on 2.7, 3.6, 3.7
     "Cygwin",
-    # ARM32 Windows support is 3.8+ only
-    "ARM32 Windows",
 )
