@@ -220,11 +220,6 @@ def get_workers(settings):
             parallel_tests=4,
         ),
         cpw(
-            name="monson-win-arm32",
-            tags=['windows', 'win10', 'arm', 'arm32'],
-            branches=['3.x'],
-        ),
-        cpw(
             name="pablogsal-arch-x86_64",
             tags=['linux', 'unix', 'arch', 'amd64', 'x86-64'],
         ),
