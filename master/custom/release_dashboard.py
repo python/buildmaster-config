@@ -3,7 +3,6 @@ import os
 from flask import Flask
 from flask import render_template
 
-from buildbot.process.results import statusToString
 from buildbot.data.resultspec import Filter
 
 FAILED_BUILD_STATUS = 2
