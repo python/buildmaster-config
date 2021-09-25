@@ -26,6 +26,7 @@ from custom.factories import (
     Windows64Build,
     Windows64RefleakBuild,
     Windows64ReleaseBuild,
+    MacOSWithBrewBuild,
 )
 
 STABLE = "stable"
@@ -119,7 +120,7 @@ def get_builders(settings):
         ("aarch64 RHEL8", "cstratak-RHEL8-aarch64", RHEL8Build, STABLE),
         # macOS
         ("x86-64 macOS", "billenstein-macos", UnixBuild, STABLE),
-        ("ARM64 macOS", "pablogsal-macos-m1", UnixBuild, STABLE),
+        ("ARM64 macOS", "pablogsal-macos-m1", MacOSWithBrewBuild, STABLE),
         # Other Unix
         ("AMD64 FreeBSD Non-Debug", "koobs-freebsd-9e36", SlowNonDebugUnixBuild, STABLE),
         ("AMD64 FreeBSD Shared", "koobs-freebsd-564d", SlowSharedUnixBuild, STABLE),
