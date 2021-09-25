@@ -397,12 +397,12 @@ class RHEL8NoBuiltinHashesUnixBuild(RHEL8Build):
 ############################  MACOS BUILDS  ##################################
 ##############################################################################
 
-class MacOSWithBrewBuild(RHEL8Build):
+class MacOSWithBrewBuild(UnixBuild):
     buildersuffix = ".macos-with-brew"
     configureFlags = UnixBuild.configureFlags + [
-        "--with-openssl=$(brew --prefix openssl)",
-        "CFLAGS=-I$(brew --prefix)/include",
-	"LDFLAGS=-L$(brew --prefix)/lib",
+        "--with-openssl=/opt/homebrew/opt/openssl@3",
+        "CPPFLAGS=-I/opt/homebrew/include",
+        "LDFLAGS=-L/opt/homebrew/lib",
     ]
 
 ##############################################################################
