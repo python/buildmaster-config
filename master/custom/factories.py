@@ -397,13 +397,15 @@ class RHEL8NoBuiltinHashesUnixBuild(RHEL8Build):
 ############################  MACOS BUILDS  ##################################
 ##############################################################################
 
-class MacOSWithBrewBuild(UnixBuild):
+class MacOSArmWithBrewBuild(UnixBuild):
     buildersuffix = ".macos-with-brew"
     configureFlags = UnixBuild.configureFlags + [
         "--with-openssl=/opt/homebrew/opt/openssl@3",
         "CPPFLAGS=-I/opt/homebrew/include",
         "LDFLAGS=-L/opt/homebrew/lib",
     ]
+    # These tests are known to crash on M1 macs (see bpo-45289).
+    testFlags = UnixBuild.testFlags + " -x test_dbm test_dbm_ndbm"
 
 ##############################################################################
 ############################  WINDOWS BUILDS  ################################
