@@ -224,6 +224,10 @@ def get_workers(settings):
             tags=['linux', 'unix', 'arch', 'amd64', 'x86-64'],
         ),
         cpw(
+            name="pablogsal-macos-m1",
+            tags=['macOS', 'unix', 'arm', 'arm64'],
+        ),
+        cpw(
             name="skumaran-ubuntu-x86_64",
             tags=['linux', 'unix', 'ubuntu', 'amd64', 'x86-64'],
         ),
