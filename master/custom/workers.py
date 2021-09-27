@@ -222,6 +222,7 @@ def get_workers(settings):
         cpw(
             name="pablogsal-arch-x86_64",
             tags=['linux', 'unix', 'arch', 'amd64', 'x86-64'],
+            branches=['3.9', '3.10', '3.x'],
         ),
         cpw(
             name="pablogsal-macos-m1",
