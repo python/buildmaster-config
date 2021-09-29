@@ -63,4 +63,8 @@ The list of workers is stored in `/etc/buildbot/settings.yaml` on the server.
 A worker password should be made of 14 characters (a-z, A-Z, 0-9 and special
 characters), for example using KeePassX.
 
+* Generate a password
+* Add the password in `/etc/buildbot/settings.yaml`
+* Restart the buildbot server: `make restart-master`
+
 Documentation: http://docs.buildbot.net/current/manual/configuration/workers.html#defining-workers
