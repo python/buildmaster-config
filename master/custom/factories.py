@@ -509,3 +509,17 @@ class Windows64ReleaseBuild(Windows64Build):
     testFlags = Windows64Build.testFlags + ["+d"]
     # keep default cleanFlags, both configurations get cleaned
     factory_tags = ["win64", "nondebug"]
+
+
+class WindowsARM64Build(WindowsBuild):
+    buildFlags = ["-p", "ARM64"]
+    testFlags = ["-p", "ARM64", "-j2"]
+    cleanFlags = ["-p", "ARM64"]
+    factory_tags = ["win-arm64"]
+
+class WindowsARM64ReleaseBuild(WindowsARM64Build):
+    buildersuffix = ".nondebug"
+    buildFlags = WindowsARM64Build.buildFlags + ["-c", "Release"]
+    testFlags = WindowsARM64Build.testFlags + ["+d"]
+    # keep default cleanFlags, both configurations get cleaned
+    factory_tags = ["win-arm64", "nondebug"]
