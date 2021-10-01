@@ -188,6 +188,7 @@ def get_builders(settings):
         ("AMD64 Cygwin64 on Windows 10", "bray-win10-cygwin-amd64", UnixBuild, UNSTABLE),
         ("PPC64 AIX", "edelsohn-aix-ppc64", AIXBuild, UNSTABLE),
         ("PPC64 AIX XLC", "edelsohn-aix-ppc64", AIXBuildWithXLC, UNSTABLE),
+        ("SPARCv9 Oracle Solaris 11.4", "kulikjak-solaris-sparcv9", UnixBuild, UNSTABLE),
 
         # Windows/arm64
         ("ARM64 Windows", "linaro-win-arm64", WindowsARM64Build, STABLE),
