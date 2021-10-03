@@ -200,6 +200,11 @@ def get_workers(settings):
             branches=['3.8', '3.9', '3.10', '3.x'],
         ),
         cpw(
+            name="kloth-win11",
+            tags=['windows', 'win11', 'amd64', 'x86-64'],
+            parallel_tests=40,
+        ),
+        cpw(
             name="kloth-win64",
             tags=['windows', 'win10', 'amd64', 'x86-64'],
             parallel_tests=8,
