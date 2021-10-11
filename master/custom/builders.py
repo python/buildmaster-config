@@ -190,8 +190,8 @@ def get_builders(settings):
         ("PPC64 AIX XLC", "edelsohn-aix-ppc64", AIXBuildWithXLC, UNSTABLE),
 
         # Windows/arm64
-        ("ARM64 Windows", "linaro-win-arm64", WindowsARM64Build, UNSTABLE),
-        ("ARM64 Windows Non-Debug", "linaro-win-arm64", WindowsARM64ReleaseBuild, UNSTABLE),
+        ("ARM64 Windows", "linaro-win-arm64", WindowsARM64Build, STABLE),
+        ("ARM64 Windows Non-Debug", "linaro-win-arm64", WindowsARM64ReleaseBuild, STABLE),
     ]
 
 
