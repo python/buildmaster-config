@@ -225,6 +225,12 @@ def get_workers(settings):
             parallel_tests=4,
         ),
         cpw(
+            name="kulikjak-solaris-sparcv9",
+            tags=['solaris', 'unix', 'sparc', 'sparcv9'],
+            branches=['3.9', '3.10', '3.x'],
+            parallel_tests=4,
+        ),
+        cpw(
             name="pablogsal-arch-x86_64",
             tags=['linux', 'unix', 'arch', 'amd64', 'x86-64'],
             branches=['3.9', '3.10', '3.x'],
