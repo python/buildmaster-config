@@ -403,7 +403,7 @@ class MacOSArmWithBrewBuild(UnixBuild):
         "LDFLAGS=-L/opt/homebrew/lib",
     ]
     # These tests are known to crash on M1 macs (see bpo-45289).
-    testFlags = UnixBuild.testFlags + " -x test_dbm test_dbm_ndbm"
+    testFlags = UnixBuild.testFlags + " -x test_dbm test_dbm_ndbm test_shell"
 
 ##############################################################################
 ############################  WINDOWS BUILDS  ################################
