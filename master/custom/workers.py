@@ -194,12 +194,6 @@ def get_workers(settings):
             parallel_tests=6,
         ),
         cpw(
-            name="isidentical-centos-power8",
-            tags=['linux', 'unix', 'centos', 'power8'],
-            parallel_tests=4,
-            branches=['3.8', '3.9', '3.10', '3.x'],
-        ),
-        cpw(
             name="kloth-win11",
             tags=['windows', 'win11', 'amd64', 'x86-64'],
             parallel_tests=40,
