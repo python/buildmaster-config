@@ -59,7 +59,7 @@ def get_builders(settings):
     return [
         # -- Stable builders --
         # Linux
-        ("AMD64 Debian root", "angelico-debian-amd64", UnixBuild, UNSTABLE),
+        ("AMD64 Debian root", "angelico-debian-amd64", UnixBuild, STABLE),
         ("AMD64 Debian PGO", "gps-debian-profile-opt", PGOUnixBuild, STABLE),
         ("AMD64 Ubuntu Shared", "bolen-ubuntu", SharedUnixBuild, STABLE),
         ("PPC64 Fedora", "edelsohn-fedora-ppc64", FedoraStableBuild, STABLE),
