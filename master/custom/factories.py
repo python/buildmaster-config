@@ -1,3 +1,4 @@
+import os.path
 from buildbot.process import factory
 from buildbot.steps.shell import Configure, Compile, ShellCommand
 
@@ -71,13 +72,31 @@ class UnixBuild(TaggedBuildFactory):
     makeTarget = "all"
     test_timeout = None
     test_environ = {}
+    build_out_of_tree = False
 
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
-        self.addStep(
-            Configure(
-                command=["./configure", "--prefix", "$(PWD)/target"]
-                + self.configureFlags
+        out_of_tree_dir = "build_oot"
+
+        if self.build_out_of_tree:
+            self.addStep(
+                ShellCommand(
+                    name="mkdir out-of-tree directory",
+                    description="Create out-of-tree directory",
+                    command=["mkdir", "-p", out_of_tree_dir],
+                    warnOnFailure=True,
+                )
             )
+
+        if self.build_out_of_tree:
+            configure_cmd = "../configure"
+            oot_kwargs = {'workdir': out_of_tree_dir}
+        else:
+            configure_cmd = "./configure"
+            oot_kwargs = {}
+        configure_cmd = [configure_cmd, "--prefix", "$(PWD)/target"]
+        configure_cmd += self.configureFlags
+        self.addStep(
+            Configure(command=configure_cmd, **oot_kwargs)
         )
         compile = ["make", self.makeTarget]
         testopts = self.testFlags
@@ -100,7 +119,9 @@ class UnixBuild(TaggedBuildFactory):
             "TESTTIMEOUT=" + str(faulthandler_timeout),
         ]
 
-        self.addStep(Compile(command=compile, env=self.compile_environ))
+        self.addStep(Compile(command=compile,
+                             env=self.compile_environ,
+                             **oot_kwargs))
         self.addStep(
             ShellCommand(
                 name="pythoninfo",
@@ -108,6 +129,7 @@ class UnixBuild(TaggedBuildFactory):
                 command=["make", "pythoninfo"],
                 warnOnFailure=True,
                 env=self.test_environ,
+                **oot_kwargs
             )
         )
         self.addStep(
@@ -116,11 +138,15 @@ class UnixBuild(TaggedBuildFactory):
                 timeout=self.test_timeout,
                 usePTY=test_with_PTY,
                 env=self.test_environ,
+                **oot_kwargs
             )
         )
         if branch not in ("3",) and "-R" not in self.testFlags:
-            self.addStep(UploadTestResults(branch))
-        self.addStep(Clean())
+            filename = "test-results.xml"
+            if self.build_out_of_tree:
+                filename = os.path.join(out_of_tree_dir, filename)
+            self.addStep(UploadTestResults(branch, filename=filename))
+        self.addStep(Clean(**oot_kwargs))
 
 
 class UnixTraceRefsBuild(UnixBuild):
@@ -370,7 +396,15 @@ class FedoraRawhideBuild(FedoraStableBuild):
     # Build on 64-bit Fedora Rawhide.
     # For now, it's the same than Fedora Stable, but later it may get different
     # options.
-    pass
+
+    # Building Python out of tree: similar to what the specfile does, but
+    # buildbot uses a single subdirectory, and the specfile uses two
+    # sub-directories.
+    #
+    # On Fedora specfile, the following directories are used:
+    # /builddir/build/BUILD/Python-3.10: source code
+    # /builddir/build/BUILD/Python-3.10/build/optimized: configure, make, tests
+    build_out_of_tree = True
 
 
 class RHEL8NoBuiltinHashesUnixBuildExceptBlake2(RHEL8Build):

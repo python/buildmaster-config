@@ -134,10 +134,10 @@ class UploadTestResults(steps.FileUpload):
     def _has_the_build_failed(self, build):
         return self.getProperty("test_failed_to_build")
 
-    def __init__(self, branch):
+    def __init__(self, branch, filename="test-results.xml"):
         super().__init__(
             doStepIf=self._has_the_build_failed,
-            workersrc="test-results.xml",
+            workersrc=filename,
             masterdest=util.Interpolate(
                 f"/data/www/buildbot/test-results/{branch}/%(prop:buildername)s/build_%(prop:buildnumber)s.xml"
             ),
