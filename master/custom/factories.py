@@ -89,7 +89,7 @@ class UnixBuild(TaggedBuildFactory):
 
         if self.build_out_of_tree:
             configure_cmd = "../configure"
-            oot_kwargs = {'workdir': out_of_tree_dir}
+            oot_kwargs = {'workdir': os.path.join("build", out_of_tree_dir)}
         else:
             configure_cmd = "./configure"
             oot_kwargs = {}
