@@ -368,6 +368,15 @@ class RHEL7Build(UnixBuild):
     # Don't use --with-lto: building Python with LTO doesn't work
     # with RHEL7 GCC.
 
+    # Building Python out of tree: similar to what the specfile does, but
+    # buildbot uses a single subdirectory, and the specfile uses two
+    # sub-directories.
+    #
+    # On Fedora/RHEL specfile, the following directories are used:
+    # /builddir/build/BUILD/Python-3.10: source code
+    # /builddir/build/BUILD/Python-3.10/build/optimized: configure, make, tests
+    build_out_of_tree = True
+
 
 class RHEL8Build(RHEL7Build):
     # Build Python on 64-bit RHEL8.
@@ -396,15 +405,7 @@ class FedoraRawhideBuild(FedoraStableBuild):
     # Build on 64-bit Fedora Rawhide.
     # For now, it's the same than Fedora Stable, but later it may get different
     # options.
-
-    # Building Python out of tree: similar to what the specfile does, but
-    # buildbot uses a single subdirectory, and the specfile uses two
-    # sub-directories.
-    #
-    # On Fedora specfile, the following directories are used:
-    # /builddir/build/BUILD/Python-3.10: source code
-    # /builddir/build/BUILD/Python-3.10/build/optimized: configure, make, tests
-    build_out_of_tree = True
+    pass
 
 
 class RHEL8NoBuiltinHashesUnixBuildExceptBlake2(RHEL8Build):
