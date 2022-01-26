@@ -292,6 +292,7 @@ class ClangUnixBuild(UnixBuild):
     configureFlags = [
         "CC=clang",
         "LD=clang",
+        "--with-pydebug",
     ]
     factory_tags = ["clang"]
 
