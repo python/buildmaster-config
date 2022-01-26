@@ -100,6 +100,21 @@ def get_workers(settings):
             parallel_tests=10,
         ),
         cpw(
+            name="cstratak-RHEL8-fips-x86_64",
+            tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
+            parallel_tests=6,
+        ),
+        cpw(
+            name="cstratak-c9s-x86_64",
+            tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
+            parallel_tests=6,
+        ),
+        cpw(
+            name="cstratak-c9s-fips-x86_64",
+            tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
+            parallel_tests=6,
+        ),
+        cpw(
             name="cstratak-fedora-rawhide-ppc64le",
             tags=['linux', 'unix', 'fedora', 'ppc64le'],
             parallel_tests=10,
@@ -120,6 +135,11 @@ def get_workers(settings):
             parallel_tests=10,
         ),
         cpw(
+            name="cstratak-c9s-ppc64le",
+            tags=['linux', 'unix', 'rhel', 'ppc64le'],
+            parallel_tests=10,
+        ),
+        cpw(
             name="cstratak-fedora-rawhide-aarch64",
             tags=['linux', 'unix', 'fedora', 'arm', 'arm64', 'aarch64'],
             parallel_tests=40,
@@ -135,9 +155,9 @@ def get_workers(settings):
             parallel_tests=40,
         ),
         cpw(
-            name="cstratak-RHEL8-fips-x86_64",
-            tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
-            parallel_tests=6,
+            name="cstratak-c9s-aarch64",
+            tags=['linux', 'unix', 'rhel', 'arm', 'arm64', 'aarch64'],
+            parallel_tests=40,
         ),
         cpw(
             name="edelsohn-aix-ppc64",
