@@ -2,7 +2,7 @@ from custom.factories import (
     UnixBuild,
     RHEL7Build,
     RHEL8Build,
-    RHEL9Build,
+    CentOS9Build,
     FedoraStableBuild,
     FedoraRawhideBuild,
     UnixAsanBuild,
@@ -23,8 +23,8 @@ from custom.factories import (
     LTOPGONonDebugBuild,
     RHEL8NoBuiltinHashesUnixBuild,
     RHEL8NoBuiltinHashesUnixBuildExceptBlake2,
-    RHEL9NoBuiltinHashesUnixBuild,
-    RHEL9NoBuiltinHashesUnixBuildExceptBlake2,
+    CentOS9NoBuiltinHashesUnixBuild,
+    CentOS9NoBuiltinHashesUnixBuildExceptBlake2,
     SlowWindowsBuild,
     Windows64Build,
     Windows64RefleakBuild,
@@ -99,11 +99,11 @@ def get_builders(settings):
         ("AMD64 RHEL8 LTO", "cstratak-RHEL8-x86_64", LTONonDebugUnixBuild, STABLE),
         ("AMD64 RHEL8 LTO + PGO", "cstratak-RHEL8-x86_64", LTOPGONonDebugBuild, STABLE),
         ("AMD64 RHEL8 FIPS Only Blake2 Builtin Hash", "cstratak-RHEL8-fips-x86_64", RHEL8NoBuiltinHashesUnixBuildExceptBlake2, STABLE),
-        ("AMD64 C9S", "cstratak-c9s-x86_64", RHEL9Build, STABLE),
-        ("AMD64 C9S Refleaks", "cstratak-c9s-x86_64", UnixRefleakBuild, STABLE),
-        ("AMD64 C9S LTO", "cstratak-c9s-x86_64", LTONonDebugUnixBuild, STABLE),
-        ("AMD64 C9S LTO + PGO", "cstratak-c9s-x86_64", LTOPGONonDebugBuild, STABLE),
-        ("AMD64 C9S FIPS Only Blake2 Builtin Hash", "cstratak-c9s-fips-x86_64", RHEL9NoBuiltinHashesUnixBuildExceptBlake2, STABLE),
+        ("AMD64 CentOS9", "cstratak-CentOS9-x86_64", CentOS9Build, STABLE),
+        ("AMD64 CentOS9 Refleaks", "cstratak-CentOS9-x86_64", UnixRefleakBuild, STABLE),
+        ("AMD64 CentOS9 LTO", "cstratak-CentOS9-x86_64", LTONonDebugUnixBuild, STABLE),
+        ("AMD64 CentOS9 LTO + PGO", "cstratak-CentOS9-x86_64", LTOPGONonDebugBuild, STABLE),
+        ("AMD64 CentOS9 FIPS Only Blake2 Builtin Hash", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuildExceptBlake2, STABLE),
         ("AMD64 Arch Linux Asan", "pablogsal-arch-x86_64", UnixAsanBuild, STABLE),
         ("AMD64 Arch Linux Usan", "pablogsal-arch-x86_64", ClangUbsanLinuxBuild, STABLE),
         ("AMD64 Arch Linux Asan Debug", "pablogsal-arch-x86_64", UnixAsanDebugBuild, STABLE),
@@ -126,10 +126,10 @@ def get_builders(settings):
         ("PPC64LE RHEL8 LTO", "cstratak-RHEL8-ppc64le", LTONonDebugUnixBuild, STABLE),
         ("PPC64LE RHEL8 LTO + PGO", "cstratak-RHEL8-ppc64le", LTOPGONonDebugBuild, STABLE),
 
-        ("PPC64LE C9S", "cstratak-c9s-ppc64le", RHEL9Build, STABLE),
-        ("PPC64LE C9S Refleaks", "cstratak-c9s-ppc64le", UnixRefleakBuild, STABLE),
-        ("PPC64LE C9S LTO", "cstratak-c9s-ppc64le", LTONonDebugUnixBuild, STABLE),
-        ("PPC64LE C9S LTO + PGO", "cstratak-c9s-ppc64le", LTOPGONonDebugBuild, STABLE),
+        ("PPC64LE CentOS9", "cstratak-CentOS9-ppc64le", CentOS9Build, STABLE),
+        ("PPC64LE CentOS9 Refleaks", "cstratak-CentOS9-ppc64le", UnixRefleakBuild, STABLE),
+        ("PPC64LE CentOS9 LTO", "cstratak-CentOS9-ppc64le", LTONonDebugUnixBuild, STABLE),
+        ("PPC64LE CentOS9 LTO + PGO", "cstratak-CentOS9-ppc64le", LTOPGONonDebugBuild, STABLE),
         # Linux aarch64
         ("aarch64 Fedora Stable", "cstratak-fedora-stable-aarch64", FedoraStableBuild, STABLE),
         ("aarch64 Fedora Stable Refleaks", "cstratak-fedora-stable-aarch64", UnixRefleakBuild, STABLE),
@@ -171,7 +171,7 @@ def get_builders(settings):
         ("AMD64 Ubuntu", "skumaran-ubuntu-x86_64", UnixBuild, UNSTABLE),
         ("AMD64 Arch Linux VintageParser", "pablogsal-arch-x86_64", UnixVintageParserBuild, UNSTABLE),
         ("AMD64 RHEL8 FIPS No Builtin Hashes", "cstratak-RHEL8-fips-x86_64", RHEL8NoBuiltinHashesUnixBuild, UNSTABLE),
-        ("AMD64 C9S FIPS No Builtin Hashes", "cstratak-c9s-fips-x86_64", RHEL9NoBuiltinHashesUnixBuild, UNSTABLE),
+        ("AMD64 CentOS9 FIPS No Builtin Hashes", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuild, UNSTABLE),
         # Linux PPC64le
         ("PPC64LE Fedora Rawhide", "cstratak-fedora-rawhide-ppc64le", FedoraRawhideBuild, UNSTABLE),
         ("PPC64LE Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-ppc64le", UnixRefleakBuild, UNSTABLE),
@@ -189,9 +189,9 @@ def get_builders(settings):
         ("aarch64 Fedora Rawhide LTO", "cstratak-fedora-rawhide-aarch64", LTONonDebugUnixBuild, UNSTABLE),
         ("aarch64 Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-aarch64", LTOPGONonDebugBuild, UNSTABLE),
 
-        ("aarch64 C9S Refleaks", "cstratak-c9s-aarch64", UnixRefleakBuild, UNSTABLE),
-        ("aarch64 C9S LTO", "cstratak-c9s-aarch64", LTONonDebugUnixBuild, UNSTABLE),
-        ("aarch64 C9S LTO + PGO", "cstratak-c9s-aarch64", LTOPGONonDebugBuild, UNSTABLE),
+        ("aarch64 CentOS9 Refleaks", "cstratak-CentOS9-aarch64", UnixRefleakBuild, UNSTABLE),
+        ("aarch64 CentOS9 LTO", "cstratak-CentOS9-aarch64", LTONonDebugUnixBuild, UNSTABLE),
+        ("aarch64 CentOS9 LTO + PGO", "cstratak-CentOS9-aarch64", LTOPGONonDebugBuild, UNSTABLE),
 
         # Linux other archs
         ("s390x Fedora Rawhide", "edelsohn-fedora-rawhide-z", UnixBuild, UNSTABLE),
@@ -221,13 +221,13 @@ DAILYBUILDERS = [
     "AMD64 Fedora Stable Refleaks",
     "AMD64 RHEL7 Refleaks",
     "AMD64 RHEL8 Refleaks",
-    "AMD64 C9S Refleaks",
+    "AMD64 CentOS9 Refleaks",
     # Linux PPC64LE
     "PPC64LE Fedora Rawhide Refleaks",
     "PPC64LE Fedora Stable Refleaks",
     "PPC64LE RHEL7 Refleaks",
     "PPC64LE RHEL8 Refleaks",
-    "PPC64LE C9S Refleaks",
+    "PPC64LE CentOS9 Refleaks",
     # Linux s390x
     "s390x Fedora Rawhide Refleaks",
     "s390x Fedora Refleaks",
@@ -237,7 +237,7 @@ DAILYBUILDERS = [
     "aarch64 Fedora Rawhide Refleaks",
     "aarch64 Fedora Stable Refleaks",
     "aarch64 RHEL8 Refleaks",
-    "aarch64 C9S Refleaks",
+    "aarch64 CentOS9 Refleaks",
 ]
 
 # Match builder name (excluding the branch name) of builders that should only
