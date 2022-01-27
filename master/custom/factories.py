@@ -292,6 +292,7 @@ class ClangUnixBuild(UnixBuild):
     configureFlags = [
         "CC=clang",
         "LD=clang",
+        "--with-pydebug",
     ]
     factory_tags = ["clang"]
 
@@ -384,6 +385,11 @@ class RHEL8Build(RHEL7Build):
         "--with-lto",
     ]
 
+class RHEL9Build(RHEL8Build):
+    # Build on 64-bit CentOS Stream 9.
+    # For now, it's the same as RHEL8, but later it may get different
+    # options.
+    pass
 
 class FedoraStableBuild(RHEL8Build):
     # Build Python on 64-bit Fedora Stable.
@@ -421,6 +427,24 @@ class RHEL8NoBuiltinHashesUnixBuild(RHEL8Build):
     # Build on 64-bit RHEL8 using: --without-builtin-hashlib-hashes
     buildersuffix = ".no-builtin-hashes"
     configureFlags = RHEL8Build.configureFlags + [
+        "--without-builtin-hashlib-hashes"
+    ]
+    factory_tags = ["no-builtin-hashes"]
+
+
+class RHEL9NoBuiltinHashesUnixBuildExceptBlake2(RHEL9Build):
+    # Build on 64-bit CentOS Stream 9 using: --with-builtin-hashlib-hashes=blake2
+    buildersuffix = ".no-builtin-hashes-except-blake2"
+    configureFlags = RHEL9Build.configureFlags + [
+        "--with-builtin-hashlib-hashes=blake2"
+    ]
+    factory_tags = ["no-builtin-hashes-except-blake2"]
+
+
+class RHEL9NoBuiltinHashesUnixBuild(RHEL9Build):
+    # Build on 64-bit CentOS Stream 9 using: --without-builtin-hashlib-hashes
+    buildersuffix = ".no-builtin-hashes"
+    configureFlags = RHEL9Build.configureFlags + [
         "--without-builtin-hashlib-hashes"
     ]
     factory_tags = ["no-builtin-hashes"]
