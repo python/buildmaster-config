@@ -270,7 +270,9 @@ class AIXBuildWithXLC(UnixBuild):
 
 class NonDebugUnixBuild(UnixBuild):
     buildersuffix = ".nondebug"
-    configureFlags = []
+    # Enable assertions regardless. Some children will override this,
+    # that is fine.
+    configureFlags = ["CFLAGS=-UNDEBUG"]
     factory_tags = ["nondebug"]
 
 
@@ -327,6 +329,24 @@ class ClangUnixInstalledBuild(UnixInstalledBuild):
 class SharedUnixBuild(UnixBuild):
     configureFlags = ["--with-pydebug", "--enable-shared"]
     factory_tags = ["shared"]
+
+
+# faulthandler uses a timeout 5 minutes smaller: it should be enough for the
+# slowest test.
+SLOW_TIMEOUT = 40 * 60
+
+
+# These use a longer timeout for very slow buildbots.
+class SlowNonDebugUnixBuild(NonDebugUnixBuild):
+    test_timeout = SLOW_TIMEOUT
+
+
+class SlowSharedUnixBuild(SharedUnixBuild):
+    test_timeout = SLOW_TIMEOUT
+
+
+class SlowUnixInstalledBuild(UnixInstalledBuild):
+    test_timeout = SLOW_TIMEOUT
 
 
 class LTONonDebugUnixBuild(NonDebugUnixBuild):
