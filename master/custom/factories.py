@@ -270,7 +270,9 @@ class AIXBuildWithXLC(UnixBuild):
 
 class NonDebugUnixBuild(UnixBuild):
     buildersuffix = ".nondebug"
-    configureFlags = []
+    # Enable assertions regardless. Some children will override this,
+    # that is fine.
+    configureFlags = ["CFLAGS=-UNDEBUG"]
     factory_tags = ["nondebug"]
 
 
@@ -299,7 +301,6 @@ class ClangUnixBuild(UnixBuild):
 
 class ClangUbsanLinuxBuild(UnixBuild):
     buildersuffix = ".clang-ubsan"
-    configureFlags = ["--without-pymalloc", "--with-address-sanitizer"]
     configureFlags = [
         "CC=clang",
         "LD=clang",
@@ -308,8 +309,6 @@ class ClangUbsanLinuxBuild(UnixBuild):
     ]
     factory_tags = ["clang", "ubsan", "sanitizer"]
 
-    compile_environ = {'ASAN_OPTIONS': 'detect_leaks=0:allocator_may_return_null=1:handle_segv=0'}
-    test_environ = {'ASAN_OPTIONS': 'detect_leaks=0:allocator_may_return_null=1:handle_segv=0'}
     # These tests are currently raising false positives or are interfering with the USAN mechanism,
     # so we need to skip them unfortunately.
     testFlags = "-j1 -x test_faulthandler test_hashlib test_concurrent_futures test_ctypes"
@@ -327,6 +326,24 @@ class ClangUnixInstalledBuild(UnixInstalledBuild):
 class SharedUnixBuild(UnixBuild):
     configureFlags = ["--with-pydebug", "--enable-shared"]
     factory_tags = ["shared"]
+
+
+# faulthandler uses a timeout 5 minutes smaller: it should be enough for the
+# slowest test.
+SLOW_TIMEOUT = 40 * 60
+
+
+# These use a longer timeout for very slow buildbots.
+class SlowNonDebugUnixBuild(NonDebugUnixBuild):
+    test_timeout = SLOW_TIMEOUT
+
+
+class SlowSharedUnixBuild(SharedUnixBuild):
+    test_timeout = SLOW_TIMEOUT
+
+
+class SlowUnixInstalledBuild(UnixInstalledBuild):
+    test_timeout = SLOW_TIMEOUT
 
 
 class LTONonDebugUnixBuild(NonDebugUnixBuild):
