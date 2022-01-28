@@ -272,7 +272,7 @@ class NonDebugUnixBuild(UnixBuild):
     buildersuffix = ".nondebug"
     # Enable assertions regardless. Some children will override this,
     # that is fine.
-    configureFlags = ["-UNDEBUG"]
+    configureFlags = ["CFLAGS=-UNDEBUG"]
     factory_tags = ["nondebug"]
 
 
