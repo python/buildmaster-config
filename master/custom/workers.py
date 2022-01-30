@@ -211,7 +211,7 @@ def get_workers(settings):
             name="gps-raspbian",
             tags=['linux', 'unix', 'raspbian', 'debian', 'armv6', 'armv7l',
                   'aarch32', 'arm'],
-            parallel_tests=6,
+            parallel_tests=3,
         ),
         cpw(
             name="kloth-win11",
