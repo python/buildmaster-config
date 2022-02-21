@@ -57,7 +57,7 @@ class CustomMessageFormatter(reporters.MessageFormatter):
 MESSAGE_FORMATTER = CustomMessageFormatter(
     template=MAIL_TEMPLATE,
     template_type="plain",
-    wantLogs=True,
-    wantProperties=True,
-    wantSteps=True,
+    want_logs=True,
+    want_properties=True,
+    want_steps=True,
 )
