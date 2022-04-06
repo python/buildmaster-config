@@ -198,6 +198,8 @@ def get_builders(settings):
         # Windows/arm64
         ("ARM64 Windows", "linaro-win-arm64", WindowsARM64Build, STABLE),
         ("ARM64 Windows Non-Debug", "linaro-win-arm64", WindowsARM64ReleaseBuild, STABLE),
+        ("ARM64 Windows Azure", "linaro2-win-arm64", WindowsARM64Build, UNSTABLE),
+        ("ARM64 Windows Non-Debug Azure", "linaro2-win-arm64", WindowsARM64ReleaseBuild, UNSTABLE),
     ]
 
 
