@@ -279,5 +279,10 @@ def get_workers(settings):
             tags=['windows', 'arm64'],
             parallel_tests=4,
         ),
+        cpw(
+            name="linaro2-win-arm64",
+            tags=['windows', 'arm64'],
+            parallel_tests=2,
+        ),
 
     ]
