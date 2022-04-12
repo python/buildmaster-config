@@ -29,6 +29,7 @@ from custom.factories import (
     CentOS9NoBuiltinHashesUnixBuild,
     CentOS9NoBuiltinHashesUnixBuildExceptBlake2,
     SlowWindowsBuild,
+    WindowsBuild,
     Windows64Build,
     Windows64RefleakBuild,
     Windows64ReleaseBuild,
@@ -134,9 +135,12 @@ def get_builders(settings):
         ("AMD64 Windows7 SP1", "kloth-win7", Windows64Build, STABLE),
         ("AMD64 Windows10", "bolen-windows10", Windows64Build, STABLE),
         ("AMD64 Windows8.1 Non-Debug", "ware-win81-release", Windows64ReleaseBuild, STABLE),
-        ("AMD64 Windows8.1 Refleaks", "ware-win81-release", Windows64RefleakBuild, STABLE),
+        #("AMD64 Windows8.1 Refleaks", "ware-win81-release", Windows64RefleakBuild, STABLE),
         ("x86 Windows7", "bolen-windows7", SlowWindowsBuild, STABLE),
         # -- Unstable builders --
+        # Temporary load generators for ware-win81-release
+        ("x86 Windows8.1", "ware-win81-release", WindowsBuild, UNSTABLE),
+        ("AMD64 Windows8.1", "ware-win81-release", Windows64Build, UNSTABLE),
         # Linux x86 / AMD64
         ("AMD64 Clang UBSan", "gps-clang-ubsan", ClangUbsanLinuxBuild, UNSTABLE),
         ("AMD64 Alpine Linux", "ware-alpine", UnixBuild, UNSTABLE),
