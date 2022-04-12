@@ -288,6 +288,7 @@ class PGOUnixBuild(NonDebugUnixBuild):
             self.configureFlags = self.configureFlags + ["--with-readline=edit"]
         return super().setup(parallel, branch, *args, **kwargs)
 
+
 class ClangUnixBuild(UnixBuild):
     buildersuffix = ".clang"
     configureFlags = [
@@ -397,11 +398,13 @@ class RHEL8Build(RHEL7Build):
         "--with-lto",
     ]
 
+
 class CentOS9Build(RHEL8Build):
     # Build on 64-bit CentOS Stream 9.
     # For now, it's the same as RHEL8, but later it may get different
     # options.
     pass
+
 
 class FedoraStableBuild(RHEL8Build):
     # Build Python on 64-bit Fedora Stable.
@@ -481,7 +484,7 @@ class MacOSArmWithBrewBuild(UnixBuild):
 ##############################################################################
 
 
-class WindowsBuild(TaggedBuildFactory):
+class BaseWindowsBuild(TaggedBuildFactory):
     build_command = [r"Tools\buildbot\build.bat"]
     remote_deploy_command = [r"Tools\buildbot\remoteDeploy.bat"]
     remote_pythonInfo_command = [r"Tools\buildbot\remotePythoninfo.bat"]
@@ -542,8 +545,12 @@ class WindowsBuild(TaggedBuildFactory):
         self.addStep(Clean(command=clean_command))
 
 
-class WindowsRefleakBuild(WindowsBuild):
-    buildersuffix = ".refleak"
+class WindowsBuild(BaseWindowsBuild):
+    buildersuffix = '.x32'
+
+
+class WindowsRefleakBuild(BaseWindowsBuild):
+    buildersuffix = ".x32.refleak"
     testFlags = ["-j2", "-R", "3:3", "-u-cpu"]
     # -R 3:3 is supposed to only require timeout x 6, but in practice,
     # it's much more slower. Use timeout x 10 to prevent timeout
@@ -557,7 +564,7 @@ class SlowWindowsBuild(WindowsBuild):
     testFlags = ["-j2", "-u-cpu", "-u-largefile"]
 
 
-class Windows64Build(WindowsBuild):
+class Windows64Build(BaseWindowsBuild):
     buildFlags = ["-p", "x64"]
     testFlags = ["-p", "x64", "-j2"]
     cleanFlags = ["-p", "x64"]
@@ -582,11 +589,12 @@ class Windows64ReleaseBuild(Windows64Build):
     factory_tags = ["win64", "nondebug"]
 
 
-class WindowsARM64Build(WindowsBuild):
+class WindowsARM64Build(BaseWindowsBuild):
     buildFlags = ["-p", "ARM64"]
     testFlags = ["-p", "ARM64", "-j2"]
     cleanFlags = ["-p", "ARM64"]
     factory_tags = ["win-arm64"]
+
 
 class WindowsARM64ReleaseBuild(WindowsARM64Build):
     buildersuffix = ".nondebug"
