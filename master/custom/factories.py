@@ -486,19 +486,14 @@ class MacOSArmWithBrewBuild(UnixBuild):
 
 class BaseWindowsBuild(TaggedBuildFactory):
     build_command = [r"Tools\buildbot\build.bat"]
-    remote_deploy_command = [r"Tools\buildbot\remoteDeploy.bat"]
-    remote_pythonInfo_command = [r"Tools\buildbot\remotePythoninfo.bat"]
     test_command = [r"Tools\buildbot\test.bat"]
     clean_command = [r"Tools\buildbot\clean.bat"]
     python_command = [r"python.bat"]
     buildFlags = ["-p", "Win32"]
-    remoteDeployFlags = []
-    remotePythonInfoFlags = []
     testFlags = ["-p", "Win32", "-j2"]
     cleanFlags = []
     test_timeout = None
     factory_tags = ["win32"]
-    remoteTest = False
 
     def setup(self, parallel, branch, **kwargs):
         build_command = self.build_command + self.buildFlags
@@ -509,34 +504,14 @@ class BaseWindowsBuild(TaggedBuildFactory):
         if parallel:
             test_command.append(parallel)
         self.addStep(Compile(command=build_command))
-        if self.remoteTest:
-            # deploy
-            self.addStep(
-                ShellCommand(
-                    name="remotedeploy",
-                    description="remotedeploy",
-                    command=self.remote_deploy_command + self.remoteDeployFlags,
-                    warnOnFailure=True,
-                )
+        self.addStep(
+            ShellCommand(
+                name="pythoninfo",
+                description="pythoninfo",
+                command=self.python_command + ["-m", "test.pythoninfo"],
+                warnOnFailure=True,
             )
-            # pythonInfo
-            self.addStep(
-                ShellCommand(
-                    name="remotepythoninfo",
-                    description="remotepythoninfo",
-                    command=self.remote_pythonInfo_command + self.remotePythonInfoFlags,
-                    warnOnFailure=True,
-                )
-            )
-        else:
-            self.addStep(
-                ShellCommand(
-                    name="pythoninfo",
-                    description="pythoninfo",
-                    command=self.python_command + ["-m", "test.pythoninfo"],
-                    warnOnFailure=True,
-                )
-            )
+        )
         timeout = self.test_timeout if self.test_timeout else TEST_TIMEOUT
         test_command += ["--timeout", timeout - (5 * 60)]
         self.addStep(Test(command=test_command, timeout=timeout))
