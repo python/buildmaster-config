@@ -131,6 +131,8 @@ def get_builders(settings):
         ("AMD64 FreeBSD Shared", "koobs-freebsd-564d", SlowSharedUnixBuild, STABLE),
         # Windows
         ("AMD64 Windows11", "kloth-win11", Windows64Build, UNSTABLE),
+        ("AMD64 Windows11 Non-Debug", "ware-win11", Windows64ReleaseBuild, UNSTABLE),
+        ("AMD64 Windows11 Refleaks", "ware-win11", Windows64RefleakBuild, UNSTABLE),
         ("AMD64 Windows10 Pro", "kloth-win64", Windows64Build, STABLE),
         ("AMD64 Windows7 SP1", "kloth-win7", Windows64Build, STABLE),
         ("AMD64 Windows10", "bolen-windows10", Windows64Build, STABLE),
@@ -138,9 +140,6 @@ def get_builders(settings):
         #("AMD64 Windows8.1 Refleaks", "ware-win81-release", Windows64RefleakBuild, STABLE),
         ("x86 Windows7", "bolen-windows7", SlowWindowsBuild, STABLE),
         # -- Unstable builders --
-        # Temporary load generators for ware-win81-release
-        ("x86 Windows8.1", "ware-win81-release", WindowsBuild, UNSTABLE),
-        ("AMD64 Windows8.1", "ware-win81-release", Windows64Build, UNSTABLE),
         # Linux x86 / AMD64
         ("AMD64 Clang UBSan", "gps-clang-ubsan", ClangUbsanLinuxBuild, UNSTABLE),
         ("AMD64 Alpine Linux", "ware-alpine", UnixBuild, UNSTABLE),
@@ -208,8 +207,7 @@ def get_builders(settings):
 
 
 DAILYBUILDERS = [
-    "x86 Gentoo Refleaks",
-    "AMD64 Windows8.1 Refleaks",
+    "AMD64 Windows11 Refleaks",
     "AMD64 Fedora Rawhide Refleaks",
     "AMD64 Fedora Stable Refleaks",
     "AMD64 RHEL7 Refleaks",

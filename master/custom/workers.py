@@ -275,6 +275,11 @@ def get_workers(settings):
             parallel_tests=4,
         ),
         cpw(
+            name="ware-win11",
+            tags=['windows', 'win11', 'amd64', 'x86-64'],
+            parallel_tests=2,
+        ),
+        cpw(
             name="linaro-win-arm64",
             tags=['windows', 'arm64'],
             parallel_tests=4,
