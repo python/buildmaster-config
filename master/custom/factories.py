@@ -11,7 +11,7 @@ from .steps import (
     UploadTestResults,
 )
 
-main_branch_version = "3.11"
+main_branch_version = "3.12"
 CUSTOM_BRANCH_NAME = "custom"
 
 # This (default) timeout is for each individual test file.
@@ -387,8 +387,8 @@ class RHEL7Build(UnixBuild):
     # sub-directories.
     #
     # On Fedora/RHEL specfile, the following directories are used:
-    # /builddir/build/BUILD/Python-3.10: source code
-    # /builddir/build/BUILD/Python-3.10/build/optimized: configure, make, tests
+    # /builddir/build/BUILD/Python-3.11: source code
+    # /builddir/build/BUILD/Python-3.11/build/optimized: configure, make, tests
     build_out_of_tree = True
 
 
@@ -411,7 +411,7 @@ class FedoraStableBuild(RHEL8Build):
     #
     # Try to be as close as possible to the Fedora specfile used to build
     # the RPM package:
-    # https://src.fedoraproject.org/rpms/python3.10/blob/rawhide/f/python3.10.spec
+    # https://src.fedoraproject.org/rpms/python3.11/blob/rawhide/f/python3.11.spec
     configureFlags = RHEL8Build.configureFlags + [
         # Options specific to Fedora
         # FIXME: enable this flag
