@@ -162,7 +162,7 @@ def get_workers(settings):
         cpw(
             name="edelsohn-aix-ppc64",
             tags=['aix', 'unix', 'ppc64'],
-            branches=['3.8', '3.9', '3.10', '3.x'],
+            branches=['3.8', '3.9', '3.10', '3.11', '3.x'],
             parallel_tests=10,
         ),
         cpw(
@@ -241,18 +241,18 @@ def get_workers(settings):
         cpw(
             name="kulikjak-solaris-sparcv9",
             tags=['solaris', 'unix', 'sparc', 'sparcv9'],
-            branches=['3.9', '3.10', '3.x'],
+            branches=['3.9', '3.10', '3.11', '3.x'],
             parallel_tests=16,
         ),
         cpw(
             name="pablogsal-arch-x86_64",
             tags=['linux', 'unix', 'arch', 'amd64', 'x86-64'],
-            branches=['3.9', '3.10', '3.x'],
+            branches=['3.9', '3.10', '3.11', '3.x'],
         ),
         cpw(
             name="pablogsal-macos-m1",
             tags=['macOS', 'unix', 'arm', 'arm64'],
-            branches=['3.9', '3.10', '3.x'],
+            branches=['3.9', '3.10', '3.11', '3.x'],
             parallel_tests=4,
         ),
         cpw(
