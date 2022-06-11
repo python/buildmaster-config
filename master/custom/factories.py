@@ -593,7 +593,7 @@ class WindowsARM64ReleaseBuild(WindowsARM64Build):
 
 def extract_build_triple(_rc, stdout, _stderr):
     lines = stdout.splitlines()
-    if re.match(r'GNU Make \d+\.\d+\.\d+', lines[0]) is None:
+    if re.match(r'GNU Make \d+\.\d+(\.\d+)?', lines[0]) is None:
         return {}
     triple_line = re.match(r'Built for (.*)', lines[1])
     if len(triple_line.groups()) != 1:
@@ -675,7 +675,7 @@ class UnixCrossBuild(UnixBuild):
         # Now that we have a "build" architecture Python, we can use that
         # to build a "host" (also known as the target we are cross compiling)
         # to 
-        configure_cmd = [self.host_configure_cmd, "--prefix", "$(PWD)/target/host"]
+        configure_cmd = self.host_configure_cmd + ["--prefix", "$(PWD)/target/host"]
         configure_cmd += self.configureFlags + self.extra_configure_flags
         configure_cmd += [util.Interpolate("--build=%(prop:build_triple)s")]
         configure_cmd += [f"--host={self.host}"]
@@ -701,16 +701,12 @@ class UnixCrossBuild(UnixBuild):
         # Timeout for faulthandler
         faulthandler_timeout = self.test_timeout - 5 * 60
 
-        # we need to insert node before calls to python.js
-        runshared = "RUNSHARED=node"
-
         test = [
             "make",
             "buildbottest",
             "TESTOPTS=" + testopts + " ${BUILDBOT_TESTOPTS}",
             "TESTPYTHONOPTS=" + self.interpreterFlags,
             "TESTTIMEOUT=" + str(faulthandler_timeout),
-            runshared,
         ]
 
         if parallel:
@@ -728,7 +724,6 @@ class UnixCrossBuild(UnixBuild):
         pyinfo_command = [
             "make",
             "pythoninfo",
-            runshared,
         ]
         self.addStep(
             ShellCommand(
@@ -759,11 +754,11 @@ class UnixCrossBuild(UnixBuild):
 class WASMNodeBuild(UnixCrossBuild):
     extra_configure_flags = [
         "--with-emscripten-target=node",
-        "--enable-wasm-dynamic-linking=no"
+        "--enable-wasm-dynamic-linking=no",
+        "--enable-wasm-pthreads",
     ]
     compile_environ = {
         "CONFIG_SITE": "../../Tools/wasm/config.site-wasm32-emscripten",
-        "EM_COMPILER_WRAPPER": "ccache",
     }
     host = "wasm32-unknown-emscripten"
     host_configure_cmd = ["emconfigure", "../../configure"]
