@@ -36,6 +36,9 @@ from custom.factories import (
     MacOSArmWithBrewBuild,
     WindowsARM64Build,
     WindowsARM64ReleaseBuild,
+    Wasm32EmscriptenNodeBuild,
+    Wasm32EmscriptenBrowserBuild,
+    Wasm32WASIBuild,
 )
 
 STABLE = "stable"
@@ -49,7 +52,7 @@ NO_TIER = None
 def get_builders(settings):
     # Override with a default simple worker if we are using local workers
     if settings.use_local_worker:
-        return [("Test Builder", "local-worker", UnixBuild, STABLE)]
+        return [("Test Builder", "local-worker", UnixBuild, STABLE, NO_TIER)]
 
     return [
         # -- Stable builders --
@@ -207,6 +210,11 @@ def get_builders(settings):
         ("ARM64 Windows Non-Debug", "linaro-win-arm64", WindowsARM64ReleaseBuild, STABLE, NO_TIER),
         ("ARM64 Windows Azure", "linaro2-win-arm64", WindowsARM64Build, UNSTABLE, NO_TIER),
         ("ARM64 Windows Non-Debug Azure", "linaro2-win-arm64", WindowsARM64ReleaseBuild, UNSTABLE, NO_TIER),
+
+        # WebAssembly
+        ("wasm32-emscripten node (threaded)", "bcannon-wasm", Wasm32EmscriptenNodeBuild, UNSTABLE, NO_TIER),
+        ("wasm32-emscripten browser (dynamic linking)", "bcannon-wasm", Wasm32EmscriptenBrowserBuild, UNSTABLE, NO_TIER),
+        ("wasm32-wasi", "bcannon-wasm", Wasm32WASIBuild, UNSTABLE, NO_TIER),
     ]
 
 

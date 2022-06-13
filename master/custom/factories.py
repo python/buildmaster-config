@@ -9,8 +9,6 @@ from buildbot.steps.shell import (
 
 from buildbot.plugins import util
 
-import re
-
 from .steps import (
     Test,
     Clean,
@@ -592,14 +590,7 @@ class WindowsARM64ReleaseBuild(WindowsARM64Build):
 ##############################################################################
 
 def extract_build_triple(_rc, stdout, _stderr):
-    lines = stdout.splitlines()
-    if re.match(r'GNU Make \d+\.\d+(\.\d+)?', lines[0]) is None:
-        return {}
-    triple_line = re.match(r'Built for (.*)', lines[1])
-    if len(triple_line.groups()) != 1:
-        return {}
-    else:
-        return {'build_triple': triple_line.group(1)}
+    return {'build_triple': stdout.strip()}
 
 
 class UnixCrossBuild(UnixBuild):
@@ -610,7 +601,8 @@ class UnixCrossBuild(UnixBuild):
     extra_configure_flags = []
     host_configure_cmd = ["../../configure"]
     host = None
-    host_make_cmd = "make"
+    host_make_cmd = ["make"]
+    can_execute_python = True
     
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         assert self.host is not None, "Must set self.host on cross builds"
@@ -623,8 +615,8 @@ class UnixCrossBuild(UnixBuild):
         self.addStep(
             SetPropertyFromCommand(
                 name="Gather build triple from worker",
-                description="Get the build triple from make",
-                command=["make", "-v"],
+                description="Get the build triple config.guess",
+                command=["./config.guess"],
                 extract_fn=extract_build_triple,
                 warnOnFailure=True,
             )
@@ -710,9 +702,9 @@ class UnixCrossBuild(UnixBuild):
         ]
 
         if parallel:
-            compile = [self.host_make_cmd, parallel, self.makeTarget]
+            compile = self.host_make_cmd + [parallel, self.makeTarget]
         else:
-            compile = [self.host_make_cmd, self.makeTarget]
+            compile = self.host_make_cmd + [self.makeTarget]
         self.addStep(
             Compile(
                 name="Compile host Python",
@@ -721,55 +713,98 @@ class UnixCrossBuild(UnixBuild):
                 workdir=oot_host_path,
             )
         )
-        pyinfo_command = [
-            "make",
-            "pythoninfo",
-        ]
-        self.addStep(
-            ShellCommand(
-                name="pythoninfo",
-                description="pythoninfo",
-                command=pyinfo_command,
-                warnOnFailure=True,
-                env=self.test_environ,
-                workdir=oot_host_path,
+        if self.can_execute_python:
+            self.addStep(
+                ShellCommand(
+                    name="pythoninfo",
+                    description="pythoninfo",
+                    command=["make", "pythoninfo"],
+                    warnOnFailure=True,
+                    env=self.test_environ,
+                    workdir=oot_host_path,
+                )
             )
-        )
-        self.addStep(
-            Test(
-                command=test,
-                timeout=self.test_timeout,
-                usePTY=test_with_PTY,
-                env=self.test_environ,
-                workdir=oot_host_path,
+            self.addStep(
+                Test(
+                    command=test,
+                    timeout=self.test_timeout,
+                    usePTY=test_with_PTY,
+                    env=self.test_environ,
+                    workdir=oot_host_path,
+                )
             )
-        )
-        if branch not in ("3",) and "-R" not in self.testFlags:
-            filename = os.path.join(oot_host_path, "test-results.xml")
-            self.addStep(UploadTestResults(branch, filename=filename))
+            if branch not in ("3",) and "-R" not in self.testFlags:
+                filename = os.path.join(oot_host_path, "test-results.xml")
+                self.addStep(UploadTestResults(branch, filename=filename))
         self.addStep(Clean(workdir=oot_build_path))
         self.addStep(Clean(workdir=oot_host_path))
 
 
-class WASMNodeBuild(UnixCrossBuild):
-    extra_configure_flags = [
-        "--with-emscripten-target=node",
-        "--enable-wasm-dynamic-linking=no",
-        "--enable-wasm-pthreads",
-    ]
+class Wasm32EmscriptenBuild(UnixCrossBuild):
+    """wasm32-emscripten builder
+
+    * Emscripten SDK >= 3.1.12 must be installed
+    * ccache must be installed
+    * Emscripten PATHs must be pre-pended to PATH
+    * ``which node`` must be equal $EMSDK_NODE
+    """
+    factory_tags = ["wasm", "emscripten"]
+    # can only run one process, os.getpid() is stubbed
+    testFlags = "-j1"
+
     compile_environ = {
         "CONFIG_SITE": "../../Tools/wasm/config.site-wasm32-emscripten",
+        "EM_COMPILER_WRAPPER": "ccache",
     }
+
     host = "wasm32-unknown-emscripten"
     host_configure_cmd = ["emconfigure", "../../configure"]
+    host_make_cmd = ["emmake", "make"]
 
-    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
-        self.addStep(
-            ShellCommand(
-                name="Install Emscripten ports of dependencies",
-                description="Install wasm dependencies",
-                command=["embuilder", "build", "zlib", "bzip2"],
-                warnOnFailure=True,
-            )
-        )
-        super().setup(parallel, branch, test_with_PTY, **kwargs)
+
+class Wasm32EmscriptenNodeBuild(Wasm32EmscriptenBuild):
+    extra_configure_flags = [
+        "--with-emscripten-target=node",
+        "--disable-wasm-dynamic-linking",
+        "--enable-wasm-pthreads",
+    ]
+
+
+class Wasm32EmscriptenBrowserBuild(Wasm32EmscriptenBuild):
+    extra_configure_flags = [
+        "--with-emscripten-target=browser",
+        "--enable-wasm-dynamic-linking",
+        "--disable-wasm-pthreads",
+    ]
+    # browser builds do not accept argv from CLI
+    can_execute_python = False
+
+
+class Wasm32WASIBuild(UnixCrossBuild):
+    """wasm32-wasi builder
+
+    * WASI SDK >= 16 must be installed to default path /opt/wasi-sdk
+    * WASIX must be installed to /opt/wasix
+    * ccache must be installed
+    * wasmtime must be installed and on PATH
+    """
+    factory_tags = ["wasm", "wasi"]
+
+    # can only run one process, os.getpid() is stubbed
+    testFlags = "-j1"
+
+    extra_configure_flags = [
+        "--disable-ipv6",
+    ]
+    wasi_sdk = "/opt/wasi-sdk"
+    wasix = "/opt/wasix"
+    compile_environ = {
+        "CONFIG_SITE": "../../Tools/wasm/config.site-wasm32-wasi",
+        "CC": f"ccache {wasi_sdk}/bin/clang",
+        "LDSHARED": f"{wasi_sdk}/bin/wasm-ld",
+        "AR": f"{wasi_sdk}/bin/llvm-ar",
+        "CFLAGS": f"-isystem {wasix}/include",
+        "LDLAGS": f"-L{wasix}/lib -lwasix",
+    }
+    host = "wasm32-unknown-wasi"
+    host_configure_cmd = ["../../configure"]
