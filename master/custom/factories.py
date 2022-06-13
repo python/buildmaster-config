@@ -749,9 +749,6 @@ class Wasm32EmscriptenBuild(UnixCrossBuild):
     * ``which node`` must be equal $EMSDK_NODE
     """
     factory_tags = ["wasm", "emscripten"]
-    # can only run one process, os.getpid() is stubbed
-    testFlags = "-j1"
-
     compile_environ = {
         "CONFIG_SITE": "../../Tools/wasm/config.site-wasm32-emscripten",
         "EM_COMPILER_WRAPPER": "ccache",
@@ -789,10 +786,6 @@ class Wasm32WASIBuild(UnixCrossBuild):
     * wasmtime must be installed and on PATH
     """
     factory_tags = ["wasm", "wasi"]
-
-    # can only run one process, os.getpid() is stubbed
-    testFlags = "-j1"
-
     extra_configure_flags = [
         "--disable-ipv6",
     ]
