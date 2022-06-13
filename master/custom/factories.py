@@ -616,8 +616,8 @@ class UnixCrossBuild(UnixBuild):
             SetPropertyFromCommand(
                 name="Gather build triple from worker",
                 description="Get the build triple config.guess",
-                command=["./config.guess"],
-                extract_fn=extract_build_triple,
+                command="./config.guess",
+                property="build_triple",
                 warnOnFailure=True,
             )
         )
