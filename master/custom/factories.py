@@ -801,7 +801,7 @@ class Wasm32WASIBuild(UnixCrossBuild):
     factory_tags = ["wasm", "wasi"]
     extra_configure_flags = [
         # debug builds exhaust the limited call stack on WASI
-        "--without-pydebug"
+        "--without-pydebug",
         "--disable-ipv6",
     ]
     wasi_sdk = "/opt/wasi-sdk"
