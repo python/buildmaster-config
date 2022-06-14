@@ -736,8 +736,18 @@ class UnixCrossBuild(UnixBuild):
             if branch not in ("3",) and "-R" not in self.testFlags:
                 filename = os.path.join(oot_host_path, "test-results.xml")
                 self.addStep(UploadTestResults(branch, filename=filename))
-        self.addStep(Clean(workdir=oot_build_path))
-        self.addStep(Clean(workdir=oot_host_path))
+        self.addStep(
+            Clean(
+                name="Clean build Python",
+                workdir=oot_build_path,
+            )
+        )
+        self.addStep(
+            Clean(
+                name="Clean host Python",
+                workdir=oot_host_path,
+            )
+        )
 
 
 class Wasm32EmscriptenBuild(UnixCrossBuild):
@@ -760,6 +770,7 @@ class Wasm32EmscriptenBuild(UnixCrossBuild):
 
 
 class Wasm32EmscriptenNodeBuild(Wasm32EmscriptenBuild):
+    buildersuffix = ".emscripten-node"
     extra_configure_flags = [
         "--with-emscripten-target=node",
         "--disable-wasm-dynamic-linking",
@@ -768,6 +779,7 @@ class Wasm32EmscriptenNodeBuild(Wasm32EmscriptenBuild):
 
 
 class Wasm32EmscriptenBrowserBuild(Wasm32EmscriptenBuild):
+    buildersuffix = ".emscripten-browser"
     extra_configure_flags = [
         "--with-emscripten-target=browser",
         "--enable-wasm-dynamic-linking",
@@ -785,19 +797,42 @@ class Wasm32WASIBuild(UnixCrossBuild):
     * ccache must be installed
     * wasmtime must be installed and on PATH
     """
+    buildersuffix = ".wasi"
     factory_tags = ["wasm", "wasi"]
     extra_configure_flags = [
+        # debug builds exhaust the limited call stack on WASI
+        "--without-pydebug",
         "--disable-ipv6",
     ]
     wasi_sdk = "/opt/wasi-sdk"
+    wasi_sysroot = f"{wasi_sdk}/share/wasi-sysroot"
     wasix = "/opt/wasix"
     compile_environ = {
         "CONFIG_SITE": "../../Tools/wasm/config.site-wasm32-wasi",
+        # use Clang from WASI-SDK
         "CC": f"ccache {wasi_sdk}/bin/clang",
         "LDSHARED": f"{wasi_sdk}/bin/wasm-ld",
         "AR": f"{wasi_sdk}/bin/llvm-ar",
+        # use WASIX library with POSIX stubs
         "CFLAGS": f"-isystem {wasix}/include",
-        "LDLAGS": f"-L{wasix}/lib -lwasix",
+        "LDFLAGS": f"-L{wasix}/lib -lwasix",
+        # WASI-SDK does not have a 'wasm32-unknown-wasi-pkg-config' script
+        # force pkg-config into cross-compiling mode
+        "PKG_CONFIG_PATH": "",
+        "PKG_CONFIG_SYSROOT_DIR": wasi_sysroot,
+        "PKG_CONFIG_LIBDIR": f"{wasi_sysroot}/lib/pkgconfig:{wasi_sysroot}/share/pkgconfig",
     }
     host = "wasm32-unknown-wasi"
-    host_configure_cmd = ["../../configure"]
+
+    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+        self.addStep(
+            ShellCommand(
+                name="Touch srcdir Modules/Setup.local",
+                description="Hack to work around wasmtime mapdir issue",
+                command=["touch", "Modules/Setup.local"],
+                haltOnFailure=True,
+            )
+        )
+        super().setup(
+            parallel, branch, test_with_PTY=test_with_PTY, **kwargs
+        )
