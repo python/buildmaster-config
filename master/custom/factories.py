@@ -736,8 +736,18 @@ class UnixCrossBuild(UnixBuild):
             if branch not in ("3",) and "-R" not in self.testFlags:
                 filename = os.path.join(oot_host_path, "test-results.xml")
                 self.addStep(UploadTestResults(branch, filename=filename))
-        self.addStep(Clean(workdir=oot_build_path))
-        self.addStep(Clean(workdir=oot_host_path))
+        self.addStep(
+            Clean(
+                name="Clean build Python",
+                workdir=oot_build_path,
+            )
+        )
+        self.addStep(
+            Clean(
+                name="Clean host Python",
+                workdir=oot_host_path,
+            )
+        )
 
 
 class Wasm32EmscriptenBuild(UnixCrossBuild):
