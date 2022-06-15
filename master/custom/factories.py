@@ -799,6 +799,7 @@ class Wasm32WASIBuild(UnixCrossBuild):
     extra_configure_flags = [
         # debug builds exhaust the limited call stack on WASI
         "--without-pydebug",
+        # ipv6 is not supported on WASI
         "--disable-ipv6",
     ]
     wasi_sdk = "/opt/wasi-sdk"
