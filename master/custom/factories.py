@@ -589,9 +589,6 @@ class WindowsARM64ReleaseBuild(WindowsARM64Build):
 ##############################  WASM BUILDS  #################################
 ##############################################################################
 
-def extract_build_triple(_rc, stdout, _stderr):
-    return {'build_triple': stdout.strip()}
-
 
 class UnixCrossBuild(UnixBuild):
     configureFlags = [
