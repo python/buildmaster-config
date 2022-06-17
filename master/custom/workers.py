@@ -289,5 +289,10 @@ def get_workers(settings):
             tags=['windows', 'arm64'],
             parallel_tests=2,
         ),
-
+        cpw(
+            name="bcannon-wasm",
+            tags=['wasm', 'emscripten', 'wasi'],
+            branches=['3.11', '3.x'],
+            parallel_tests=4,
+        ),
     ]
