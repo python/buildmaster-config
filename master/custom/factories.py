@@ -766,7 +766,7 @@ class Wasm32EmscriptenBuild(UnixCrossBuild):
 class Wasm32EmscriptenNodeBuild(Wasm32EmscriptenBuild):
     buildersuffix = ".emscripten-node"
     extra_configure_flags = [
-        # don't with --with-pydebug, Emscripten has limited stack
+        # don't run with --with-pydebug, Emscripten has limited stack
         "--without-pydebug",
         "--with-emscripten-target=node",
         "--disable-wasm-dynamic-linking",
