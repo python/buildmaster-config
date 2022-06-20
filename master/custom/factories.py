@@ -777,7 +777,7 @@ class Wasm32EmscriptenNodeBuild(Wasm32EmscriptenBuild):
 class Wasm32EmscriptenBrowserBuild(Wasm32EmscriptenBuild):
     buildersuffix = ".emscripten-browser"
     extra_configure_flags = [
-        # don't with --with-pydebug, Emscripten has limited stack
+        # don't run with --with-pydebug, Emscripten has limited stack
         "--without-pydebug",
         "--with-emscripten-target=browser",
         "--enable-wasm-dynamic-linking",
