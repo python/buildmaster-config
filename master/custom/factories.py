@@ -591,10 +591,6 @@ class WindowsARM64ReleaseBuild(WindowsARM64Build):
 
 
 class UnixCrossBuild(UnixBuild):
-    configureFlags = [
-        "--with-pydebug",
-        "--with-build-python=../build/python"
-    ]
     extra_configure_flags = []
     host_configure_cmd = ["../../configure"]
     host = None
@@ -668,6 +664,7 @@ class UnixCrossBuild(UnixBuild):
         configure_cmd += self.configureFlags + self.extra_configure_flags
         configure_cmd += [util.Interpolate("--build=%(prop:build_triple)s")]
         configure_cmd += [f"--host={self.host}"]
+        configure_cmd += ["--with-build-python=../build/python"]
         self.addStep(
             Configure(
                 name="Configure host Python",
@@ -769,6 +766,8 @@ class Wasm32EmscriptenBuild(UnixCrossBuild):
 class Wasm32EmscriptenNodeBuild(Wasm32EmscriptenBuild):
     buildersuffix = ".emscripten-node"
     extra_configure_flags = [
+        # don't run with --with-pydebug, Emscripten has limited stack
+        "--without-pydebug",
         "--with-emscripten-target=node",
         "--disable-wasm-dynamic-linking",
         "--enable-wasm-pthreads",
@@ -778,6 +777,8 @@ class Wasm32EmscriptenNodeBuild(Wasm32EmscriptenBuild):
 class Wasm32EmscriptenBrowserBuild(Wasm32EmscriptenBuild):
     buildersuffix = ".emscripten-browser"
     extra_configure_flags = [
+        # don't run with --with-pydebug, Emscripten has limited stack
+        "--without-pydebug",
         "--with-emscripten-target=browser",
         "--enable-wasm-dynamic-linking",
         "--disable-wasm-pthreads",

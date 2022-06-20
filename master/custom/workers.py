@@ -293,6 +293,6 @@ def get_workers(settings):
             name="bcannon-wasm",
             tags=['wasm', 'emscripten', 'wasi'],
             branches=['3.11', '3.x'],
-            parallel_tests=4,
+            parallel_tests=2,
         ),
     ]
