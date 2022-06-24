@@ -763,8 +763,10 @@ class Wasm32EmscriptenBuild(UnixCrossBuild):
     host_make_cmd = ["emmake", "make"]
 
 
-class Wasm32EmscriptenNodeBuild(Wasm32EmscriptenBuild):
-    buildersuffix = ".emscripten-node"
+class Wasm32EmscriptenNodePThreadsBuild(Wasm32EmscriptenBuild):
+    """Emscripten with pthreads, testing with NodeJS
+    """
+    buildersuffix = ".emscripten-node-pthreads"
     extra_configure_flags = [
         # don't run with --with-pydebug, Emscripten has limited stack
         "--without-pydebug",
@@ -773,8 +775,21 @@ class Wasm32EmscriptenNodeBuild(Wasm32EmscriptenBuild):
         "--enable-wasm-pthreads",
     ]
 
+class Wasm32EmscriptenNodeDLBuild(Wasm32EmscriptenBuild):
+    """Emscripten with dynamic linking, testing with NodeJS
+    """
+    buildersuffix = ".emscripten-node-dl"
+    extra_configure_flags = [
+        # don't run with --with-pydebug, Emscripten has limited stack
+        "--without-pydebug",
+        "--with-emscripten-target=node",
+        "--enable-wasm-dynamic-linking",
+        "--disable-wasm-pthreads",
+    ]
 
 class Wasm32EmscriptenBrowserBuild(Wasm32EmscriptenBuild):
+    """Emscripten browser builds (no tests)
+    """
     buildersuffix = ".emscripten-browser"
     extra_configure_flags = [
         # don't run with --with-pydebug, Emscripten has limited stack
