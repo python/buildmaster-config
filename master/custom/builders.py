@@ -36,7 +36,8 @@ from custom.factories import (
     MacOSArmWithBrewBuild,
     WindowsARM64Build,
     WindowsARM64ReleaseBuild,
-    Wasm32EmscriptenNodeBuild,
+    Wasm32EmscriptenNodePThreadsBuild,
+    Wasm32EmscriptenNodeDLBuild,
     Wasm32EmscriptenBrowserBuild,
     Wasm32WASIBuild,
 )
@@ -212,8 +213,9 @@ def get_builders(settings):
         ("ARM64 Windows Non-Debug Azure", "linaro2-win-arm64", WindowsARM64ReleaseBuild, UNSTABLE, NO_TIER),
 
         # WebAssembly
-        ("wasm32-emscripten node (threaded)", "bcannon-wasm", Wasm32EmscriptenNodeBuild, UNSTABLE, NO_TIER),
-        ("wasm32-emscripten browser (dynamic linking)", "bcannon-wasm", Wasm32EmscriptenBrowserBuild, UNSTABLE, NO_TIER),
+        ("wasm32-emscripten node (pthreads)", "bcannon-wasm", Wasm32EmscriptenNodePThreadsBuild, UNSTABLE, NO_TIER),
+        ("wasm32-emscripten node (dynamic linking)", "bcannon-wasm", Wasm32EmscriptenNodeDLBuild, UNSTABLE, NO_TIER),
+        ("wasm32-emscripten browser (dynamic linking, no tests)", "bcannon-wasm", Wasm32EmscriptenBrowserBuild, UNSTABLE, NO_TIER),
         ("wasm32-wasi", "bcannon-wasm", Wasm32WASIBuild, UNSTABLE, NO_TIER),
     ]
 
