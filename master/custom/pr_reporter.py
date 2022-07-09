@@ -104,7 +104,8 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
         if not change_comments:
             return
 
-        m = re.search(r"\((?:GH-|#)(\d+)\)", change_comments)
+        # GH-42, gh-42, or #42
+        m = re.search(r"\((?:GH-|#)(\d+)\)", change_comments, flags=re.IGNORECASE)
 
         if m is None:
             return
