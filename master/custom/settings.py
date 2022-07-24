@@ -22,6 +22,7 @@ DEFAULTS = dict(
     verbosity=1,
     git_url="https://github.com/python/cpython",
     use_local_worker=False,
+    discord_webook="https://discordapp.com/api/webhooks/",
 )
 
 
