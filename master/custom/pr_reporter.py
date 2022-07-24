@@ -82,7 +82,7 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
         if state != "failure":
             return
 
-        yield getDetailsForBuild(self.master, build, want_logs=True, want_steps=True)
+        yield getDetailsForBuild(self.master, build, want_logs=True, want_logs_content=True, want_steps=True)
 
         logs, tracebacks = get_logs_and_tracebacks_from_build(build)
 
