@@ -144,8 +144,6 @@ def get_builders(settings):
         ("AMD64 Windows10 Pro", "kloth-win64", Windows64Build, STABLE, NO_TIER),
         ("AMD64 Windows7 SP1", "kloth-win7", Windows64Build, STABLE, NO_TIER),
         ("AMD64 Windows10", "bolen-windows10", Windows64Build, STABLE, NO_TIER),
-        ("AMD64 Windows8.1 Non-Debug", "ware-win81-release", Windows64ReleaseBuild, STABLE, NO_TIER),
-        #("AMD64 Windows8.1 Refleaks", "ware-win81-release", Windows64RefleakBuild, STABLE, NO_TIER),
         ("x86 Windows7", "bolen-windows7", SlowWindowsBuild, STABLE, NO_TIER),
         # -- Unstable builders --
         # Linux x86 / AMD64
