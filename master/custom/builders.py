@@ -213,10 +213,10 @@ def get_builders(settings):
         ("ARM64 Windows Non-Debug Azure", "linaro2-win-arm64", WindowsARM64ReleaseBuild, UNSTABLE, NO_TIER),
 
         # WebAssembly
-        ("wasm32-emscripten node (pthreads)", "bcannon-wasm", Wasm32EmscriptenNodePThreadsBuild, STABLE, NO_TIER),
-        ("wasm32-emscripten node (dynamic linking)", "bcannon-wasm", Wasm32EmscriptenNodeDLBuild, STABLE, NO_TIER),
-        ("wasm32-emscripten browser (dynamic linking, no tests)", "bcannon-wasm", Wasm32EmscriptenBrowserBuild, STABLE, NO_TIER),
-        ("wasm32-wasi", "bcannon-wasm", Wasm32WASIBuild, STABLE, NO_TIER),
+        ("wasm32-emscripten node (pthreads)", "bcannon-wasm", Wasm32EmscriptenNodePThreadsBuild, STABLE, TIER_3),
+        ("wasm32-emscripten node (dynamic linking)", "bcannon-wasm", Wasm32EmscriptenNodeDLBuild, STABLE, TIER_3),
+        ("wasm32-emscripten browser (dynamic linking, no tests)", "bcannon-wasm", Wasm32EmscriptenBrowserBuild, STABLE, TIER_3),
+        ("wasm32-wasi", "bcannon-wasm", Wasm32WASIBuild, STABLE, TIER_3),
     ]
 
 

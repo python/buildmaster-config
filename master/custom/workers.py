@@ -294,5 +294,6 @@ def get_workers(settings):
             tags=['wasm', 'emscripten', 'wasi'],
             branches=['3.11', '3.x'],
             parallel_tests=2,
+            parallel_builders=2,
         ),
     ]
