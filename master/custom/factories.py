@@ -806,37 +806,20 @@ class Wasm32WASIBuild(UnixCrossBuild):
     """wasm32-wasi builder
 
     * WASI SDK >= 16 must be installed to default path /opt/wasi-sdk
-    * WASIX must be installed to /opt/wasix
-    * ccache must be installed
     * wasmtime must be installed and on PATH
+    * Tools/wasm/wasi-env detects presence of WASIX and ccache
     """
     buildersuffix = ".wasi"
     factory_tags = ["wasm", "wasi"]
     extra_configure_flags = [
         # debug builds exhaust the limited call stack on WASI
         "--without-pydebug",
-        # ipv6 is not supported on WASI
-        "--disable-ipv6",
     ]
-    wasi_sdk = "/opt/wasi-sdk"
-    wasi_sysroot = f"{wasi_sdk}/share/wasi-sysroot"
-    wasix = "/opt/wasix"
     compile_environ = {
         "CONFIG_SITE": "../../Tools/wasm/config.site-wasm32-wasi",
-        # use Clang from WASI-SDK
-        "CC": f"ccache {wasi_sdk}/bin/clang",
-        "LDSHARED": f"{wasi_sdk}/bin/wasm-ld",
-        "AR": f"{wasi_sdk}/bin/llvm-ar",
-        # use WASIX library with POSIX stubs
-        "CFLAGS": f"-isystem {wasix}/include",
-        "LDFLAGS": f"-L{wasix}/lib -lwasix",
-        # WASI-SDK does not have a 'wasm32-unknown-wasi-pkg-config' script
-        # force pkg-config into cross-compiling mode
-        "PKG_CONFIG_PATH": "",
-        "PKG_CONFIG_SYSROOT_DIR": wasi_sysroot,
-        "PKG_CONFIG_LIBDIR": f"{wasi_sysroot}/lib/pkgconfig:{wasi_sysroot}/share/pkgconfig",
     }
     host = "wasm32-unknown-wasi"
+    host_configure_cmd = ["../../Tools/wasm/wasi-env", "../../configure"]
 
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         self.addStep(
