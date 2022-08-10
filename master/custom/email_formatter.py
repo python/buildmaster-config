@@ -58,6 +58,7 @@ MESSAGE_FORMATTER = CustomMessageFormatter(
     template=MAIL_TEMPLATE,
     template_type="plain",
     want_logs=True,
+    want_logs_content=True,
     want_properties=True,
     want_steps=True,
 )
