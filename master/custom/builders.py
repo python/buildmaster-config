@@ -176,7 +176,7 @@ def get_builders(settings):
         ("PPC64LE CentOS9 LTO", "cstratak-CentOS9-ppc64le", LTONonDebugUnixBuild, UNSTABLE, NO_TIER),
         ("PPC64LE CentOS9 LTO + PGO", "cstratak-CentOS9-ppc64le", LTOPGONonDebugBuild, UNSTABLE, NO_TIER),
         # Linux aarch32
-        ("ARM Raspbian", "gps-raspbian", SlowNonDebugUnixBuild, UNSTABLE, TIER_3),
+        ("ARM Raspbian", "gps-raspbian", SlowNonDebugUnixBuild, STABLE, TIER_3),
         # Linux aarch64
         ("aarch64 Fedora Rawhide", "cstratak-fedora-rawhide-aarch64", FedoraRawhideBuild, UNSTABLE, NO_TIER),
         ("aarch64 Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-aarch64", UnixRefleakBuild, UNSTABLE, NO_TIER),
