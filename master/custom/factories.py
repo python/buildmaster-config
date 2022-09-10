@@ -312,6 +312,7 @@ class ClangUbsanLinuxBuild(UnixBuild):
         "CC=clang",
         "LD=clang",
         "CFLAGS=-fno-sanitize-recover",
+	"--with-pydebug",
         "--with-undefined-behavior-sanitizer",
     ]
     factory_tags = ["clang", "ubsan", "sanitizer"]
