@@ -162,7 +162,7 @@ def get_workers(settings):
         cpw(
             name="edelsohn-aix-ppc64",
             tags=['aix', 'unix', 'ppc64'],
-            branches=['3.8', '3.9', '3.10', '3.11', '3.x'],
+            branches=['3.9', '3.10', '3.11', '3.x'],
             parallel_tests=10,
         ),
         cpw(
