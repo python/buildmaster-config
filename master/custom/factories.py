@@ -158,7 +158,6 @@ class UnixBuild(TaggedBuildFactory):
 
 class UnixTraceRefsBuild(UnixBuild):
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
-        # Only Python >3.8 has --with-trace-refs
         self.configureFlags = ["--with-pydebug", "--with-trace-refs"]
         return super().setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
 
@@ -289,7 +288,7 @@ class PGOUnixBuild(NonDebugUnixBuild):
 
     def setup(self, parallel, branch, *args, **kwargs):
         # Only Python >3.10 has --with-readline=edit
-        if branch not in {'3.8', '3.9'}:
+        if branch != '3.9':
             # Use libedit instead of libreadline on this buildbot for
             # some libedit Linux compilation coverage.
             self.configureFlags = self.configureFlags + ["--with-readline=edit"]
