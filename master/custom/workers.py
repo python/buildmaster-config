@@ -71,10 +71,6 @@ def get_workers(settings):
             tags=['windows', 'win10', 'amd64', 'x86-64'],
         ),
         cpw(
-            name="bolen-windows7",
-            tags=['windows', 'win7', 'x86'],
-        ),
-        cpw(
             name="bray-win10-cygwin-amd64",
             tags=['windows', 'win10', 'cygwin', 'unix', 'amd64', 'x86-64'],
             branches=['3.x'],
@@ -222,11 +218,6 @@ def get_workers(settings):
             name="kloth-win64",
             tags=['windows', 'win10', 'amd64', 'x86-64'],
             parallel_tests=8,
-        ),
-        cpw(
-            name="kloth-win7",
-            tags=['windows', 'win7', 'amd64', 'x86-64'],
-            parallel_tests=6,
         ),
         cpw(
             name="koobs-freebsd-9e36",
