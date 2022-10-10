@@ -267,7 +267,6 @@ def get_workers(settings):
         cpw(
             name="ware-gentoo-x86",
             tags=['linux', 'unix', 'gentoo', 'x86'],
-            parallel_builders=2,
         ),
         cpw(
             name="ware-win11",
