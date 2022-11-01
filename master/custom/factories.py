@@ -156,6 +156,11 @@ class UnixBuild(TaggedBuildFactory):
         self.addStep(Clean(**oot_kwargs))
 
 
+class UnixPerfBuild(UnixBuild):
+    buildersuffix = ".perfbuild"
+    configureFlags = ["CFLAGS=-fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"]
+
+
 class UnixTraceRefsBuild(UnixBuild):
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         self.configureFlags = ["--with-pydebug", "--with-trace-refs"]

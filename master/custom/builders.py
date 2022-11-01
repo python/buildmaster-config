@@ -1,5 +1,6 @@
 from custom.factories import (
     UnixBuild,
+    UnixPerfBuild,
     RHEL7Build,
     RHEL8Build,
     CentOS9Build,
@@ -99,6 +100,7 @@ def get_builders(settings):
         ("AMD64 Arch Linux Usan", "pablogsal-arch-x86_64", ClangUbsanLinuxBuild, STABLE, NO_TIER),
         ("AMD64 Arch Linux Asan Debug", "pablogsal-arch-x86_64", UnixAsanDebugBuild, STABLE, NO_TIER),
         ("AMD64 Arch Linux TraceRefs", "pablogsal-arch-x86_64", UnixTraceRefsBuild, STABLE, NO_TIER),
+        ("AMD64 Arch Linux Perf", "pablogsal-arch-x86_64", UnixPerfBuild, STABLE, NO_TIER),
         # Linux PPC64le
         ("PPC64LE Fedora Stable", "cstratak-fedora-stable-ppc64le", FedoraStableBuild, STABLE, TIER_2),
         ("PPC64LE Fedora Stable Refleaks", "cstratak-fedora-stable-ppc64le", UnixRefleakBuild, STABLE, NO_TIER),
@@ -247,5 +249,6 @@ ONLY_MASTER_BRANCH = (
     "Alpine Linux",
     # Cygwin is not supported on 2.7, 3.6, 3.7
     "Cygwin",
-    "ARM64 Windows"
+    "ARM64 Windows",
+    "AMD64 Arch Linux Perf",
 )
