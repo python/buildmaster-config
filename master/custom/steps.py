@@ -123,6 +123,11 @@ class Uninstall(ShellCommand):
     command = "chmod -R +w target/ &&  rm -rf target/"
     alwaysRun = True
     usePTY = False
+    # GH-68: For "Install" builbot workers, when "git clone" fails, the
+    # uninstall step fails since the target/ directory doesn't exist. In this
+    # case, only mark the build as WARNING (warnOnFailure), instead of
+    # "FAILURE" (flunkOnFailure).
+    warnOnFailure = True
 
 
 class UploadTestResults(steps.FileUpload):
