@@ -285,6 +285,6 @@ def get_workers(settings):
             name="ambv-bb-win11",
             tags=['windows', 'win11', 'amd64', 'x86-64', 'bigmem'],
             branches=['3.x'],
-            parallel_tests=3,
+            parallel_tests=4,
         ),
     ]
