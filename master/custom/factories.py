@@ -560,7 +560,7 @@ class Windows64Build(BaseWindowsBuild):
 class Windows64BigmemBuild(BaseWindowsBuild):
     buildersuffix = ".bigmem"
     buildFlags = ["-p", "x64"]
-    testFlags = ["-p", "x64", "-M24g", "-u-all"]
+    testFlags = ["-p", "x64", "-M24g", "-uall"]
     test_timeout = TEST_TIMEOUT * 2
     cleanFlags = ["-p", "x64"]
     factory_tags = ["win64", "bigmem"]
