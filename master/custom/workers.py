@@ -284,7 +284,6 @@ def get_workers(settings):
         cpw(
             name="ambv-bb-win11",
             tags=['windows', 'win11', 'amd64', 'x86-64', 'bigmem'],
-            branches=['3.9', '3.10','3.11', '3.x'],
             parallel_tests=8,
         ),
     ]
