@@ -32,6 +32,7 @@ from custom.factories import (
     SlowWindowsBuild,
     WindowsBuild,
     Windows64Build,
+    Windows64BigmemBuild,
     Windows64RefleakBuild,
     Windows64ReleaseBuild,
     MacOSArmWithBrewBuild,
@@ -143,6 +144,7 @@ def get_builders(settings):
         ("AMD64 Windows11", "kloth-win11", Windows64Build, UNSTABLE, NO_TIER),
         ("AMD64 Windows11 Non-Debug", "ware-win11", Windows64ReleaseBuild, UNSTABLE, NO_TIER),
         ("AMD64 Windows11 Refleaks", "ware-win11", Windows64RefleakBuild, UNSTABLE, NO_TIER),
+        ("AMD64 Windows11 Bigmem", "ambv-bb-win11", Windows64BigmemBuild, UNSTABLE, NO_TIER),
         ("AMD64 Windows10 Pro", "kloth-win64", Windows64Build, STABLE, NO_TIER),
         ("AMD64 Windows10", "bolen-windows10", Windows64Build, STABLE, NO_TIER),
         # -- Unstable builders --

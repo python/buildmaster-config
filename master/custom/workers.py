@@ -281,4 +281,9 @@ def get_workers(settings):
             parallel_tests=2,
             parallel_builders=2,
         ),
+        cpw(
+            name="ambv-bb-win11",
+            tags=['windows', 'win11', 'amd64', 'x86-64', 'bigmem'],
+            parallel_tests=8,
+        ),
     ]
