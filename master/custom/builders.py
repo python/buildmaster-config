@@ -209,8 +209,6 @@ def get_builders(settings):
         # Windows/arm64
         ("ARM64 Windows", "linaro-win-arm64", WindowsARM64Build, STABLE, TIER_3),
         ("ARM64 Windows Non-Debug", "linaro-win-arm64", WindowsARM64ReleaseBuild, STABLE, NO_TIER),
-        ("ARM64 Windows Azure", "linaro2-win-arm64", WindowsARM64Build, UNSTABLE, NO_TIER),
-        ("ARM64 Windows Non-Debug Azure", "linaro2-win-arm64", WindowsARM64ReleaseBuild, UNSTABLE, NO_TIER),
 
         # WebAssembly
         ("wasm32-emscripten node (pthreads)", "bcannon-wasm", Wasm32EmscriptenNodePThreadsBuild, STABLE, TIER_3),
