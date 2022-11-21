@@ -270,11 +270,6 @@ def get_workers(settings):
             parallel_tests=4,
         ),
         cpw(
-            name="linaro2-win-arm64",
-            tags=['windows', 'arm64'],
-            parallel_tests=2,
-        ),
-        cpw(
             name="bcannon-wasm",
             tags=['wasm', 'emscripten', 'wasi'],
             branches=['3.11', '3.x'],
