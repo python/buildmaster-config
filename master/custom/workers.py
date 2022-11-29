@@ -71,11 +71,6 @@ def get_workers(settings):
             tags=['windows', 'win10', 'amd64', 'x86-64'],
         ),
         cpw(
-            name="bray-win10-cygwin-amd64",
-            tags=['windows', 'win10', 'cygwin', 'unix', 'amd64', 'x86-64'],
-            branches=['3.x'],
-        ),
-        cpw(
             name="cstratak-fedora-rawhide-x86_64",
             tags=['linux', 'unix', 'fedora', 'amd64', 'x86-64'],
             parallel_tests=10,
