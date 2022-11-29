@@ -201,7 +201,6 @@ def get_builders(settings):
 
         # macOS
         # Other Unix
-        ("AMD64 Cygwin64 on Windows 10", "bray-win10-cygwin-amd64", UnixBuild, UNSTABLE, NO_TIER),
         ("PPC64 AIX", "edelsohn-aix-ppc64", AIXBuild, UNSTABLE, NO_TIER),
         ("PPC64 AIX XLC", "edelsohn-aix-ppc64", AIXBuildWithXLC, UNSTABLE, NO_TIER),
         ("SPARCv9 Oracle Solaris 11.4", "kulikjak-solaris-sparcv9", UnixBuild, UNSTABLE, NO_TIER),
