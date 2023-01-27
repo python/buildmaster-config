@@ -23,6 +23,7 @@ from custom.factories import (
     SlowUnixInstalledBuild,
     LTONonDebugUnixBuild,
     LTOPGONonDebugBuild,
+    ClangLTOPGONonDebugBuild,
     RHEL8NoBuiltinHashesUnixBuild,
     RHEL8NoBuiltinHashesUnixBuildExceptBlake2,
     CentOS9NoBuiltinHashesUnixBuild,
