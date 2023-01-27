@@ -199,6 +199,12 @@ def get_workers(settings):
             tags=['linux', 'unix', 'debian', 'amd64', 'x86-64'],
         ),
         cpw(
+            name="gps-arm64-debian",
+            tags=['linux', 'unix', 'arm64', 'aarch64', 'arm', 'debian'],
+            parallel_tests=7,  # Shortest test time; 4 vCPU host.
+            branches=['3.10', '3.11', '3.x'],
+        ),
+        cpw(
             name="gps-raspbian",
             tags=['linux', 'unix', 'raspbian', 'debian', 'armv6', 'armv7l',
                   'aarch32', 'arm'],

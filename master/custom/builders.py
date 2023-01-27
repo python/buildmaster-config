@@ -23,6 +23,7 @@ from custom.factories import (
     SlowUnixInstalledBuild,
     LTONonDebugUnixBuild,
     LTOPGONonDebugBuild,
+    ClangLTOPGONonDebugBuild,
     RHEL8NoBuiltinHashesUnixBuild,
     RHEL8NoBuiltinHashesUnixBuildExceptBlake2,
     CentOS9NoBuiltinHashesUnixBuild,
@@ -186,6 +187,7 @@ def get_builders(settings):
         ("aarch64 CentOS9 Refleaks", "cstratak-CentOS9-aarch64", UnixRefleakBuild, UNSTABLE, NO_TIER),
         ("aarch64 CentOS9 LTO", "cstratak-CentOS9-aarch64", LTONonDebugUnixBuild, UNSTABLE, NO_TIER),
         ("aarch64 CentOS9 LTO + PGO", "cstratak-CentOS9-aarch64", LTOPGONonDebugBuild, UNSTABLE, NO_TIER),
+        ("aarch64 Debian Clang LTO + PGO", "gps-arm64-debian", ClangLTOPGONonDebugBuild, UNSTABLE, NO_TIER),
 
         # Linux other archs
         ("s390x Fedora Rawhide", "edelsohn-fedora-rawhide-z", UnixBuild, UNSTABLE, NO_TIER),

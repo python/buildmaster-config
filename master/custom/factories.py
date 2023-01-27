@@ -370,6 +370,17 @@ class LTOPGONonDebugBuild(NonDebugUnixBuild):
     factory_tags = ["lto", "pgo", "nondebug"]
 
 
+class ClangLTOPGONonDebugBuild(NonDebugUnixBuild):
+    buildersuffix = ".clang.lto-pgo"
+    configureFlags = [
+        "CC=clang",
+        "LD=clang",
+        "--with-lto",
+        "--enable-optimizations",
+    ]
+    factory_tags = ["lto", "pgo", "nondebug", "clang"]
+
+
 class RHEL7Build(UnixBuild):
     # Build Python on 64-bit RHEL7.
     configureFlags = [
