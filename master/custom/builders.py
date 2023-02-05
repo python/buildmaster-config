@@ -117,6 +117,9 @@ def get_builders(settings):
         ("PPC64LE RHEL8 LTO", "cstratak-RHEL8-ppc64le", LTONonDebugUnixBuild, STABLE, NO_TIER),
         ("PPC64LE RHEL8 LTO + PGO", "cstratak-RHEL8-ppc64le", LTOPGONonDebugBuild, STABLE, NO_TIER),
 
+        # Linux aarch32
+        ("ARM Raspbian", "gps-raspbian", SlowNonDebugUnixBuild, STABLE, TIER_3),
+
         # Linux aarch64
         ("aarch64 Fedora Stable", "cstratak-fedora-stable-aarch64", FedoraStableBuild, STABLE, TIER_2),
         ("aarch64 Fedora Stable Refleaks", "cstratak-fedora-stable-aarch64", UnixRefleakBuild, STABLE, NO_TIER),
@@ -129,6 +132,8 @@ def get_builders(settings):
         ("aarch64 RHEL8 Refleaks", "cstratak-RHEL8-aarch64", UnixRefleakBuild, STABLE, NO_TIER),
         ("aarch64 RHEL8 LTO", "cstratak-RHEL8-aarch64", LTONonDebugUnixBuild, STABLE, NO_TIER),
         ("aarch64 RHEL8 LTO + PGO", "cstratak-RHEL8-aarch64", LTOPGONonDebugBuild, STABLE, NO_TIER),
+
+        ("aarch64 Debian Clang LTO + PGO", "gps-arm64-debian", ClangLTOPGONonDebugBuild, STABLE, TIER_2),
 
 
         # macOS
@@ -174,8 +179,6 @@ def get_builders(settings):
         ("PPC64LE CentOS9 Refleaks", "cstratak-CentOS9-ppc64le", UnixRefleakBuild, UNSTABLE, NO_TIER),
         ("PPC64LE CentOS9 LTO", "cstratak-CentOS9-ppc64le", LTONonDebugUnixBuild, UNSTABLE, NO_TIER),
         ("PPC64LE CentOS9 LTO + PGO", "cstratak-CentOS9-ppc64le", LTOPGONonDebugBuild, UNSTABLE, NO_TIER),
-        # Linux aarch32
-        ("ARM Raspbian", "gps-raspbian", SlowNonDebugUnixBuild, STABLE, TIER_3),
         # Linux aarch64
         ("aarch64 Fedora Rawhide", "cstratak-fedora-rawhide-aarch64", FedoraRawhideBuild, UNSTABLE, NO_TIER),
         ("aarch64 Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-aarch64", UnixRefleakBuild, UNSTABLE, NO_TIER),
@@ -187,7 +190,6 @@ def get_builders(settings):
         ("aarch64 CentOS9 Refleaks", "cstratak-CentOS9-aarch64", UnixRefleakBuild, UNSTABLE, NO_TIER),
         ("aarch64 CentOS9 LTO", "cstratak-CentOS9-aarch64", LTONonDebugUnixBuild, UNSTABLE, NO_TIER),
         ("aarch64 CentOS9 LTO + PGO", "cstratak-CentOS9-aarch64", LTOPGONonDebugBuild, UNSTABLE, NO_TIER),
-        ("aarch64 Debian Clang LTO + PGO", "gps-arm64-debian", ClangLTOPGONonDebugBuild, UNSTABLE, NO_TIER),
 
         # Linux other archs
         ("s390x Fedora Rawhide", "edelsohn-fedora-rawhide-z", UnixBuild, UNSTABLE, NO_TIER),
