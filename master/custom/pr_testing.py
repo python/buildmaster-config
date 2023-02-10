@@ -38,7 +38,7 @@ def should_pr_be_tested(change):
 
 
 def emote(markup_text):
-    """Manually replace some GitHub emoji markup with Unicode .emojis"""
+    """Manually replace some GitHub emoji markup with Unicode emojis."""
     return markup_text.replace(':hammer:', '🔨')
 
 
