@@ -37,6 +37,11 @@ def should_pr_be_tested(change):
     return change.properties.getProperty("should_test_pr", False)
 
 
+def emote(markup_text):
+    """Manually replace some GitHub emoji markup with Unicode .emojis"""
+    return markup_text.replace(':hammer:', '🔨')
+
+
 class CustomGitHubEventHandler(GitHubEventHandler):
     def __init__(self, *args, builder_names, **kwargs):
         super().__init__(*args, **kwargs)
@@ -83,7 +88,7 @@ class CustomGitHubEventHandler(GitHubEventHandler):
             url.replace(self.github_api_endpoint, ""),
             json={
                 "body": BUILD_SCHEDULED_MESSAGE.format(
-                    user=username, commit=commit, label=label
+                    user=username, commit=commit, label=emote(label)
                 )
             },
         )
