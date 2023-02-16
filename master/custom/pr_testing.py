@@ -18,7 +18,7 @@ GITHUB_PROPERTIES_WHITELIST = ["*.labels"]
 BUILD_SCHEDULED_MESSAGE = f"""\
 :robot: New build scheduled with the buildbot fleet by @{{user}} for commit {{commit}} :robot:
 
-If you want to schedule another build, you need to add the `{{label}}` label again.
+If you want to schedule another build, you need to add the <kbd>{{label}}</kbd> label again.
 """
 
 BUILD_COMMAND_SCHEDULED_MESSAGE = f"""\
