@@ -18,7 +18,7 @@ GITHUB_PROPERTIES_WHITELIST = ["*.labels"]
 BUILD_SCHEDULED_MESSAGE = f"""\
 :robot: New build scheduled with the buildbot fleet by @{{user}} for commit {{commit}} :robot:
 
-If you want to schedule another build, you need to add the `{{label}}` label again.
+If you want to schedule another build, you need to add the <kbd>{{label}}</kbd> label again.
 """
 
 BUILD_COMMAND_SCHEDULED_MESSAGE = f"""\
@@ -35,11 +35,6 @@ BUILDBOT_COMMAND = re.compile(r"!buildbot (.+)")
 
 def should_pr_be_tested(change):
     return change.properties.getProperty("should_test_pr", False)
-
-
-def emote(markup_text):
-    """Manually replace some GitHub emoji markup with Unicode emojis."""
-    return markup_text.replace(':hammer:', '🔨')
 
 
 class CustomGitHubEventHandler(GitHubEventHandler):
@@ -88,7 +83,7 @@ class CustomGitHubEventHandler(GitHubEventHandler):
             url.replace(self.github_api_endpoint, ""),
             json={
                 "body": BUILD_SCHEDULED_MESSAGE.format(
-                    user=username, commit=commit, label=emote(label)
+                    user=username, commit=commit, label=label
                 )
             },
         )
