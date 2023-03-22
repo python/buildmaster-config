@@ -135,7 +135,6 @@ def get_builders(settings):
 
         ("aarch64 Debian Clang LTO + PGO", "gps-arm64-debian", ClangLTOPGONonDebugBuild, STABLE, TIER_2),
 
-
         # macOS
         ("x86-64 macOS", "billenstein-macos", UnixBuild, STABLE, NO_TIER),
         ("ARM64 macOS", "pablogsal-macos-m1", MacOSArmWithBrewBuild, STABLE, TIER_2),
@@ -143,12 +142,12 @@ def get_builders(settings):
         ("AMD64 FreeBSD Non-Debug", "koobs-freebsd-9e36", SlowNonDebugUnixBuild, STABLE, TIER_3),
         ("AMD64 FreeBSD Shared", "koobs-freebsd-564d", SlowSharedUnixBuild, STABLE, NO_TIER),
         # Windows
+        ("AMD64 Windows10 Pro", "kloth-win64", Windows64Build, STABLE, NO_TIER),
+        ("AMD64 Windows10", "bolen-windows10", Windows64Build, STABLE, NO_TIER),
+        ("AMD64 Windows11 Bigmem", "ambv-bb-win11", Windows64BigmemBuild, STABLE, NO_TIER),
         ("AMD64 Windows11", "kloth-win11", Windows64Build, UNSTABLE, NO_TIER),
         ("AMD64 Windows11 Non-Debug", "ware-win11", Windows64ReleaseBuild, UNSTABLE, NO_TIER),
         ("AMD64 Windows11 Refleaks", "ware-win11", Windows64RefleakBuild, UNSTABLE, NO_TIER),
-        ("AMD64 Windows11 Bigmem", "ambv-bb-win11", Windows64BigmemBuild, UNSTABLE, NO_TIER),
-        ("AMD64 Windows10 Pro", "kloth-win64", Windows64Build, STABLE, NO_TIER),
-        ("AMD64 Windows10", "bolen-windows10", Windows64Build, STABLE, NO_TIER),
         # -- Unstable builders --
         # Linux x86 / AMD64
         ("AMD64 Clang UBSan", "gps-clang-ubsan", ClangUbsanLinuxBuild, UNSTABLE, NO_TIER),
