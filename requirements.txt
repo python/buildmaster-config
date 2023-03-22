@@ -44,5 +44,5 @@ twisted[tls]==22.10.0
 txaio==22.2.1
 typing-extensions==4.4.0
 urllib3==1.26.12
-werkzeug==2.2.2
+werkzeug==2.2.3
 zope-interface==5.5.0
