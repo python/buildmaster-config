@@ -153,7 +153,6 @@ def get_workers(settings):
         cpw(
             name="edelsohn-aix-ppc64",
             tags=['aix', 'unix', 'ppc64'],
-            branches=['3.9', '3.10', '3.11', '3.x'],
             parallel_tests=10,
         ),
         cpw(
@@ -202,7 +201,7 @@ def get_workers(settings):
             name="gps-arm64-debian",
             tags=['linux', 'unix', 'arm64', 'aarch64', 'arm', 'debian'],
             parallel_tests=7,  # Shortest test time; 4 vCPU host.
-            branches=['3.10', '3.11', '3.x'],
+            branches=['3.10', '3.11', '3.12', '3.x'],
         ),
         cpw(
             name="gps-raspbian",
@@ -233,18 +232,15 @@ def get_workers(settings):
         cpw(
             name="kulikjak-solaris-sparcv9",
             tags=['solaris', 'unix', 'sparc', 'sparcv9'],
-            branches=['3.9', '3.10', '3.11', '3.x'],
             parallel_tests=16,
         ),
         cpw(
             name="pablogsal-arch-x86_64",
             tags=['linux', 'unix', 'arch', 'amd64', 'x86-64'],
-            branches=['3.9', '3.10', '3.11', '3.x'],
         ),
         cpw(
             name="pablogsal-macos-m1",
             tags=['macOS', 'unix', 'arm', 'arm64'],
-            branches=['3.9', '3.10', '3.11', '3.x'],
             parallel_tests=4,
         ),
         cpw(
@@ -273,14 +269,14 @@ def get_workers(settings):
         cpw(
             name="bcannon-wasm",
             tags=['wasm', 'emscripten', 'wasi'],
-            branches=['3.11', '3.x'],
+            branches=['3.11', '3.12', '3.x'],
             parallel_tests=2,
             parallel_builders=2,
         ),
         cpw(
             name="ambv-bb-win11",
             tags=['windows', 'win11', 'amd64', 'x86-64', 'bigmem'],
-            branches=['3.x'],
+            branches=['3.12', '3.x'],
             parallel_tests=4,
         ),
     ]
