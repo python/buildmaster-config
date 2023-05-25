@@ -18,7 +18,7 @@ from .steps import (
     UploadTestResults,
 )
 
-main_branch_version = "3.12"
+main_branch_version = "3.13"
 CUSTOM_BRANCH_NAME = "custom"
 
 # This (default) timeout is for each individual test file.
@@ -620,7 +620,7 @@ class UnixCrossBuild(UnixBuild):
     host = None
     host_make_cmd = ["make"]
     can_execute_python = True
-    
+
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         assert self.host is not None, "Must set self.host on cross builds"
 
@@ -672,7 +672,7 @@ class UnixCrossBuild(UnixBuild):
             compile = ["make", parallel]
         else:
             compile = ["make"]
-        
+
         self.addStep(
             Compile(
                 name="Compile build Python",
@@ -683,7 +683,6 @@ class UnixCrossBuild(UnixBuild):
 
         # Now that we have a "build" architecture Python, we can use that
         # to build a "host" (also known as the target we are cross compiling)
-        # to 
         configure_cmd = self.host_configure_cmd + ["--prefix", "$(PWD)/target/host"]
         configure_cmd += self.configureFlags + self.extra_configure_flags
         configure_cmd += [util.Interpolate("--build=%(prop:build_triple)s")]
@@ -799,6 +798,7 @@ class Wasm32EmscriptenNodePThreadsBuild(Wasm32EmscriptenBuild):
         "--enable-wasm-pthreads",
     ]
 
+
 class Wasm32EmscriptenNodeDLBuild(Wasm32EmscriptenBuild):
     """Emscripten with dynamic linking, testing with NodeJS
     """
@@ -810,6 +810,7 @@ class Wasm32EmscriptenNodeDLBuild(Wasm32EmscriptenBuild):
         "--enable-wasm-dynamic-linking",
         "--disable-wasm-pthreads",
     ]
+
 
 class Wasm32EmscriptenBrowserBuild(Wasm32EmscriptenBuild):
     """Emscripten browser builds (no tests)
