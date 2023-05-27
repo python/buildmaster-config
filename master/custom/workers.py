@@ -25,12 +25,14 @@ class CPythonWorker:
         name,
         tags=None,
         branches=None,
+        not_branches=None,
         parallel_builders=None,
         parallel_tests=None,
     ):
         self.name = name
         self.tags = tags or set()
         self.branches = branches
+        self.not_branches = not_branches
         self.parallel_builders = parallel_builders
         self.parallel_tests = parallel_tests
         worker_settings = settings.workers[name]
@@ -201,7 +203,7 @@ def get_workers(settings):
             name="gps-arm64-debian",
             tags=['linux', 'unix', 'arm64', 'aarch64', 'arm', 'debian'],
             parallel_tests=7,  # Shortest test time; 4 vCPU host.
-            branches=['3.10', '3.11', '3.12', '3.x'],
+            not_branches=['3.9'],
         ),
         cpw(
             name="gps-raspbian",
@@ -259,14 +261,14 @@ def get_workers(settings):
         cpw(
             name="bcannon-wasm",
             tags=['wasm', 'emscripten', 'wasi'],
-            branches=['3.11', '3.12', '3.x'],
+            not_branches=['3.9', '3.10'],
             parallel_tests=2,
             parallel_builders=2,
         ),
         cpw(
             name="ambv-bb-win11",
             tags=['windows', 'win11', 'amd64', 'x86-64', 'bigmem'],
-            branches=['3.12', '3.x'],
+            not_branches=['3.9', '3.10', '3.11'],
             parallel_tests=4,
         ),
     ]
