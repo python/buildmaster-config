@@ -210,16 +210,6 @@ def get_workers(settings):
             parallel_tests=3,
         ),
         cpw(
-            name="kloth-win11",
-            tags=['windows', 'win11', 'amd64', 'x86-64'],
-            parallel_tests=40,
-        ),
-        cpw(
-            name="kloth-win64",
-            tags=['windows', 'win10', 'amd64', 'x86-64'],
-            parallel_tests=8,
-        ),
-        cpw(
             name="koobs-freebsd-9e36",
             tags=['bsd', 'unix', 'freebsd', 'amd64', 'x86-64'],
             parallel_tests=4,
