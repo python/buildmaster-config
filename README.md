@@ -19,9 +19,13 @@ Run locally:
 Create a PR. Merge the PR. Then recreate the venv on the server:
 
     make stop-master
+    git pull
     mv venv old-venv
     make venv
     make start-master
+
+    # then you may watch logs in realtime:
+    # tail -F master/twistd.log
 
 Upgrading buildbot sometimes requires to run the command:
 
