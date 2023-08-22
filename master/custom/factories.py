@@ -182,6 +182,12 @@ class UnixRefleakBuild(UnixBuild):
     factory_tags = ["refleak"]
 
 
+class UnixNoGilBuild(UnixBuild):
+    buildersuffix = ".nogil"
+    configureFlags = ["--with-pydebug", "--disable-gil"]
+    factory_tags = ["nogil"]
+
+
 class UnixInstalledBuild(TaggedBuildFactory):
     buildersuffix = ".installed"
     configureFlags = []
