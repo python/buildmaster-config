@@ -1,0 +1,70 @@
+name: Add a new worker
+description: A request to add a new worker
+title: "New worker request: <owner-worker-suffix>"
+labels: ["add worker"]
+body:
+  - type: markdown
+    attributes:
+      value: I would like to add a new worker to the fleet
+  - type: markdown
+    attributes:
+      value: |
+        ## Owner information:
+
+        Any fields that can be filled in with public information from the given GitHub profile can be left blank.
+  - type: input
+    id: owner-username
+    attributes:
+      label: Username
+      description: Often the owner's last name, but not required to be.  Should be the same for all workers owned by the owner.
+    validations:
+      required: true
+  - type: input
+    id: owner-github
+    attributes:
+      label: GitHub username
+      description: If the username of the person opening the issue, can be left blank
+      placeholder: "@username"
+  - type: input
+    id: owner-name
+    attributes:
+      label: Name
+  - type: input
+    id: owner-email
+    attributes:
+      label: Email address
+      description: If you're requesting a new password, we'll send it to you at this address
+      placeholder: user at domain dot tld
+  - type: dropdown
+    id: owner-password
+    attributes:
+      label: Password status
+      description: Each worker needs a password to connect to the master, but they're not required to be unique if you own multiple workers.
+      options:
+        - I need a new owner password
+        - I need a new worker password
+        - I will use an existing owner password
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: "## Worker information:"
+  - type: input
+    id: worker-arch
+    attributes:
+      label: Processor architecture
+      value: amd64
+    validations:
+      required: true
+  - type: input
+    id: worker-os
+    attributes:
+      label: Operating System
+      placeholder: Windows 11, Arch Linux, macOS 11.3, etc.
+    validations:
+      required: true
+  - type: textarea
+    id: worker-special
+    attributes:
+      label: Anything special about the worker?
+      description: Details that would impact what kind of builds should be scheduled on this worker, existing PR number adding configuration, etc.
