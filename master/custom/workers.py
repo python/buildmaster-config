@@ -272,7 +272,7 @@ def get_workers(settings):
             parallel_tests=4,
         ),
         cpw(
-            name="itamaro-fedora-x1-x86_64",
+            name="itamaro-fedora-x1",
             tags=['linux', 'unix', 'fedora', 'amd64', 'x86-64'],
         )
     ]
