@@ -271,4 +271,8 @@ def get_workers(settings):
             not_branches=['3.9', '3.10', '3.11'],
             parallel_tests=4,
         ),
+        cpw(
+            name="itamaro-fedora-x1-x86_64",
+            tags=['linux', 'unix', 'fedora', 'amd64', 'x86-64'],
+        )
     ]
