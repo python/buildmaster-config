@@ -139,9 +139,6 @@ def get_builders(settings):
         # macOS
         ("x86-64 macOS", "billenstein-macos", UnixBuild, STABLE, NO_TIER),
         ("ARM64 macOS", "pablogsal-macos-m1", MacOSArmWithBrewBuild, STABLE, TIER_2),
-        # Other Unix
-        ("AMD64 FreeBSD Non-Debug", "koobs-freebsd-9e36", SlowNonDebugUnixBuild, STABLE, TIER_3),
-        ("AMD64 FreeBSD Shared", "koobs-freebsd-564d", SlowSharedUnixBuild, STABLE, NO_TIER),
         # Windows
         ("AMD64 Windows10", "bolen-windows10", Windows64Build, STABLE, NO_TIER),
         ("AMD64 Windows11 Bigmem", "ambv-bb-win11", Windows64BigmemBuild, STABLE, NO_TIER),

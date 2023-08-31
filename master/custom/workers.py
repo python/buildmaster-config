@@ -212,16 +212,6 @@ def get_workers(settings):
             parallel_tests=3,
         ),
         cpw(
-            name="koobs-freebsd-9e36",
-            tags=['bsd', 'unix', 'freebsd', 'amd64', 'x86-64'],
-            parallel_tests=4,
-        ),
-        cpw(
-            name="koobs-freebsd-564d",
-            tags=['bsd', 'unix', 'freebsd', 'amd64', 'x86-64'],
-            parallel_tests=4,
-        ),
-        cpw(
             name="kulikjak-solaris-sparcv9",
             tags=['solaris', 'unix', 'sparc', 'sparcv9'],
             parallel_tests=16,
