@@ -20,7 +20,6 @@ from custom.factories import (
     ClangUnixInstalledBuild,
     SharedUnixBuild,
     SlowNonDebugUnixBuild,
-    SlowSharedUnixBuild,
     SlowUnixInstalledBuild,
     LTONonDebugUnixBuild,
     LTOPGONonDebugBuild,
@@ -240,7 +239,7 @@ DAILYBUILDERS = [
 
 # Match builder name (excluding the branch name) of builders that should only
 # run on the master and "custom" branches.
-ONLY_MASTER_BRANCH = (
+ONLY_MAIN_BRANCH = (
     "Alpine Linux",
     # Cygwin is not supported on 2.7, 3.6, 3.7
     "Cygwin",
