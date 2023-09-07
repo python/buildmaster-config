@@ -189,7 +189,7 @@ class UnixNoGilBuild(UnixBuild):
 
 
 class UnixNoGilRefleakBuild(UnixBuild):
-    buildersuffix = ".nogil"
+    buildersuffix = ".refleak.nogil"
     configureFlags = ["--with-pydebug", "--disable-gil"]
     testFlags = "-R 3:3 -u-cpu"
     # -R 3:3 is supposed to only require timeout x 6, but in practice,
