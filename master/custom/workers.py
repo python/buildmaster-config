@@ -270,5 +270,12 @@ def get_workers(settings):
             name="itamaro-fedora-x1",
             tags=['linux', 'unix', 'fedora', 'amd64', 'x86-64'],
             not_branches=['3.9', '3.10', '3.11', '3.12'],
-        )
+        ),
+        cpw(
+            name="itamaro-ubuntu-aws",
+            tags=['linux', 'unix', 'ubuntu', 'amd64', 'x86-64'],
+            not_branches=['3.9', '3.10', '3.11', '3.12'],
+            parallel_tests=2,
+            parallel_builders=2,
+        ),
     ]
