@@ -31,6 +31,7 @@ from custom.factories import (
     CentOS9NoBuiltinHashesUnixBuildExceptBlake2,
     Windows64Build,
     Windows64BigmemBuild,
+    Windows64NoGilBuild,
     Windows64RefleakBuild,
     Windows64ReleaseBuild,
     MacOSArmWithBrewBuild,
@@ -204,6 +205,9 @@ def get_builders(settings):
         # XXX: to be TIER_3 when stabilized
         ("AMD64 FreeBSD", "ware-freebsd", UnixBuild, UNSTABLE, NO_TIER),
         ("SPARCv9 Oracle Solaris 11.4", "kulikjak-solaris-sparcv9", UnixBuild, UNSTABLE, NO_TIER),
+
+        # Windows/amd64
+        ("AMD64 Windows Server 2022 NoGIL", "itamaro-win64-srv-22-aws", Windows64NoGilBuild, UNSTABLE, NO_TIER),
 
         # Windows/arm64
         ("ARM64 Windows", "linaro-win-arm64", WindowsARM64Build, STABLE, TIER_3),
