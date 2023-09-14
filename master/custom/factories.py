@@ -9,6 +9,8 @@ from buildbot.steps.shell import (
 
 from buildbot.plugins import util
 
+from . import (MAIN_BRANCH_VERSION, CUSTOM_BRANCH_NAME, MAIN_BRANCH_NAME,
+               JUNIT_FILENAME)
 from .steps import (
     Test,
     Clean,
@@ -18,8 +20,13 @@ from .steps import (
     UploadTestResults,
 )
 
-main_branch_version = "3.13"
-CUSTOM_BRANCH_NAME = "custom"
+# Python branches with regrtest --fail-rerun option
+# https://github.com/python/cpython/issues/108834
+BRANCH_WITH_FAIL_RERUN = (
+    MAIN_BRANCH_NAME,
+    #"3.12",
+    #"3.11",
+)
 
 # This (default) timeout is for each individual test file.
 # It is a bit more than the default faulthandler timeout in regrtest.py
@@ -40,42 +47,21 @@ class TaggedBuildFactory(factory.BuildFactory):
         self.tags = self.factory_tags + extra_tags
 
 
-class FreezeBuild(TaggedBuildFactory):
-    buildersuffix = ".freeze"  # to get unique directory names on master
-    test_timeout = None
-    factory_tags = ["freeze"]
-
-    def setup(self, **kwargs):
-        self.addStep(Configure(command=["./configure", "--prefix", "$(PWD)/target"]))
-        self.addStep(Compile(command=["make"]))
-        self.addStep(
-            ShellCommand(
-                name="install", description="installing", command=["make", "install"]
-            )
-        )
-        self.addStep(
-            Test(
-                command=[
-                    "make",
-                    "-C",
-                    "Tools/freeze/test",
-                    "PYTHON=../../../target/bin/python3",
-                    "OUTDIR=../../../target/freezetest",
-                ]
-            )
-        )
-
-
 ##############################################################################
 ###############################  UNIX BUILDS  ################################
 ##############################################################################
+
+
+def has_option(option, test_options):
+    # return True for option='-j' and test_options=['-uall', '-j2']
+    return option in ' '.join(test_options)
 
 
 class UnixBuild(TaggedBuildFactory):
     configureFlags = ["--with-pydebug"]
     compile_environ = {}
     interpreterFlags = ""
-    testFlags = "-j2"
+    testFlags = ["-j2"]
     makeTarget = "all"
     test_timeout = None
     test_environ = {}
@@ -106,22 +92,24 @@ class UnixBuild(TaggedBuildFactory):
             Configure(command=configure_cmd, **oot_kwargs)
         )
         compile = ["make", self.makeTarget]
-        testopts = self.testFlags
-        if "-R" not in self.testFlags:
-            testopts += " --junit-xml test-results.xml"
+        testopts = list(self.testFlags)
+        if not has_option("-R", self.testFlags):
+            testopts.extend(("--junit-xml", JUNIT_FILENAME))
         # Timeout for the buildworker process
         self.test_timeout = self.test_timeout or TEST_TIMEOUT
         # Timeout for faulthandler
         faulthandler_timeout = self.test_timeout - 5 * 60
         if parallel:
             compile = ["make", parallel, self.makeTarget]
-            testopts = testopts + " " + parallel
-        if "-j" not in testopts:
-            testopts = "-j2 " + testopts
+            testopts.append(parallel)
+        if not has_option("-j", testopts):
+            testopts.append("-j2")
+        if branch in BRANCH_WITH_FAIL_RERUN:
+            testopts.append("--fail-rerun")
         test = [
             "make",
             "buildbottest",
-            "TESTOPTS=" + testopts + " ${BUILDBOT_TESTOPTS}",
+            "TESTOPTS=" + " ".join(testopts) + " ${BUILDBOT_TESTOPTS}",
             "TESTPYTHONOPTS=" + self.interpreterFlags,
             "TESTTIMEOUT=" + str(faulthandler_timeout),
         ]
@@ -148,8 +136,8 @@ class UnixBuild(TaggedBuildFactory):
                 **oot_kwargs
             )
         )
-        if branch not in ("3",) and "-R" not in self.testFlags:
-            filename = "test-results.xml"
+        if branch not in ("3",) and not has_option("-R", self.testFlags):
+            filename = JUNIT_FILENAME
             if self.build_out_of_tree:
                 filename = os.path.join(out_of_tree_dir, filename)
             self.addStep(UploadTestResults(branch, filename=filename))
@@ -174,7 +162,7 @@ class UnixVintageParserBuild(UnixBuild):
 
 class UnixRefleakBuild(UnixBuild):
     buildersuffix = ".refleak"
-    testFlags = "-R 3:3 -u-cpu"
+    testFlags = ["-R", "3:3", "-u-cpu"]
     # -R 3:3 is supposed to only require timeout x 6, but in practice,
     # it's much more slower. Use timeout x 10 to prevent timeout
     # caused by --huntrleaks.
@@ -210,8 +198,8 @@ class UnixInstalledBuild(TaggedBuildFactory):
     factory_tags = ["installed"]
 
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
-        if branch == "3.x":
-            branch = main_branch_version
+        if branch == MAIN_BRANCH_NAME:
+            branch = MAIN_BRANCH_VERSION
         elif branch == "custom":
             branch = "3"
         installed_python = "./target/bin/python%s" % branch
@@ -224,19 +212,23 @@ class UnixInstalledBuild(TaggedBuildFactory):
 
         compile = ["make", self.makeTarget]
         install = ["make", self.installTarget]
-        testopts = self.defaultTestOpts[:]
+        testopts = list(self.defaultTestOpts)
         # Timeout for the buildworker process
         self.test_timeout = self.test_timeout or TEST_TIMEOUT
         # Timeout for faulthandler
         faulthandler_timeout = self.test_timeout - 5 * 60
-        testopts += [f"--timeout={faulthandler_timeout}"]
+        testopts.append(f"--timeout={faulthandler_timeout}")
         if parallel:
             compile = ["make", parallel, self.makeTarget]
             install = ["make", parallel, self.installTarget]
-            testopts = testopts + [parallel]
+            testopts.append(parallel)
+        if branch in BRANCH_WITH_FAIL_RERUN:
+            testopts.append("--fail-rerun")
 
-        test = [installed_python] + self.interpreterFlags
-        test += ["-m", "test.regrtest"] + testopts
+        test = [installed_python,
+                *self.interpreterFlags,
+                "-m", "test",
+                *testopts]
 
         self.addStep(Compile(command=compile))
         self.addStep(Install(command=install))
@@ -359,10 +351,6 @@ SLOW_TIMEOUT = 40 * 60
 
 # These use a longer timeout for very slow buildbots.
 class SlowNonDebugUnixBuild(NonDebugUnixBuild):
-    test_timeout = SLOW_TIMEOUT
-
-
-class SlowSharedUnixBuild(SharedUnixBuild):
     test_timeout = SLOW_TIMEOUT
 
 
@@ -516,7 +504,8 @@ class MacOSArmWithBrewBuild(UnixBuild):
         "LDFLAGS=-L/opt/homebrew/lib",
     ]
     # These tests are known to crash on M1 macs (see bpo-45289).
-    testFlags = UnixBuild.testFlags + " -x test_dbm test_dbm_ndbm test_shelve"
+    testFlags = [*UnixBuild.testFlags,
+                 "-x", "test_dbm", "test_dbm_ndbm", "test_shelve"]
 
 ##############################################################################
 ############################  WINDOWS BUILDS  ################################
@@ -536,12 +525,14 @@ class BaseWindowsBuild(TaggedBuildFactory):
 
     def setup(self, parallel, branch, **kwargs):
         build_command = self.build_command + self.buildFlags
-        test_command = self.test_command + self.testFlags
-        if "-R" not in self.testFlags:
-            test_command += [r"--junit-xml", r"test-results.xml"]
+        test_command = [*self.test_command, *self.testFlags]
+        if not has_option("-R", self.testFlags):
+            test_command.extend((r"--junit-xml", JUNIT_FILENAME))
         clean_command = self.clean_command + self.cleanFlags
         if parallel:
             test_command.append(parallel)
+        if branch in BRANCH_WITH_FAIL_RERUN:
+            test_command.append("--fail-rerun")
         self.addStep(Compile(command=build_command))
         self.addStep(
             ShellCommand(
@@ -552,9 +543,9 @@ class BaseWindowsBuild(TaggedBuildFactory):
             )
         )
         timeout = self.test_timeout if self.test_timeout else TEST_TIMEOUT
-        test_command += ["--timeout", timeout - (5 * 60)]
+        test_command.extend(("--timeout", timeout - (5 * 60)))
         self.addStep(Test(command=test_command, timeout=timeout))
-        if branch not in ("3",) and "-R" not in self.testFlags:
+        if branch not in ("3",) and not has_option("-R", self.testFlags):
             self.addStep(UploadTestResults(branch))
         self.addStep(Clean(command=clean_command))
 
@@ -596,7 +587,7 @@ class Windows64BigmemBuild(BaseWindowsBuild):
 
 class Windows64RefleakBuild(Windows64Build):
     buildersuffix = ".refleak"
-    testFlags = ["-p", "x64"] + WindowsRefleakBuild.testFlags
+    testFlags = ["-p", "x64", *WindowsRefleakBuild.testFlags]
     # -R 3:3 is supposed to only require timeout x 6, but in practice,
     # it's much more slower. Use timeout x 10 to prevent timeout
     # caused by --huntrleaks.
@@ -607,7 +598,7 @@ class Windows64RefleakBuild(Windows64Build):
 class Windows64ReleaseBuild(Windows64Build):
     buildersuffix = ".nondebug"
     buildFlags = Windows64Build.buildFlags + ["-c", "Release"]
-    testFlags = Windows64Build.testFlags + ["+d"]
+    testFlags = [*Windows64Build.testFlags, "+d"]
     # keep default cleanFlags, both configurations get cleaned
     factory_tags = ["win64", "nondebug"]
 
@@ -622,7 +613,7 @@ class WindowsARM64Build(BaseWindowsBuild):
 class WindowsARM64ReleaseBuild(WindowsARM64Build):
     buildersuffix = ".nondebug"
     buildFlags = WindowsARM64Build.buildFlags + ["-c", "Release"]
-    testFlags = WindowsARM64Build.testFlags + ["+d"]
+    testFlags = [*WindowsARM64Build.testFlags, "+d"]
     # keep default cleanFlags, both configurations get cleaned
     factory_tags = ["win-arm64", "nondebug"]
 
@@ -714,13 +705,15 @@ class UnixCrossBuild(UnixBuild):
             )
         )
 
-        testopts = self.testFlags
-        if "-R" not in self.testFlags:
-            testopts += " --junit-xml test-results.xml"
+        testopts = list(self.testFlags)
+        if not has_option("-R", self.testFlags):
+            testopts.extend((" --junit-xml", JUNIT_FILENAME))
         if parallel:
-            testopts = testopts + " " + parallel
-        if "-j" not in testopts:
-            testopts = "-j2 " + testopts
+            testopts.append(parallel)
+        if not has_option("-j", self.testFlags):
+            testopts.append("-j2")
+        if branch in BRANCH_WITH_FAIL_RERUN:
+            testopts.append("--fail-rerun")
 
         # Timeout for the buildworker process
         self.test_timeout = self.test_timeout or TEST_TIMEOUT
@@ -730,7 +723,7 @@ class UnixCrossBuild(UnixBuild):
         test = [
             "make",
             "buildbottest",
-            "TESTOPTS=" + testopts + " ${BUILDBOT_TESTOPTS}",
+            "TESTOPTS=" + " ".join(testopts) + " ${BUILDBOT_TESTOPTS}",
             "TESTPYTHONOPTS=" + self.interpreterFlags,
             "TESTTIMEOUT=" + str(faulthandler_timeout),
         ]
@@ -767,8 +760,8 @@ class UnixCrossBuild(UnixBuild):
                     workdir=oot_host_path,
                 )
             )
-            if branch not in ("3",) and "-R" not in self.testFlags:
-                filename = os.path.join(oot_host_path, "test-results.xml")
+            if branch not in ("3",) and not has_option("-R", self.testFlags):
+                filename = os.path.join(oot_host_path, JUNIT_FILENAME)
                 self.addStep(UploadTestResults(branch, filename=filename))
         self.addStep(
             Clean(

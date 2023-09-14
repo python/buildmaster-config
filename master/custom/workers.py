@@ -6,6 +6,8 @@ from functools import partial
 
 from buildbot.plugins import worker as _worker
 
+from custom.factories import MAIN_BRANCH_NAME
+
 
 # By default, the buildmaster sends a simple, non-blocking message to each
 # worker every hour. These keepalives ensure that traffic is flowing over the
@@ -232,7 +234,7 @@ def get_workers(settings):
         cpw(
             name="ware-alpine",
             tags=['linux', 'unix', 'alpine', 'docker', 'amd64', 'x86-64'],
-            branches=['3.x'],
+            branches=[MAIN_BRANCH_NAME],
         ),
         cpw(
             name="ware-freebsd",

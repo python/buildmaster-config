@@ -1,9 +1,12 @@
 import re
 
-from buildbot.steps.shell import ShellCommand, Test as BaseTest
 from buildbot.plugins import steps, util
+from buildbot.process.results import SUCCESS, WARNINGS
+from buildbot.steps.shell import ShellCommand, Test as BaseTest
 from buildbot.steps.source.git import Git as _Git
 from buildbot.steps.source.github import GitHub as _GitHub
+
+from . import JUNIT_FILENAME
 
 
 class Git(_Git):
@@ -77,6 +80,25 @@ class Test(BaseTest):
     # Give SIGTERM 30 seconds to shut things down before SIGKILL.
     sigtermTime = 30
 
+    # Treat "regrtest --fail-rerun" exit code (5) as WARNINGS
+    # https://github.com/python/cpython/issues/108834
+    decodeRC = {
+        0: SUCCESS,
+
+        # Treat --fail-rerun exit code (5) to WARNINGS, when a test failed but
+        # passed when run again in verbose mode in a fresh process (unstable
+        # test).
+        5: WARNINGS,     # EXITCODE_RERUN_FAIL
+
+        # Any exit code not present in the dictionary is treated as FAILURE.
+        # So there is no need to map each regrtest exit code to FAILURE.
+        #
+        # 2: FAILURE,    # EXITCODE_BAD_TEST
+        # 3: FAILURE,    # EXITCODE_ENV_CHANGED
+        # 4: FAILURE,    # EXITCODE_NO_TESTS_RAN
+        # 130: FAILURE,  # EXITCODE_INTERRUPTED
+    }
+
     def evaluateCommand(self, cmd):
         if cmd.didFail():
             self.setProperty("test_failed_to_build", True)
@@ -139,7 +161,7 @@ class UploadTestResults(steps.FileUpload):
     def _has_the_build_failed(self, build):
         return self.getProperty("test_failed_to_build")
 
-    def __init__(self, branch, filename="test-results.xml"):
+    def __init__(self, branch, filename=JUNIT_FILENAME):
         super().__init__(
             doStepIf=self._has_the_build_failed,
             workersrc=filename,
