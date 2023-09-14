@@ -2,8 +2,11 @@ PYTHON_VERSION=3.9
 SYSTEM_PYTHON=python$(PYTHON_VERSION)
 VENV_DIR=./venv
 PIP=$(VENV_DIR)/bin/pip
+# make stop-server kills all processes named "python"
+PKILL_NAME="python"
 BUILDBOT=$(VENV_DIR)/bin/buildbot
 VENV_CHECK=$(VENV_DIR)/lib/python$(PYTHON_VERSION)/site-packages/buildbot/master.py
+USER=buildbot
 LOGLINES=50
 
 # Setup targets
@@ -61,10 +64,10 @@ stop-master: run-target
 	# but it never completes. The server stays forever in this state: it is
 	# still "running" but no longer schedules new jobs. Kill the process
 	# to make sure that it goes bad to a known state (don't run anymore).
-	echo "Buildbot processes:"
-	pgrep buildbot
+	echo "Buildbot processes (look for process name: $(PKILL_NAME))"
+	pgrep -u $(USER) $(PKILL_NAME) ||:
 	echo "Send SIGKILL to remaining buildbot processes (if any)"
-	pkill -KILL buildbot
+	pkill -KILL -u $(USER) $(PKILL_NAME) ||:
 
 run-target: $(VENV_CHECK)
 	$(BUILDBOT) $(TARGET) master; tail -n$(LOGLINES) master/twistd.log
