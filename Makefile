@@ -56,6 +56,15 @@ restart-master: run-target
 
 stop-master: TARGET=stop
 stop-master: run-target
+	# issue #384: sometimes when "buildbot stop master" sends SIGINT to
+	# Twisted, the server goes in a broken state: it's being "shut down",
+	# but it never completes. The server stays forever in this state: it is
+	# still "running" but no longer schedules new jobs. Kill the process
+	# to make sure that it goes bad to a known state (don't run anymore).
+	echo "Buildbot processes:"
+	pgrep buildbot
+	echo "Send SIGKILL to remaining buildbot processes (if any)"
+	pkill -KILL buildbot
 
 run-target: $(VENV_CHECK)
 	$(BUILDBOT) $(TARGET) master; tail -n$(LOGLINES) master/twistd.log
