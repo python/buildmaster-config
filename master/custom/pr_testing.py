@@ -265,7 +265,8 @@ class CustomGitHubEventHandler(GitHubEventHandler):
                     f"did not match any builder", logLevel=logging.DEBUG)
             yield self._post_comment(
                 payload["issue"]["comments_url"],
-                "The regex {builder_filter!r} did not match any buildbot builder",
+                f"The regex {builder_filter!r} did not match any buildbot builder."
+                f"Is the requested builder in the list of stable builders?",
             )
             return (changes, "git")
 
