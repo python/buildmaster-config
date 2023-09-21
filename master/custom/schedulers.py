@@ -26,9 +26,9 @@ class GitHubPrScheduler(AnyBranchScheduler):
             builder_names = [
                 builder_name
                 for builder_name in builder_names
-                if matcher.match(builder_name)
+                if matcher.search(builder_name)
             ]
-            log.msg("Bulder names filtered: {}".format(builder_names))
+            log.msg(f"Builder names filtered: {builder_names}")
             kwargs.update(builderNames=builder_names)
             yield super().addBuildsetForChanges(**kwargs)
             return

@@ -255,6 +255,20 @@ class CustomGitHubEventHandler(GitHubEventHandler):
             return ([], "git")
 
         builder_filter_fn = re.compile(builder_filter)
+        matched_builders = [
+            builder
+            for builder in self.builder_names
+            if builder_filter_fn.search(builder)
+        ]
+        if not matched_builders:
+            log.msg(f"GitHub PR #{number}: regex {builder_filter!r} "
+                    f"did not match any builder", logLevel=logging.DEBUG)
+            yield self._post_comment(
+                payload["issue"]["comments_url"],
+                "The regex {builder_filter!r} did not match any buildbot builder",
+            )
+            return (changes, "git")
+
         yield self._post_comment(
             payload["issue"]["comments_url"],
             BUILD_COMMAND_SCHEDULED_MESSAGE.format(
@@ -264,8 +278,7 @@ class CustomGitHubEventHandler(GitHubEventHandler):
                 builders="\n".join(
                     {
                         f"- `{builder}`"
-                        for builder in self.builder_names
-                        if builder_filter_fn.match(builder)
+                        for builder in matched_builders
                     }
                 ),
             ),
