@@ -201,8 +201,7 @@ def get_builders(settings):
         # Other Unix
         ("PPC64 AIX", "edelsohn-aix-ppc64", AIXBuild, UNSTABLE, NO_TIER),
         ("PPC64 AIX XLC", "edelsohn-aix-ppc64", AIXBuildWithXLC, UNSTABLE, NO_TIER),
-        # XXX: to be TIER_3 when stabilized
-        ("AMD64 FreeBSD", "ware-freebsd", UnixBuild, UNSTABLE, NO_TIER),
+        ("AMD64 FreeBSD", "ware-freebsd", UnixBuild, STABLE, TIER_3),
         ("SPARCv9 Oracle Solaris 11.4", "kulikjak-solaris-sparcv9", UnixBuild, UNSTABLE, NO_TIER),
 
         # Windows/arm64
