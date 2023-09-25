@@ -242,6 +242,11 @@ def get_workers(settings):
             parallel_tests=4,
         ),
         cpw(
+            name="opsec-fbsd14",
+            tags=['freebsd', 'bsd', 'unix', 'amd64', 'x86-64'],
+            parallel_tests=4,
+        ),
+        cpw(
             name="ware-gentoo-x86",
             tags=['linux', 'unix', 'gentoo', 'x86'],
         ),
