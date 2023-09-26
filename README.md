@@ -14,9 +14,15 @@ contains secrets like the IRC nickname password.
 
 Run locally:
 
+    git switch -c reqs
     make regen-requirements
+    git ci -a -m "run make regen-requirements"
 
-Create a PR. Merge the PR. Then recreate the venv on the server:
+Create a PR. Merge the PR. The new venv will be recreated automatically on the
+server.
+
+If something goes wrong, commands to recreate the venv *manually* on the
+server:
 
     make stop-master
     git pull
