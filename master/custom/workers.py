@@ -290,4 +290,11 @@ def get_workers(settings):
             parallel_tests=2,
             parallel_builders=2,
         ),
+        cpw(
+            name="itamaro-win64-srv-22-aws",
+            tags=['windows', 'win-srv-22', 'amd64', 'x86-64'],
+            not_branches=['3.9', '3.10', '3.11', '3.12'],
+            parallel_tests=2,
+            parallel_builders=2,
+        ),
     ]

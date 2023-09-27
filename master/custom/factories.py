@@ -603,6 +603,12 @@ class Windows64ReleaseBuild(Windows64Build):
     factory_tags = ["win64", "nondebug"]
 
 
+class Windows64NoGilBuild(Windows64Build):
+    buildersuffix = '.x64.nogil'
+    buildFlags = ["-p", "x64", "--disable-gil"]
+    factory_tags = ["win64", "nogil"]
+
+
 class WindowsARM64Build(BaseWindowsBuild):
     buildFlags = ["-p", "ARM64"]
     testFlags = ["-p", "ARM64", "-j2"]
