@@ -22,7 +22,7 @@ class GitHubPrScheduler(AnyBranchScheduler):
         if builder_filter and builder_names:
             log.msg("Found builder filter: {}".format(builder_filter))
             builder_filter, _ = builder_filter
-            matcher = re.compile(builder_filter)
+            matcher = re.compile(builder_filter, re.IGNORECASE)
             builder_names = [
                 builder_name
                 for builder_name in builder_names
