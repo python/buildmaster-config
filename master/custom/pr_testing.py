@@ -254,10 +254,11 @@ class CustomGitHubEventHandler(GitHubEventHandler):
             )
             return ([], "git")
 
-        builder_filter_fn = re.compile(builder_filter)
+        # This code is related to GitHubPrScheduler
+        builder_filter_fn = re.compile(builder_filter, re.IGNORECASE)
         matched_builders = [
-            builder
-            for builder in self.builder_names
+            builder_name
+            for builder_name in builder_names
             if builder_filter_fn.search(builder)
         ]
         if not matched_builders:
@@ -265,7 +266,7 @@ class CustomGitHubEventHandler(GitHubEventHandler):
                     f"did not match any builder", logLevel=logging.DEBUG)
             yield self._post_comment(
                 payload["issue"]["comments_url"],
-                f"The regex {builder_filter!r} did not match any buildbot builder."
+                f"The regex {builder_filter!r} did not match any buildbot builder. "
                 f"Is the requested builder in the list of stable builders?",
             )
             return (changes, "git")
