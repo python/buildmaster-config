@@ -259,7 +259,7 @@ class CustomGitHubEventHandler(GitHubEventHandler):
         matched_builders = [
             builder_name
             for builder_name in self.builder_names
-            if builder_filter_fn.search(builder)
+            if builder_filter_fn.search(builder_name)
         ]
         if not matched_builders:
             log.msg(f"GitHub PR #{number}: regex {builder_filter!r} "
