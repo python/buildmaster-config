@@ -258,7 +258,7 @@ class CustomGitHubEventHandler(GitHubEventHandler):
         builder_filter_fn = re.compile(builder_filter, re.IGNORECASE)
         matched_builders = [
             builder_name
-            for builder_name in builder_names
+            for builder_name in self.builder_names
             if builder_filter_fn.search(builder)
         ]
         if not matched_builders:
