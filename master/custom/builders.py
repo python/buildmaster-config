@@ -96,10 +96,6 @@ def get_builders(settings):
         ("AMD64 RHEL8 LTO", "cstratak-RHEL8-x86_64", LTONonDebugUnixBuild, STABLE, NO_TIER),
         ("AMD64 RHEL8 LTO + PGO", "cstratak-RHEL8-x86_64", LTOPGONonDebugBuild, STABLE, NO_TIER),
         ("AMD64 RHEL8 FIPS Only Blake2 Builtin Hash", "cstratak-RHEL8-fips-x86_64", RHEL8NoBuiltinHashesUnixBuildExceptBlake2, STABLE, NO_TIER),
-        ("AMD64 Arch Linux Asan", "pablogsal-arch-x86_64", UnixAsanBuild, STABLE, NO_TIER),
-        ("AMD64 Arch Linux Usan", "pablogsal-arch-x86_64", ClangUbsanLinuxBuild, STABLE, NO_TIER),
-        ("AMD64 Arch Linux Asan Debug", "pablogsal-arch-x86_64", UnixAsanDebugBuild, STABLE, NO_TIER),
-        ("AMD64 Arch Linux TraceRefs", "pablogsal-arch-x86_64", UnixTraceRefsBuild, STABLE, NO_TIER),
         ("AMD64 Arch Linux Perf", "pablogsal-arch-x86_64", UnixPerfBuild, STABLE, NO_TIER),
         # Linux PPC64le
         ("PPC64LE Fedora Stable", "cstratak-fedora-stable-ppc64le", FedoraStableBuild, STABLE, TIER_2),
@@ -159,7 +155,6 @@ def get_builders(settings):
         ("AMD64 Ubuntu NoGIL", "itamaro-ubuntu-aws", UnixNoGilBuild, UNSTABLE, NO_TIER),
         ("AMD64 Ubuntu NoGIL Refleaks", "itamaro-ubuntu-aws", UnixNoGilRefleakBuild, UNSTABLE, NO_TIER),
         ("AMD64 Ubuntu", "skumaran-ubuntu-x86_64", UnixBuild, UNSTABLE, NO_TIER),
-        ("AMD64 Arch Linux VintageParser", "pablogsal-arch-x86_64", UnixVintageParserBuild, UNSTABLE, NO_TIER),
         ("AMD64 RHEL8 FIPS No Builtin Hashes", "cstratak-RHEL8-fips-x86_64", RHEL8NoBuiltinHashesUnixBuild, UNSTABLE, NO_TIER),
         ("AMD64 CentOS9", "cstratak-CentOS9-x86_64", CentOS9Build, UNSTABLE, NO_TIER),
         ("AMD64 CentOS9 Refleaks", "cstratak-CentOS9-x86_64", UnixRefleakBuild, UNSTABLE, NO_TIER),
