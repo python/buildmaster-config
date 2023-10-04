@@ -33,36 +33,52 @@ class Test(BaseTest):
         # test.support @reap_threads:
         # Warning -- threading_cleanup() failed to cleanup ...
         r"Warning -- ",
+
         # Py_FatalError() call
         r"Fatal Python error:",
+
         # PyErr_WriteUnraisable() exception: usually, error in
         # garbage collector or destructor
         r"Exception ignored in:",
+
         # faulthandler_exc_handler(): Windows exception handler installed with
         # AddVectoredExceptionHandler() by faulthandler.enable()
         r"Windows fatal exception:",
+
         # Resource warning: unclosed file, socket, etc.
         # NOTE: match the "ResourceWarning" anywhere, not only at the start
         r"ResourceWarning",
+
         # regrtest: At least one test failed. Log a warning even if the test
         # passed on the second try, to notify that a test is unstable.
         r"Re-running failed tests in verbose mode",
+
         # Re-running test 'test_multiprocessing_fork' in verbose mode
         r"Re-running test.* in verbose mode",
+
         # Thread last resort exception handler in t_bootstrap()
         r"Unhandled exception in thread started by ",
+
         # test_os leaked [6, 6, 6] memory blocks, sum=18,
         r"test_[^ ]+ leaked ",
+
         # FAIL: test_stdin_broken_pipe (test.test_asyncio...)
         r"FAIL: ",
+
         # ERROR: test_pipe_handle (test.test_asyncio...)
         r"ERROR: ",
+
         # test.* ... unexpected success
         r"unexpected success",
+
         # Kill worker process 15215 running for 1350.1 sec
         r"Kill worker process ",
+
         # test test_ssl failed -- multiple errors occurred; run in verbose mode for details
         r"test .* failed -- multiple errors occurred; run in verbose mode for details",
+
+        # OSError: [Errno 28] No space left on device: ...
+        r'No space left on device',
     )
     # Use ".*" prefix to search the regex anywhere since stdout is mixed
     # with stderr, so warnings are not always written at the start
