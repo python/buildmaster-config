@@ -181,7 +181,7 @@ class UnixNoGilBuild(UnixBuild):
 class UnixNoGilRefleakBuild(UnixBuild):
     buildersuffix = ".refleak.nogil"
     configureFlags = ["--with-pydebug", "--disable-gil"]
-    testFlags = "-R 3:3 -u-cpu"
+    testFlags = ["-R", "3:3", "-u-cpu"]
     # -R 3:3 is supposed to only require timeout x 6, but in practice,
     # it's much more slower. Use timeout x 10 to prevent timeout
     # caused by --huntrleaks.
