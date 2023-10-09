@@ -252,8 +252,9 @@ def get_workers(settings):
             parallel_tests=4,
         ),
         cpw(
-            name="ware-gentoo-x86",
-            tags=['linux', 'unix', 'gentoo', 'x86'],
+            name="ware-debian-x86",
+            tags=['linux', 'unix', 'debian', 'x86'],
+            parallel_tests=4,
         ),
         cpw(
             name="ware-win11",
