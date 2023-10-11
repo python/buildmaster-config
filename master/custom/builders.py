@@ -44,8 +44,17 @@ from custom.factories import (
     Wasm32WASIBuild,
 )
 
+# A builder can be marked as stable when at least the 10 latest builds are
+# successful, but it's way better to wait at least for at least one week of
+# successful builds before considering to mark a builder as stable.
 STABLE = "stable"
+
+# New builders should always be marked as unstable. If a stable builder starts
+# to fail randomly, it can be downgraded to unstable if it is not a Tier-1 or
+# Tier-2 builder.
 UNSTABLE = "unstable"
+
+# https://peps.python.org/pep-0011/ defines Platfom Support Tiers
 TIER_1 = "tier-1"
 TIER_2 = "tier-2"
 TIER_3 = "tier-3"
