@@ -2,7 +2,7 @@
     <div style="text-align: center;">
         <img src="https://www.python.org/static/community_logos/python-logo-master-v3-TM.png" ,
              width="480" height="162">
-        <h1>Branch release status dashboard </h1>
+        <h1>Branch release status dashboard</h1>
     </div>
 
     <div class="container">
@@ -46,4 +46,12 @@
             </div>
         </div>
     </div>
+    <div class="container">
+        <small>Generated at <time id="generatedAt" datetime="{{generated_at}}">{{generated_at}}</time></small>
+    </div>
 </div>
+<script type="javascript">
+    let elem = document.getElementById("generatedAt");
+    let date = new Date(elem.dateTime);
+    elem.innerText = date.toLocaleDateString("en-CA") + " " + date.toLocaleTimeString("pl-PL");
+</script>

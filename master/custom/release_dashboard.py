@@ -1,8 +1,9 @@
+import datetime
 import os
 import time
 
 from flask import Flask
-from flask import render_template
+from flask import render_template, request
 
 from buildbot.data.resultspec import Filter
 
@@ -57,13 +58,21 @@ def get_release_status_app(buildernames):
 
             failed_builds_by_branch[branch].append((builder, last_build))
 
+        generated_at = datetime.datetime.now(tz=datetime.UTC)
         failed_builders = sorted(failed_builds_by_branch.items(), reverse=True)
-        return render_template("releasedashboard.html", failed_builders=failed_builders)
+        return render_template(
+            "releasedashboard.html",
+            failed_builders=failed_builders,
+            generated_at=generated_at,
+        )
 
     @release_status_app.route("/index.html")
     def main():
         nonlocal cache
-        if cache is not None:
+
+        force_refresh = request.args.get("refresh", "").lower() in {"1", "yes", "true"}
+
+        if cache is not None and not force_refresh:
             result, deadline = cache
             if time.monotonic() <= deadline:
                 return result
