@@ -58,7 +58,7 @@ def get_release_status_app(buildernames):
 
             failed_builds_by_branch[branch].append((builder, last_build))
 
-        generated_at = datetime.datetime.now(tz=datetime.UTC)
+        generated_at = datetime.datetime.now(tz=datetime.timezone.utc)
         failed_builders = sorted(failed_builds_by_branch.items(), reverse=True)
         return render_template(
             "releasedashboard.html",
