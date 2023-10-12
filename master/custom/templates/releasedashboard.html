@@ -50,7 +50,7 @@
         <small>Generated at <time id="generatedAt" datetime="{{generated_at}}">{{generated_at}}</time></small>
     </div>
 </div>
-<script type="javascript">
+<script>
     let elem = document.getElementById("generatedAt");
     let date = new Date(elem.dateTime);
     elem.innerText = date.toLocaleDateString("en-CA") + " " + date.toLocaleTimeString("pl-PL");
