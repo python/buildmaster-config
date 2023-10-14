@@ -20,14 +20,6 @@ from .steps import (
     UploadTestResults,
 )
 
-# Python branches with regrtest --fail-rerun option
-# https://github.com/python/cpython/issues/108834
-BRANCH_WITH_FAIL_RERUN = (
-    MAIN_BRANCH_NAME,
-    #"3.12",
-    #"3.11",
-)
-
 # This (default) timeout is for each individual test file.
 # It is a bit more than the default faulthandler timeout in regrtest.py
 # (the latter isn't easily changed under Windows).
@@ -108,8 +100,6 @@ class UnixBuild(BaseBuild):
             testopts.append(parallel)
         if not has_option("-j", testopts):
             testopts.append("-j2")
-        if branch in BRANCH_WITH_FAIL_RERUN:
-            testopts.append("--fail-rerun")
         test = [
             "make",
             "buildbottest",
@@ -219,8 +209,6 @@ class UnixInstalledBuild(BaseBuild):
             compile = ["make", parallel, self.makeTarget]
             install = ["make", parallel, self.installTarget]
             testopts.append(parallel)
-        if branch in BRANCH_WITH_FAIL_RERUN:
-            testopts.append("--fail-rerun")
 
         test = [installed_python,
                 *self.interpreterFlags,
@@ -527,8 +515,6 @@ class BaseWindowsBuild(BaseBuild):
         clean_command = self.clean_command + self.cleanFlags
         if parallel:
             test_command.append(parallel)
-        if branch in BRANCH_WITH_FAIL_RERUN:
-            test_command.append("--fail-rerun")
         self.addStep(Compile(command=build_command))
         self.addStep(
             ShellCommand(
@@ -716,8 +702,6 @@ class UnixCrossBuild(UnixBuild):
             testopts.append(parallel)
         if not has_option("-j", self.testFlags):
             testopts.append("-j2")
-        if branch in BRANCH_WITH_FAIL_RERUN:
-            testopts.append("--fail-rerun")
 
         test = [
             "make",
