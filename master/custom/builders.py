@@ -162,6 +162,7 @@ STABLE_BUILDERS_TIER_3 = [
 
     # FreBSD x86-64 clang
     ("AMD64 FreeBSD", "ware-freebsd", UnixBuild),
+    ("AMD64 FreeBSD14", "opsec-fbsd14", UnixBuild),
 
     # Windows aarch64 MSVC
     ("ARM64 Windows", "linaro-win-arm64", WindowsARM64Build),
@@ -195,16 +196,22 @@ STABLE_BUILDERS_NO_TIER = [
 # -- Unstable Tier-1 builders -------------------------------------------
 UNSTABLE_BUILDERS_TIER_1 = [
     # Linux x86-64 GCC
+    # Fedora Rawhide is unstable
     ("AMD64 Fedora Rawhide", "cstratak-fedora-rawhide-x86_64", FedoraRawhideBuild),
     ("AMD64 Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-x86_64", UnixRefleakBuild),
     ("AMD64 Fedora Rawhide LTO", "cstratak-fedora-rawhide-x86_64", LTONonDebugUnixBuild),
     ("AMD64 Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-x86_64", LTOPGONonDebugBuild),
+
     ("AMD64 Fedora NoGIL", "itamaro-fedora-x1", UnixNoGilBuild),
     ("AMD64 Ubuntu NoGIL", "itamaro-ubuntu-aws", UnixNoGilBuild),
     ("AMD64 Ubuntu NoGIL Refleaks", "itamaro-ubuntu-aws", UnixNoGilRefleakBuild),
+
     ("AMD64 Ubuntu", "skumaran-ubuntu-x86_64", UnixBuild),
+
     ("AMD64 Arch Linux VintageParser", "pablogsal-arch-x86_64", UnixVintageParserBuild),
+
     ("AMD64 RHEL8 FIPS No Builtin Hashes", "cstratak-RHEL8-fips-x86_64", RHEL8NoBuiltinHashesUnixBuild),
+
     ("AMD64 CentOS9", "cstratak-CentOS9-x86_64", CentOS9Build),
     ("AMD64 CentOS9 Refleaks", "cstratak-CentOS9-x86_64", UnixRefleakBuild),
     ("AMD64 CentOS9 LTO", "cstratak-CentOS9-x86_64", LTONonDebugUnixBuild),
@@ -220,21 +227,26 @@ UNSTABLE_BUILDERS_TIER_1 = [
 # -- Unstable Tier-2 builders -------------------------------------------
 UNSTABLE_BUILDERS_TIER_2 = [
     # Linux x86-64 Clang
+    # Fedora Rawhide is unstable
+    # UBSan is a special build
     ("AMD64 Fedora Rawhide Clang", "cstratak-fedora-rawhide-x86_64", ClangUnixBuild),
     ("AMD64 Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-x86_64", ClangUnixInstalledBuild),
     ("AMD64 Clang UBSan", "gps-clang-ubsan", ClangUbsanLinuxBuild),
 
     # Linux ppc64le GCC
+    # Fedora Rawhide is unstable
     ("PPC64LE Fedora Rawhide", "cstratak-fedora-rawhide-ppc64le", FedoraRawhideBuild),
     ("PPC64LE Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-ppc64le", UnixRefleakBuild),
     ("PPC64LE Fedora Rawhide LTO", "cstratak-fedora-rawhide-ppc64le", LTONonDebugUnixBuild),
     ("PPC64LE Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-ppc64le", LTOPGONonDebugBuild),
+
     ("PPC64LE CentOS9", "cstratak-CentOS9-ppc64le", CentOS9Build),
     ("PPC64LE CentOS9 Refleaks", "cstratak-CentOS9-ppc64le", UnixRefleakBuild),
     ("PPC64LE CentOS9 LTO", "cstratak-CentOS9-ppc64le", LTONonDebugUnixBuild),
     ("PPC64LE CentOS9 LTO + PGO", "cstratak-CentOS9-ppc64le", LTOPGONonDebugBuild),
 
     # Linux aarch64 GCC/Clang
+    # Fedora Rawhide is unstable
     ("aarch64 Fedora Rawhide", "cstratak-fedora-rawhide-aarch64", FedoraRawhideBuild),
     ("aarch64 Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-aarch64", UnixRefleakBuild),
     ("aarch64 Fedora Rawhide Clang", "cstratak-fedora-rawhide-aarch64", ClangUnixBuild),
@@ -251,17 +263,19 @@ UNSTABLE_BUILDERS_TIER_2 = [
 # -- Unstable Tier-3 builders -------------------------------------------
 UNSTABLE_BUILDERS_TIER_3 = [
     # Linux ppc64le Clang
+    # Fedora Rawhide is unstable
     ("PPC64LE Fedora Rawhide Clang", "cstratak-fedora-rawhide-ppc64le", ClangUnixBuild),
     ("PPC64LE Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-ppc64le", ClangUnixInstalledBuild),
 
     # Linux s390x GCC
+    # Fedora Rawhide is unstable
     ("s390x Fedora Rawhide", "edelsohn-fedora-rawhide-z", UnixBuild),
     ("s390x Fedora Rawhide Refleaks", "edelsohn-fedora-rawhide-z", UnixRefleakBuild),
     ("s390x Fedora Rawhide LTO", "edelsohn-fedora-rawhide-z", LTONonDebugUnixBuild),
     ("s390x Fedora Rawhide LTO + PGO", "edelsohn-fedora-rawhide-z", LTOPGONonDebugBuild),
 
     # FreBSD x86-64 clang
-    ("AMD64 FreeBSD14", "opsec-fbsd14", UnixBuild),
+    # FreeBSD 15 is CURRENT: development branch (at 2023-10-17)
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
 ]
 
