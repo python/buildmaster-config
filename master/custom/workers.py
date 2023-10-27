@@ -298,4 +298,9 @@ def get_workers(settings):
             parallel_tests=2,
             parallel_builders=2,
         ),
+        cpw(
+            name="itamaro-macos-intel-aws",
+            tags=['macOS', 'unix', 'amd64', 'x86-64'],
+            parallel_tests=10,
+        ),
     ]
