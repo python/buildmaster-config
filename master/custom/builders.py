@@ -202,7 +202,6 @@ UNSTABLE_BUILDERS_TIER_1 = [
     ("AMD64 Fedora Rawhide LTO", "cstratak-fedora-rawhide-x86_64", LTONonDebugUnixBuild),
     ("AMD64 Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-x86_64", LTOPGONonDebugBuild),
 
-    ("AMD64 Fedora NoGIL", "itamaro-fedora-x1", UnixNoGilBuild),
     ("AMD64 Ubuntu NoGIL", "itamaro-ubuntu-aws", UnixNoGilBuild),
     ("AMD64 Ubuntu NoGIL Refleaks", "itamaro-ubuntu-aws", UnixNoGilRefleakBuild),
 
