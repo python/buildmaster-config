@@ -299,4 +299,10 @@ def get_workers(settings):
             not_branches=['3.9', '3.10', '3.11', '3.12'],
             parallel_tests=10,
         ),
+        cpw(
+            name="itamaro-macos-arm64-aws",
+            tags=['macOS', 'unix', 'arm', 'arm64'],
+            not_branches=['3.9', '3.10', '3.11', '3.12'],
+            parallel_tests=10,
+        ),
     ]

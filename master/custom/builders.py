@@ -36,6 +36,7 @@ from custom.factories import (
     Windows64RefleakBuild,
     Windows64ReleaseBuild,
     MacOSArmWithBrewBuild,
+    MacOSArmWithBrewNoGilBuild,
     WindowsARM64Build,
     WindowsARM64ReleaseBuild,
     Wasm32EmscriptenNodePThreadsBuild,
@@ -220,6 +221,7 @@ UNSTABLE_BUILDERS_TIER_1 = [
 
     # MacOS
     ("x86-64 MacOS Intel NoGIL", "itamaro-macos-intel-aws", UnixNoGilBuild),
+    ("ARM64 MacOS M1 NoGIL", "itamaro-macos-arm64-aws", MacOSArmWithBrewNoGilBuild),
 
     # Windows x86-64 MSVC
     ("AMD64 Windows Server 2022 NoGIL", "itamaro-win64-srv-22-aws", Windows64NoGilBuild),
