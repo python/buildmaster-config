@@ -10,8 +10,6 @@ from twisted.python import log
 from buildbot.util import httpclientservice
 from buildbot.www.hooks.github import GitHubEventHandler
 
-from .builders import STABLE
-
 TESTING_LABEL = ":hammer: test-with-buildbots"
 REFLEAK_TESTING_LABEL = ":hammer: test-with-refleak-buildbots"
 
@@ -324,11 +322,10 @@ class CustomGitHubEventHandler(GitHubEventHandler):
         yield self._remove_label_and_comment(payload, label)
 
         builder_filter = ""
-        # label-based buildbots are limited to stable builders
         if label == TESTING_LABEL:
-            builder_filter = f".* {STABLE}.*"
+            builder_filter = ".*"
         elif label == REFLEAK_TESTING_LABEL:
-            builder_filter = f".*Refleaks.* {STABLE}.*"
+            builder_filter = ".*Refleaks.*"
 
         return self._get_changes_from_pull_request(
             changes, number, payload, payload["pull_request"], event, builder_filter
