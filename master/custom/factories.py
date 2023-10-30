@@ -492,6 +492,16 @@ class MacOSArmWithBrewBuild(UnixBuild):
     testFlags = [*UnixBuild.testFlags,
                  "-x", "test_dbm", "test_dbm_ndbm", "test_shelve"]
 
+
+class MacOSArmWithBrewNoGilBuild(UnixNoGilBuild):
+    buildersuffix = ".macos-with-brew.nogil"
+    configureFlags = [
+        *UnixNoGilBuild.configureFlags,
+        "--with-openssl=/opt/homebrew/opt/openssl@3",
+        "CPPFLAGS=-I/opt/homebrew/include",
+        "LDFLAGS=-L/opt/homebrew/lib",
+    ]
+
 ##############################################################################
 ############################  WINDOWS BUILDS  ################################
 ##############################################################################
