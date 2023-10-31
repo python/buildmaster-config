@@ -5,6 +5,10 @@ from twisted.python import log
 
 
 class GitHubPrScheduler(AnyBranchScheduler):
+    def __init__(self, *args, stable_builder_names, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.stable_builder_names = stable_builder_names
+
     @defer.inlineCallbacks
     def addBuildsetForChanges(self, **kwargs):
         log.msg("Preapring buildset for PR changes")
@@ -18,8 +22,16 @@ class GitHubPrScheduler(AnyBranchScheduler):
         chdict = yield self.master.db.changes.getChange(changeid)
 
         builder_filter = chdict["properties"].get("builderfilter", None)
+        event = chdict["properties"].get("event", None)
         builder_names = kwargs.get("builderNames", self.builderNames)
         if builder_filter and builder_names:
+            # allow unstable builders only for comment-based trigger
+            if event != "issue_comment":
+                builder_names = [
+                    builder_name
+                    for builder_name in builder_names
+                    if builder_name in self.stable_builder_names
+                ]
             log.msg("Found builder filter: {}".format(builder_filter))
             builder_filter, _ = builder_filter
             matcher = re.compile(builder_filter, re.IGNORECASE)
