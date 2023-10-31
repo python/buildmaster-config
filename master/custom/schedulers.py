@@ -23,6 +23,9 @@ class GitHubPrScheduler(AnyBranchScheduler):
 
         builder_filter = chdict["properties"].get("builderfilter", None)
         event = chdict["properties"].get("event", None)
+        if event:
+            # looks like `("issue_comment", "Change")` for a comment
+            event, _ = event
         builder_names = kwargs.get("builderNames", self.builderNames)
         if builder_filter and builder_names:
             # allow unstable builders only for comment-based trigger
@@ -32,17 +35,22 @@ class GitHubPrScheduler(AnyBranchScheduler):
                     for builder_name in builder_names
                     if builder_name in self.stable_builder_names
                 ]
-            log.msg("Found builder filter: {}".format(builder_filter))
+                log.msg(f"Considering only stable builders: {builder_names}")
+            # looks like `("<filter regex from comment>", "Change")`
             builder_filter, _ = builder_filter
+            log.msg(f"Found builder filter: {builder_filter}")
             matcher = re.compile(builder_filter, re.IGNORECASE)
             builder_names = [
                 builder_name
                 for builder_name in builder_names
                 if matcher.search(builder_name)
             ]
-            log.msg(f"Builder names filtered: {builder_names}")
-            kwargs.update(builderNames=builder_names)
-            yield super().addBuildsetForChanges(**kwargs)
+            if builder_names:
+                log.msg(f"Builder names filtered: {builder_names}")
+                kwargs.update(builderNames=builder_names)
+                yield super().addBuildsetForChanges(**kwargs)
+            else:
+                log.msg(f"No matching builders after filtering - breaking out")
             return
 
         log.msg("Scheduling regular non-filtered buildset")
