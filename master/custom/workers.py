@@ -212,6 +212,8 @@ def get_workers(settings):
             tags=['linux', 'unix', 'raspbian', 'debian', 'armv6', 'armv7l',
                   'aarch32', 'arm'],
             parallel_tests=3,
+            # Raspbian Debian bullseye ships with 3.9, bookworm with 3.11.
+            not_branches=['3.7', '3.8'],
         ),
         cpw(
             name="kulikjak-solaris-sparcv9",
