@@ -337,6 +337,7 @@ SLOW_TIMEOUT = 40 * 60
 # These use a longer timeout for very slow buildbots.
 class SlowNonDebugUnixBuild(NonDebugUnixBuild):
     test_timeout = SLOW_TIMEOUT
+    testFlags = [*NonDebugUnixBuild.testFlags, "-u-cpu"]
 
 
 class SlowUnixInstalledBuild(UnixInstalledBuild):
