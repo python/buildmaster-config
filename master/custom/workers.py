@@ -269,6 +269,13 @@ def get_workers(settings):
             parallel_tests=4,
         ),
         cpw(
+            name="bcannon-wasi",
+            tags=['wasm', 'wasi'],
+            not_branches=['3.9', '3.10'],
+            parallel_tests=2,
+            parallel_builders=2,
+        ),
+        cpw(
             name="bcannon-wasm",
             tags=['wasm', 'emscripten', 'wasi'],
             not_branches=['3.9', '3.10'],
