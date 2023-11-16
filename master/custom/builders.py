@@ -284,6 +284,7 @@ UNSTABLE_BUILDERS_TIER_3 = [
 
     # WebAssembly
     ("wasm32 WASI", "bcannon-wasi", Wasm32WASIBuild),
+    ("wasm32 WASI 8Core", "kushaldas-wasi", Wasm32WASIBuild),
 ]
 
 

@@ -314,4 +314,11 @@ def get_workers(settings):
             not_branches=['3.9', '3.10', '3.11', '3.12'],
             parallel_tests=10,
         ),
+        cpw(
+            name="kushaldas-wasi",
+            tags=['wasm', 'wasi'],
+            not_branches=['3.9', '3.10'],
+            parallel_tests=4,
+            parallel_builders=2,
+        ),
     ]
