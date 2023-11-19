@@ -80,6 +80,8 @@ STABLE_BUILDERS_TIER_1 = [
     ("AMD64 RHEL8 Refleaks", "cstratak-RHEL8-x86_64", UnixRefleakBuild),
     ("AMD64 RHEL8 LTO", "cstratak-RHEL8-x86_64", LTONonDebugUnixBuild),
     ("AMD64 RHEL8 LTO + PGO", "cstratak-RHEL8-x86_64", LTOPGONonDebugBuild),
+    ("AMD64 Ubuntu NoGIL", "itamaro-ubuntu-aws", UnixNoGilBuild),
+    ("AMD64 Ubuntu NoGIL Refleaks", "itamaro-ubuntu-aws", UnixNoGilRefleakBuild),
 
     # Windows x86-64 MSVC
     ("AMD64 Windows10", "bolen-windows10", Windows64Build),
@@ -89,6 +91,7 @@ STABLE_BUILDERS_TIER_1 = [
 
     # macOS x86-64 clang
     ("x86-64 macOS", "billenstein-macos", UnixBuild),
+    ("x86-64 MacOS Intel NoGIL", "itamaro-macos-intel-aws", UnixNoGilBuild),
 ]
 
 
@@ -133,6 +136,7 @@ STABLE_BUILDERS_TIER_2 = [
 
     # macOS aarch64 clang
     ("ARM64 macOS", "pablogsal-macos-m1", MacOSArmWithBrewBuild),
+    ("ARM64 MacOS M1 NoGIL", "itamaro-macos-arm64-aws", MacOSArmWithBrewNoGilBuild),
 ]
 
 
@@ -203,9 +207,6 @@ UNSTABLE_BUILDERS_TIER_1 = [
     ("AMD64 Fedora Rawhide LTO", "cstratak-fedora-rawhide-x86_64", LTONonDebugUnixBuild),
     ("AMD64 Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-x86_64", LTOPGONonDebugBuild),
 
-    ("AMD64 Ubuntu NoGIL", "itamaro-ubuntu-aws", UnixNoGilBuild),
-    ("AMD64 Ubuntu NoGIL Refleaks", "itamaro-ubuntu-aws", UnixNoGilRefleakBuild),
-
     ("AMD64 Ubuntu", "skumaran-ubuntu-x86_64", UnixBuild),
 
     ("AMD64 Arch Linux VintageParser", "pablogsal-arch-x86_64", UnixVintageParserBuild),
@@ -218,10 +219,6 @@ UNSTABLE_BUILDERS_TIER_1 = [
     ("AMD64 CentOS9 LTO + PGO", "cstratak-CentOS9-x86_64", LTOPGONonDebugBuild),
     ("AMD64 CentOS9 FIPS Only Blake2 Builtin Hash", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuildExceptBlake2),
     ("AMD64 CentOS9 FIPS No Builtin Hashes", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuild),
-
-    # MacOS
-    ("x86-64 MacOS Intel NoGIL", "itamaro-macos-intel-aws", UnixNoGilBuild),
-    ("ARM64 MacOS M1 NoGIL", "itamaro-macos-arm64-aws", MacOSArmWithBrewNoGilBuild),
 
     # Windows x86-64 MSVC
     ("AMD64 Windows Server 2022 NoGIL", "itamaro-win64-srv-22-aws", Windows64NoGilBuild),
