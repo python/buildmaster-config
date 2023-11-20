@@ -250,6 +250,12 @@ class UnixAsanDebugBuild(UnixAsanBuild):
     configureFlags = UnixAsanBuild.configureFlags + ["--with-pydebug"]
 
 
+class UnixAsanNoGilBuild(UnixAsanBuild):
+    buildersuffix = ".asan.nogil"
+    configureFlags = UnixAsanBuild.configureFlags + ["--disable-gil"]
+    factory_tags = UnixAsanBuild.factory_tags + ["nogil"]
+
+
 class UnixBuildWithoutDocStrings(UnixBuild):
     configureFlags = ["--with-pydebug", "--without-doc-strings"]
 
@@ -498,6 +504,16 @@ class MacOSArmWithBrewNoGilBuild(UnixNoGilBuild):
     buildersuffix = ".macos-with-brew.nogil"
     configureFlags = [
         *UnixNoGilBuild.configureFlags,
+        "--with-openssl=/opt/homebrew/opt/openssl@3",
+        "CPPFLAGS=-I/opt/homebrew/include",
+        "LDFLAGS=-L/opt/homebrew/lib",
+    ]
+
+
+class MacOSArmWithBrewNoGilRefleakBuild(UnixNoGilRefleakBuild):
+    buildersuffix = ".macos-with-brew.refleak.nogil"
+    configureFlags = [
+        *UnixNoGilRefleakBuild.configureFlags,
         "--with-openssl=/opt/homebrew/opt/openssl@3",
         "CPPFLAGS=-I/opt/homebrew/include",
         "LDFLAGS=-L/opt/homebrew/lib",
