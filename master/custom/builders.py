@@ -174,10 +174,7 @@ STABLE_BUILDERS_TIER_3 = [
     ("ARM64 Windows Non-Debug", "linaro-win-arm64", WindowsARM64ReleaseBuild),
 
     # WebAssembly
-    ("wasm32-emscripten node (pthreads)", "bcannon-wasm", Wasm32EmscriptenNodePThreadsBuild),
-    ("wasm32-emscripten node (dynamic linking)", "bcannon-wasm", Wasm32EmscriptenNodeDLBuild),
-    ("wasm32-emscripten browser (dynamic linking, no tests)", "bcannon-wasm", Wasm32EmscriptenBrowserBuild),
-    ("wasm32-wasi", "bcannon-wasm", Wasm32WASIBuild),
+    ("wasm32-wasi", "bcannon-wasi", Wasm32WASIBuild),
 ]
 
 
@@ -280,7 +277,6 @@ UNSTABLE_BUILDERS_TIER_3 = [
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
 
     # WebAssembly
-    ("wasm32 WASI", "bcannon-wasi", Wasm32WASIBuild),
     ("wasm32 WASI 8Core", "kushaldas-wasi", Wasm32WASIBuild),
 ]
 

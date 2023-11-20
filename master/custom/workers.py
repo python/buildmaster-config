@@ -276,13 +276,6 @@ def get_workers(settings):
             parallel_builders=2,
         ),
         cpw(
-            name="bcannon-wasm",
-            tags=['wasm', 'emscripten', 'wasi'],
-            not_branches=['3.9', '3.10'],
-            parallel_tests=2,
-            parallel_builders=2,
-        ),
-        cpw(
             name="ambv-bb-win11",
             tags=['windows', 'win11', 'amd64', 'x86-64', 'bigmem'],
             not_branches=['3.9', '3.10', '3.11'],
