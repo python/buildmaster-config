@@ -510,6 +510,16 @@ class MacOSArmWithBrewNoGilBuild(UnixNoGilBuild):
     ]
 
 
+class MacOSArmWithBrewRefleakBuild(UnixRefleakBuild):
+    buildersuffix = ".macos-with-brew.refleak"
+    configureFlags = [
+        *UnixRefleakBuild.configureFlags,
+        "--with-openssl=/opt/homebrew/opt/openssl@3",
+        "CPPFLAGS=-I/opt/homebrew/include",
+        "LDFLAGS=-L/opt/homebrew/lib",
+    ]
+
+
 class MacOSArmWithBrewNoGilRefleakBuild(UnixNoGilRefleakBuild):
     buildersuffix = ".macos-with-brew.refleak.nogil"
     configureFlags = [
