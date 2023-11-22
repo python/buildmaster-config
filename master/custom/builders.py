@@ -13,6 +13,7 @@ from custom.factories import (
     UnixRefleakBuild,
     UnixNoGilBuild,
     UnixNoGilRefleakBuild,
+    UnixAsanNoGilBuild,
     AIXBuild,
     AIXBuildWithXLC,
     PGOUnixBuild,
@@ -37,6 +38,7 @@ from custom.factories import (
     Windows64ReleaseBuild,
     MacOSArmWithBrewBuild,
     MacOSArmWithBrewNoGilBuild,
+    MacOSArmWithBrewNoGilRefleakBuild,
     WindowsARM64Build,
     WindowsARM64ReleaseBuild,
     Wasm32EmscriptenNodePThreadsBuild,
@@ -219,6 +221,9 @@ UNSTABLE_BUILDERS_TIER_1 = [
 
     # Windows x86-64 MSVC
     ("AMD64 Windows Server 2022 NoGIL", "itamaro-win64-srv-22-aws", Windows64NoGilBuild),
+
+    # macOS x86-64 clang
+    ("x86-64 MacOS Intel ASNA NoGIL", "itamaro-macos-intel-aws", UnixAsanNoGilBuild),
 ]
 
 
@@ -255,6 +260,9 @@ UNSTABLE_BUILDERS_TIER_2 = [
     ("aarch64 CentOS9 Refleaks", "cstratak-CentOS9-aarch64", UnixRefleakBuild),
     ("aarch64 CentOS9 LTO", "cstratak-CentOS9-aarch64", LTONonDebugUnixBuild),
     ("aarch64 CentOS9 LTO + PGO", "cstratak-CentOS9-aarch64", LTOPGONonDebugBuild),
+
+    # macOS aarch64 clang
+    ("ARM64 MacOS M1 NoGIL Refleaks", "itamaro-macos-arm64-aws", MacOSArmWithBrewNoGilRefleakBuild),
 ]
 
 
