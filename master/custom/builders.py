@@ -223,7 +223,7 @@ UNSTABLE_BUILDERS_TIER_1 = [
     ("AMD64 Windows Server 2022 NoGIL", "itamaro-win64-srv-22-aws", Windows64NoGilBuild),
 
     # macOS x86-64 clang
-    ("x86-64 MacOS Intel ASAN (No) NoGIL", "itamaro-macos-intel-aws", UnixAsanBuild),
+    ("x86-64 MacOS Intel ASAN", "itamaro-macos-intel-aws", UnixAsanBuild),
 ]
 
 
@@ -262,7 +262,7 @@ UNSTABLE_BUILDERS_TIER_2 = [
     ("aarch64 CentOS9 LTO + PGO", "cstratak-CentOS9-aarch64", LTOPGONonDebugBuild),
 
     # macOS aarch64 clang
-    ("ARM64 MacOS M1 (No) NoGIL Refleaks", "itamaro-macos-arm64-aws", MacOSArmWithBrewRefleakBuild),
+    ("ARM64 MacOS M1 Refleaks", "itamaro-macos-arm64-aws", MacOSArmWithBrewRefleakBuild),
 ]
 
 
