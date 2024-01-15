@@ -241,8 +241,14 @@ class UnixAsanBuild(UnixBuild):
     factory_tags = ["asan", "sanitizer"]
     # See https://bugs.python.org/issue42985 for more context on why
     # SIGSEGV is ignored on purpose.
-    compile_environ = {'ASAN_OPTIONS': 'detect_leaks=0:allocator_may_return_null=1:handle_segv=0'}
-    test_environ = {'ASAN_OPTIONS': 'detect_leaks=0:allocator_may_return_null=1:handle_segv=0'}
+    asan_options = 'detect_leaks=0:allocator_may_return_null=1:handle_segv=0'
+    compile_environ = {'ASAN_OPTIONS': asan_options}
+    test_environ = {
+        'ASAN_OPTIONS': asan_options,
+        # Workaround for a MacOS issue when ASAN is enabled
+        # python.exe(74602,0x7ff84626a700) malloc: nano zone abandoned due to inability to reserve vm space.
+        'MallocNanoZone': '0',
+    }
 
 
 class UnixAsanDebugBuild(UnixAsanBuild):
