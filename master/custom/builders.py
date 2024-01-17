@@ -223,7 +223,7 @@ UNSTABLE_BUILDERS_TIER_1 = [
     ("AMD64 Windows Server 2022 NoGIL", "itamaro-win64-srv-22-aws", Windows64NoGilBuild),
 
     # macOS x86-64 clang
-    ("x86-64 MacOS Intel ASAN", "itamaro-macos-intel-aws", UnixAsanBuild),
+    ("x86-64 MacOS Intel ASAN NoGIL", "itamaro-macos-intel-aws", UnixAsanNoGilBuild),
 ]
 
 
