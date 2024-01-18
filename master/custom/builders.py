@@ -41,10 +41,7 @@ from custom.factories import (
     MacOSArmWithBrewRefleakBuild,
     WindowsARM64Build,
     WindowsARM64ReleaseBuild,
-    Wasm32EmscriptenNodePThreadsBuild,
-    Wasm32EmscriptenNodeDLBuild,
-    Wasm32EmscriptenBrowserBuild,
-    Wasm32WASIBuild,
+    Wasm32WasiCrossBuild,
 )
 
 # A builder can be marked as stable when at least the 10 latest builds are
@@ -176,7 +173,7 @@ STABLE_BUILDERS_TIER_3 = [
     ("ARM64 Windows Non-Debug", "linaro-win-arm64", WindowsARM64ReleaseBuild),
 
     # WebAssembly
-    ("wasm32-wasi", "bcannon-wasi", Wasm32WASIBuild),
+    ("wasm32-wasi", "bcannon-wasi", Wasm32WasiCrossBuild),
 ]
 
 
@@ -285,7 +282,7 @@ UNSTABLE_BUILDERS_TIER_3 = [
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
 
     # WebAssembly
-    ("wasm32 WASI 8Core", "kushaldas-wasi", Wasm32WASIBuild),
+    ("wasm32 WASI 8Core", "kushaldas-wasi", Wasm32WasiCrossBuild),
 ]
 
 

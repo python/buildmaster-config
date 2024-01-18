@@ -795,75 +795,15 @@ class UnixCrossBuild(UnixBuild):
         )
 
 
-class Wasm32EmscriptenBuild(UnixCrossBuild):
-    """wasm32-emscripten builder
-
-    * Emscripten SDK >= 3.1.12 must be installed
-    * ccache must be installed
-    * Emscripten PATHs must be pre-pended to PATH
-    * ``which node`` must be equal $EMSDK_NODE
-    """
-    factory_tags = ["wasm", "emscripten"]
-    compile_environ = {
-        "CONFIG_SITE": "../../Tools/wasm/config.site-wasm32-emscripten",
-        "EM_COMPILER_WRAPPER": "ccache",
-    }
-
-    host = "wasm32-unknown-emscripten"
-    host_configure_cmd = ["emconfigure", "../../configure"]
-    host_make_cmd = ["emmake", "make"]
-
-
-class Wasm32EmscriptenNodePThreadsBuild(Wasm32EmscriptenBuild):
-    """Emscripten with pthreads, testing with NodeJS
-    """
-    buildersuffix = ".emscripten-node-pthreads"
-    extra_configure_flags = [
-        # don't run with --with-pydebug, Emscripten has limited stack
-        "--without-pydebug",
-        "--with-emscripten-target=node",
-        "--disable-wasm-dynamic-linking",
-        "--enable-wasm-pthreads",
-    ]
-
-
-class Wasm32EmscriptenNodeDLBuild(Wasm32EmscriptenBuild):
-    """Emscripten with dynamic linking, testing with NodeJS
-    """
-    buildersuffix = ".emscripten-node-dl"
-    extra_configure_flags = [
-        # don't run with --with-pydebug, Emscripten has limited stack
-        "--without-pydebug",
-        "--with-emscripten-target=node",
-        "--enable-wasm-dynamic-linking",
-        "--disable-wasm-pthreads",
-    ]
-
-
-class Wasm32EmscriptenBrowserBuild(Wasm32EmscriptenBuild):
-    """Emscripten browser builds (no tests)
-    """
-    buildersuffix = ".emscripten-browser"
-    extra_configure_flags = [
-        # don't run with --with-pydebug, Emscripten has limited stack
-        "--without-pydebug",
-        "--with-emscripten-target=browser",
-        "--enable-wasm-dynamic-linking",
-        "--disable-wasm-pthreads",
-    ]
-    # browser builds do not accept argv from CLI
-    can_execute_python = False
-
-
-class Wasm32WASIBuild(UnixCrossBuild):
+class Wasm32WasiCrossBuild(UnixCrossBuild):
     """wasm32-wasi builder
 
     * WASI SDK >= 16 must be installed to default path /opt/wasi-sdk
     * wasmtime must be installed and on PATH
-    * Tools/wasm/wasi-env detects presence of WASIX and ccache
     """
-    buildersuffix = ".wasi"
-    factory_tags = ["wasm", "wasi"]
+
+    buildersuffix = ".wasi.nondebug"
+    factory_tags = ["wasm", "wasi", "nondebug"]
     extra_configure_flags = [
         # debug builds exhaust the limited call stack on WASI
         "--without-pydebug",
