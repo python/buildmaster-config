@@ -921,6 +921,8 @@ class _Wasm32WasiBuild(BaseBuild):
         )
 
 
+# Preventing this from running on versions older than 3.13 is managed in
+# master.cfg.
 class Wasm32WasiDebugBuild(_Wasm32WasiBuild):
     append_suffix = ".debug"
     pydebug = True

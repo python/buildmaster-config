@@ -42,6 +42,7 @@ from custom.factories import (
     WindowsARM64Build,
     WindowsARM64ReleaseBuild,
     Wasm32WasiCrossBuild,
+    Wasm32WasiDebugBuild,
 )
 
 # A builder can be marked as stable when at least the 10 latest builds are
@@ -172,8 +173,9 @@ STABLE_BUILDERS_TIER_3 = [
     ("ARM64 Windows", "linaro-win-arm64", WindowsARM64Build),
     ("ARM64 Windows Non-Debug", "linaro-win-arm64", WindowsARM64ReleaseBuild),
 
-    # WebAssembly
-    ("wasm32-wasi", "bcannon-wasi", Wasm32WasiCrossBuild),
+    # WASI
+    ("wasm32-wasi Non-Debug", "bcannon-wasi", Wasm32WasiCrossBuild),
+    ("wasm32-wasi", "bcannon-wasi", Wasm32WasiDebugBuild),
 ]
 
 
