@@ -795,6 +795,7 @@ class UnixCrossBuild(UnixBuild):
         )
 
 
+# Deprecated since Python 3.13; can be dropped once `wasi.py` is in all versions.
 class Wasm32WasiCrossBuild(UnixCrossBuild):
     """wasm32-wasi builder
 
@@ -830,7 +831,7 @@ class Wasm32WasiBuild(BaseBuild):
     """Build Python for wasm32-wasi using Tools/wasm/wasi.py."""
     buildersuffix = ".wasi"
     factory_tags = ["wasm", "wasi"]
-    # pydebug defined in subclasses.
+    # pydebug and append_suffix defined in subclasses.
 
     def __init__(self, source, *, extra_tags=[], **kwargs):
         if not self.pydebug:
