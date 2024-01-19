@@ -827,7 +827,7 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
         super().setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
 
 
-class Wasm32WasiBuild(BaseBuild):
+class _Wasm32WasiBuild(BaseBuild):
     """Build Python for wasm32-wasi using Tools/wasm/wasi.py."""
     buildersuffix = ".wasi"
     factory_tags = ["wasm", "wasi"]
@@ -921,11 +921,11 @@ class Wasm32WasiBuild(BaseBuild):
         )
 
 
-class Wasm32WasiDebugBuild(Wasm32WasiBuild):
+class Wasm32WasiDebugBuild(_Wasm32WasiBuild):
     append_suffix = ".debug"
     pydebug = True
 
 
-class Wasm32WasiNonDebugBuild(Wasm32WasiBuild):
+class Wasm32WasiNonDebugBuild(_Wasm32WasiBuild):
     append_suffix = ".nondebug"
     pydebug = False
