@@ -356,7 +356,7 @@ DAILYBUILDERS = [
 ]
 
 # Match builder name (excluding the branch name) of builders that should only
-# run on the master and "custom" branches.
+# run on the main and "custom" branches.
 ONLY_MAIN_BRANCH = (
     "Alpine Linux",
     # Cygwin is not supported on 2.7, 3.6, 3.7
