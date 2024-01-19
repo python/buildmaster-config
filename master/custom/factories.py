@@ -645,7 +645,7 @@ class WindowsARM64ReleaseBuild(WindowsARM64Build):
     factory_tags = ["win-arm64", "nondebug"]
 
 ##############################################################################
-##############################  WASM BUILDS  #################################
+##############################  WASI BUILDS  #################################
 ##############################################################################
 
 
@@ -823,6 +823,108 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
                 haltOnFailure=True,
             )
         )
-        super().setup(
-            parallel, branch, test_with_PTY=test_with_PTY, **kwargs
+        super().setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
+
+
+class Wasm32WasiBuild(BaseBuild):
+    """Build Python for wasm32-wasi using Tools/wasm/wasi.py."""
+    buildersuffix = ".wasi"
+    factory_tags = ["wasm", "wasi"]
+    # pydebug defined in subclasses.
+
+    def __init__(self, source, *, extra_tags=[], **kwargs):
+        if not self.pydebug:
+            extra_tags.append("nondebug")
+        self.buildersuffix += self.append_suffix
+        super().__init__(source, extra_tags=extra_tags, **kwargs)
+
+    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+        wasi_py = "Tools/wasm/wasi.py"
+        host_path = "build/wasm32-wasi"
+
+        # Build Python
+        build_configure = ["python3", wasi_py, "configure-build-python"]
+        if self.pydebug:
+            build_configure.extend(["--", "--with-pydebug"])
+        self.addStep(
+            Configure(
+                name="Configure build Python",
+                command=build_configure,
+            )
         )
+        self.addStep(
+            Compile(
+                name="Compile build Python",
+                command=["python3", wasi_py, "make-build-python"],
+            )
+        )
+
+        # Host/WASI Python
+        self.addStep(
+            # Pydebug build automatically inferred from build Python.
+            Configure(
+                name="Configure host Python",
+                command=["python3", wasi_py, "configure-host"],
+            )
+        )
+        self.addStep(
+            Compile(
+                name="Compile host Python",
+                command=["python3", wasi_py, "make-host"],
+            )
+        )
+
+        self.addStep(
+            ShellCommand(
+                name="pythoninfo",
+                description="pythoninfo",
+                command=["make", "pythoninfo"],
+                warnOnFailure=True,
+                workdir=host_path,
+            )
+        )
+
+        # Copied from UnixBuild.
+        testopts = list(self.testFlags)
+        if not has_option("-R", self.testFlags):
+            testopts.extend(("--junit-xml", JUNIT_FILENAME))
+        if parallel:
+            testopts.append(parallel)
+        if not has_option("-j", testopts):
+            testopts.append("-j2")
+        test = [
+            "make",
+            "buildbottest",
+            "TESTOPTS=" + " ".join(testopts) + " ${BUILDBOT_TESTOPTS}",
+            f"TESTPYTHONOPTS={self.interpreterFlags}",
+            f"TESTTIMEOUT={self.test_timeout}",
+        ]
+        self.addStep(
+            Test(
+                command=test,
+                timeout=step_timeout(self.test_timeout),
+                usePTY=test_with_PTY,
+                env=self.test_environ,
+                workdir=host_path,
+            )
+        )
+        if branch not in ("3",) and not has_option("-R", self.testFlags):
+            filename = os.path.join(host_path, JUNIT_FILENAME)
+            self.addStep(UploadTestResults(branch, filename=filename))
+
+        self.addStep(
+            Clean(
+                name="Clean the builds",
+                command=["python3", wasi_py, "clean"],
+            )
+        )
+
+
+class Wasm32WasiDebugBuild(Wasm32WasiBuild):
+    append_suffix = ".debug"
+    pydebug = True
+
+
+class Wasm32WasiNonDebugBuild(Wasm32WasiBuild):
+    append_suffix = ".nondebug"
+    pydebug = False
