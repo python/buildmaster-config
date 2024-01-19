@@ -926,8 +926,3 @@ class _Wasm32WasiBuild(BaseBuild):
 class Wasm32WasiDebugBuild(_Wasm32WasiBuild):
     append_suffix = ".debug"
     pydebug = True
-
-
-class Wasm32WasiNonDebugBuild(_Wasm32WasiBuild):
-    append_suffix = ".nondebug"
-    pydebug = False
