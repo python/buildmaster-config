@@ -223,6 +223,15 @@ UNSTABLE_BUILDERS_TIER_1 = [
     ("AMD64 Windows Server 2022 NoGIL", "itamaro-win64-srv-22-aws", Windows64NoGilBuild),
 
     # macOS x86-64 clang
+    # Note: This macOS worker has `MallocNanoZone=0` environment variable set globally on the machine.
+    # This was needed to workaround an issue with this builder that manifested as failures in 3 tests:
+    # test_cmd_line, test_posix, test_subprocess
+    # These failures seem to be related to the occurrence of this warning:
+    # python.exe(74602,0x7ff84626a700) malloc: nano zone abandoned due to inability to reserve vm space.
+    # It is unclear why (or if) it's *directly* causing the test failures, but setting `MallocNanoZone=0`
+    # disables this optimization (and fixes the tests), which appears to be interfering with ASAN. See also:
+    # https://stackoverflow.com/questions/64126942/malloc-nano-zone-abandoned-due-to-inability-to-preallocate-reserved-vm-space
+    # https://github.com/python/buildmaster-config/issues/450 (and attached PR)
     ("x86-64 MacOS Intel ASAN NoGIL", "itamaro-macos-intel-aws", UnixAsanNoGilBuild),
 ]
 
