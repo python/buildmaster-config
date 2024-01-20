@@ -827,7 +827,7 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
         super().setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
 
 
-class _Wasm32WasiBuild(BaseBuild):
+class _Wasm32WasiBuild(UnixBuild):
     """Build Python for wasm32-wasi using Tools/wasm/wasi.py."""
     buildersuffix = ".wasi"
     factory_tags = ["wasm", "wasi"]
