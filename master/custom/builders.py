@@ -38,7 +38,7 @@ from custom.factories import (
     Windows64ReleaseBuild,
     MacOSArmWithBrewBuild,
     MacOSArmWithBrewNoGilBuild,
-    MacOSArmWithBrewRefleakBuild,
+    MacOSArmWithBrewNoGilRefleakBuild,
     WindowsARM64Build,
     WindowsARM64ReleaseBuild,
     Wasm32EmscriptenNodePThreadsBuild,
@@ -262,7 +262,7 @@ UNSTABLE_BUILDERS_TIER_2 = [
     ("aarch64 CentOS9 LTO + PGO", "cstratak-CentOS9-aarch64", LTOPGONonDebugBuild),
 
     # macOS aarch64 clang
-    ("ARM64 MacOS M1 Refleaks", "itamaro-macos-arm64-aws", MacOSArmWithBrewRefleakBuild),
+    ("ARM64 MacOS M1 Refleaks NoGIL", "itamaro-macos-arm64-aws", MacOSArmWithBrewNoGilRefleakBuild),
 ]
 
 
