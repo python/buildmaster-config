@@ -626,7 +626,8 @@ class Windows64ReleaseBuild(Windows64Build):
 
 class Windows64NoGilBuild(Windows64Build):
     buildersuffix = '.x64.nogil'
-    buildFlags = ["-p", "x64", "--disable-gil"]
+    buildFlags = Windows64Build.buildFlags + ["--disable-gil"]
+    testFlags = Windows64Build.testFlags + ["--disable-gil"]
     factory_tags = ["win64", "nogil"]
 
 
