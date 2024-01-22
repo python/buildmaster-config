@@ -529,6 +529,31 @@ class MacOSArmWithBrewNoGilRefleakBuild(UnixNoGilRefleakBuild):
         "LDFLAGS=-L/opt/homebrew/lib",
     ]
 
+
+class MacOSAsanNoGilBuild(UnixAsanNoGilBuild):
+    buildersuffix = ".macos-with-brew.asan.nogil"
+    configureFlags = UnixAsanNoGilBuild.configureFlags + [
+        "--with-openssl=/opt/homebrew/opt/openssl@3",
+        "CPPFLAGS=-I/opt/homebrew/include",
+        "LDFLAGS=-L/opt/homebrew/lib",
+    ]
+    asan_options = 'detect_leaks=0:allocator_may_return_null=1:handle_segv=0'
+    compile_environ = {'ASAN_OPTIONS': asan_options}
+    test_environ = {
+        'ASAN_OPTIONS': asan_options,
+        # Note: Need to set `MallocNanoZone=0` environment variable to workaround a macOS issue.
+        # This was needed to workaround an issue with this builder that manifested as failures in 3 tests:
+        # test_cmd_line, test_posix, test_subprocess
+        # These failures seem to be related to the occurrence of this warning:
+        # python.exe(74602,0x7ff84626a700) malloc: nano zone abandoned due to inability to reserve vm space.
+        # It is unclear why (or if) it's *directly* causing the test failures, but setting `MallocNanoZone=0`
+        # disables this optimization (and fixes the tests), which appears to be interfering with ASAN. See also:
+        # https://stackoverflow.com/questions/64126942/malloc-nano-zone-abandoned-due-to-inability-to-preallocate-reserved-vm-space
+        # https://github.com/python/buildmaster-config/issues/450 (and attached PR)
+        'MallocNanoZone': '0',
+    }
+
+
 ##############################################################################
 ############################  WINDOWS BUILDS  ################################
 ##############################################################################
