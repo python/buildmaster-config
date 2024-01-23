@@ -811,6 +811,7 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
     ]
     compile_environ = {
         "CONFIG_SITE": "../../Tools/wasm/config.site-wasm32-wasi",
+        "WASMTIME_NEW_CLI": "0",
     }
     host = "wasm32-unknown-wasi"
     host_configure_cmd = ["../../Tools/wasm/wasi-env", "../../configure"]
