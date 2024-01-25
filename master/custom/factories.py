@@ -671,7 +671,7 @@ class WindowsARM64ReleaseBuild(WindowsARM64Build):
     factory_tags = ["win-arm64", "nondebug"]
 
 ##############################################################################
-##############################  WASM BUILDS  #################################
+##############################  WASI BUILDS  #################################
 ##############################################################################
 
 
@@ -821,81 +821,28 @@ class UnixCrossBuild(UnixBuild):
         )
 
 
-class Wasm32EmscriptenBuild(UnixCrossBuild):
-    """wasm32-emscripten builder
-
-    * Emscripten SDK >= 3.1.12 must be installed
-    * ccache must be installed
-    * Emscripten PATHs must be pre-pended to PATH
-    * ``which node`` must be equal $EMSDK_NODE
-    """
-    factory_tags = ["wasm", "emscripten"]
-    compile_environ = {
-        "CONFIG_SITE": "../../Tools/wasm/config.site-wasm32-emscripten",
-        "EM_COMPILER_WRAPPER": "ccache",
-    }
-
-    host = "wasm32-unknown-emscripten"
-    host_configure_cmd = ["emconfigure", "../../configure"]
-    host_make_cmd = ["emmake", "make"]
-
-
-class Wasm32EmscriptenNodePThreadsBuild(Wasm32EmscriptenBuild):
-    """Emscripten with pthreads, testing with NodeJS
-    """
-    buildersuffix = ".emscripten-node-pthreads"
-    extra_configure_flags = [
-        # don't run with --with-pydebug, Emscripten has limited stack
-        "--without-pydebug",
-        "--with-emscripten-target=node",
-        "--disable-wasm-dynamic-linking",
-        "--enable-wasm-pthreads",
-    ]
-
-
-class Wasm32EmscriptenNodeDLBuild(Wasm32EmscriptenBuild):
-    """Emscripten with dynamic linking, testing with NodeJS
-    """
-    buildersuffix = ".emscripten-node-dl"
-    extra_configure_flags = [
-        # don't run with --with-pydebug, Emscripten has limited stack
-        "--without-pydebug",
-        "--with-emscripten-target=node",
-        "--enable-wasm-dynamic-linking",
-        "--disable-wasm-pthreads",
-    ]
-
-
-class Wasm32EmscriptenBrowserBuild(Wasm32EmscriptenBuild):
-    """Emscripten browser builds (no tests)
-    """
-    buildersuffix = ".emscripten-browser"
-    extra_configure_flags = [
-        # don't run with --with-pydebug, Emscripten has limited stack
-        "--without-pydebug",
-        "--with-emscripten-target=browser",
-        "--enable-wasm-dynamic-linking",
-        "--disable-wasm-pthreads",
-    ]
-    # browser builds do not accept argv from CLI
-    can_execute_python = False
-
-
-class Wasm32WASIBuild(UnixCrossBuild):
+# Deprecated since Python 3.13; can be dropped once `wasi.py` is in all versions.
+class Wasm32WasiCrossBuild(UnixCrossBuild):
     """wasm32-wasi builder
 
     * WASI SDK >= 16 must be installed to default path /opt/wasi-sdk
     * wasmtime must be installed and on PATH
-    * Tools/wasm/wasi-env detects presence of WASIX and ccache
     """
-    buildersuffix = ".wasi"
-    factory_tags = ["wasm", "wasi"]
+
+    buildersuffix = ".wasi.nondebug"
+    factory_tags = ["wasm", "wasi", "nondebug"]
     extra_configure_flags = [
         # debug builds exhaust the limited call stack on WASI
         "--without-pydebug",
     ]
     compile_environ = {
         "CONFIG_SITE": "../../Tools/wasm/config.site-wasm32-wasi",
+        # Silence warnings about using the old CLI as raised by wasmtime 14+.
+        "WASMTIME_NEW_CLI": "0",
+    }
+    test_environ = {
+        # Silence warnings about using the old CLI as raised by wasmtime 14+.
+        "WASMTIME_NEW_CLI": "0",
     }
     host = "wasm32-unknown-wasi"
     host_configure_cmd = ["../../Tools/wasm/wasi-env", "../../configure"]
@@ -909,6 +856,105 @@ class Wasm32WASIBuild(UnixCrossBuild):
                 haltOnFailure=True,
             )
         )
-        super().setup(
-            parallel, branch, test_with_PTY=test_with_PTY, **kwargs
+        super().setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
+
+
+class _Wasm32WasiBuild(UnixBuild):
+    """Build Python for wasm32-wasi using Tools/wasm/wasi.py."""
+    buildersuffix = ".wasi"
+    factory_tags = ["wasm", "wasi"]
+    # pydebug and append_suffix defined in subclasses.
+
+    def __init__(self, source, *, extra_tags=[], **kwargs):
+        if not self.pydebug:
+            extra_tags.append("nondebug")
+        self.buildersuffix += self.append_suffix
+        super().__init__(source, extra_tags=extra_tags, **kwargs)
+
+    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+        wasi_py = "Tools/wasm/wasi.py"
+        host_path = "build/wasm32-wasi"
+
+        # Build Python
+        build_configure = ["python3", wasi_py, "configure-build-python"]
+        if self.pydebug:
+            build_configure.extend(["--", "--with-pydebug"])
+        self.addStep(
+            Configure(
+                name="Configure build Python",
+                command=build_configure,
+            )
         )
+        self.addStep(
+            Compile(
+                name="Compile build Python",
+                command=["python3", wasi_py, "make-build-python"],
+            )
+        )
+
+        # Host/WASI Python
+        self.addStep(
+            # Pydebug build automatically inferred from build Python.
+            Configure(
+                name="Configure host Python",
+                command=["python3", wasi_py, "configure-host"],
+            )
+        )
+        self.addStep(
+            Compile(
+                name="Compile host Python",
+                command=["python3", wasi_py, "make-host"],
+            )
+        )
+
+        self.addStep(
+            ShellCommand(
+                name="pythoninfo",
+                description="pythoninfo",
+                command=["make", "pythoninfo"],
+                warnOnFailure=True,
+                workdir=host_path,
+            )
+        )
+
+        # Copied from UnixBuild.
+        testopts = list(self.testFlags)
+        if not has_option("-R", self.testFlags):
+            testopts.extend(("--junit-xml", JUNIT_FILENAME))
+        if parallel:
+            testopts.append(parallel)
+        if not has_option("-j", testopts):
+            testopts.append("-j2")
+        test = [
+            "make",
+            "buildbottest",
+            "TESTOPTS=" + " ".join(testopts) + " ${BUILDBOT_TESTOPTS}",
+            f"TESTPYTHONOPTS={self.interpreterFlags}",
+            f"TESTTIMEOUT={self.test_timeout}",
+        ]
+        self.addStep(
+            Test(
+                command=test,
+                timeout=step_timeout(self.test_timeout),
+                usePTY=test_with_PTY,
+                env=self.test_environ,
+                workdir=host_path,
+            )
+        )
+        if branch not in ("3",) and not has_option("-R", self.testFlags):
+            filename = os.path.join(host_path, JUNIT_FILENAME)
+            self.addStep(UploadTestResults(branch, filename=filename))
+
+        self.addStep(
+            Clean(
+                name="Clean the builds",
+                command=["python3", wasi_py, "clean"],
+            )
+        )
+
+
+# Preventing this from running on versions older than 3.13 is managed in
+# master.cfg.
+class Wasm32WasiDebugBuild(_Wasm32WasiBuild):
+    append_suffix = ".debug"
+    pydebug = True

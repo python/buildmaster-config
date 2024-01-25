@@ -41,10 +41,8 @@ from custom.factories import (
     MacOSArmWithBrewNoGilRefleakBuild,
     WindowsARM64Build,
     WindowsARM64ReleaseBuild,
-    Wasm32EmscriptenNodePThreadsBuild,
-    Wasm32EmscriptenNodeDLBuild,
-    Wasm32EmscriptenBrowserBuild,
-    Wasm32WASIBuild,
+    Wasm32WasiCrossBuild,
+    Wasm32WasiDebugBuild,
 )
 
 # A builder can be marked as stable when at least the 10 latest builds are
@@ -175,8 +173,9 @@ STABLE_BUILDERS_TIER_3 = [
     ("ARM64 Windows", "linaro-win-arm64", WindowsARM64Build),
     ("ARM64 Windows Non-Debug", "linaro-win-arm64", WindowsARM64ReleaseBuild),
 
-    # WebAssembly
-    ("wasm32-wasi", "bcannon-wasi", Wasm32WASIBuild),
+    # WASI
+    ("wasm32-wasi Non-Debug", "bcannon-wasi", Wasm32WasiCrossBuild),
+    ("wasm32-wasi", "bcannon-wasi", Wasm32WasiDebugBuild),
 ]
 
 
@@ -285,7 +284,7 @@ UNSTABLE_BUILDERS_TIER_3 = [
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
 
     # WebAssembly
-    ("wasm32 WASI 8Core", "kushaldas-wasi", Wasm32WASIBuild),
+    ("wasm32 WASI 8Core", "kushaldas-wasi", Wasm32WasiCrossBuild),
 ]
 
 
@@ -359,7 +358,7 @@ DAILYBUILDERS = [
 ]
 
 # Match builder name (excluding the branch name) of builders that should only
-# run on the master and "custom" branches.
+# run on the main and "custom" branches.
 ONLY_MAIN_BRANCH = (
     "Alpine Linux",
     # Cygwin is not supported on 2.7, 3.6, 3.7
