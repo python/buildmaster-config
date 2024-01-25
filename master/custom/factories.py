@@ -873,7 +873,7 @@ class _Wasm32WasiBuild(UnixBuild):
 
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         wasi_py = "Tools/wasm/wasi.py"
-        host_path = "cross-build/wasm32-wasi"
+        host_path = "build/cross-build/wasm32-wasi"
 
         # Build Python
         build_configure = ["python3", wasi_py, "configure-build-python"]
