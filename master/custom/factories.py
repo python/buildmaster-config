@@ -67,13 +67,6 @@ class UnixBuild(BaseBuild):
     test_environ = {}
     build_out_of_tree = False
 
-    def workdir(self, *parts):
-        """Calculate the working dir to change to.
-
-        Designed to be used with the `workdir` argument to e.g. ShellCommand.
-        """
-        return os.path.join("build", *parts)
-
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         out_of_tree_dir = "build_oot"
 
@@ -89,7 +82,7 @@ class UnixBuild(BaseBuild):
 
         if self.build_out_of_tree:
             configure_cmd = "../configure"
-            oot_kwargs = {'workdir': self.workdir(out_of_tree_dir)}
+            oot_kwargs = {'workdir': os.path.join("build", out_of_tree_dir)}
         else:
             configure_cmd = "./configure"
             oot_kwargs = {}
@@ -693,7 +686,7 @@ class UnixCrossBuild(UnixBuild):
         assert self.host is not None, "Must set self.host on cross builds"
 
         out_of_tree_dir = "build_oot"
-        oot_dir_path = self.workdir(out_of_tree_dir)
+        oot_dir_path = os.path.join("build", out_of_tree_dir)
         oot_build_path = os.path.join(oot_dir_path, "build")
         oot_host_path = os.path.join(oot_dir_path, "host")
 
@@ -880,7 +873,7 @@ class _Wasm32WasiBuild(UnixBuild):
 
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         wasi_py = "Tools/wasm/wasi.py"
-        host_path = self.workdir("cross-build", "wasm32-wasi")
+        host_path = "build/cross-build/wasm32-wasi"
 
         # Build Python
         build_configure = ["python3", wasi_py, "configure-build-python"]
