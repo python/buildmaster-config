@@ -140,6 +140,10 @@ STABLE_BUILDERS_TIER_2 = [
     ("ARM64 macOS", "pablogsal-macos-m1", MacOSArmWithBrewBuild),
     ("ARM64 MacOS M1 NoGIL", "itamaro-macos-arm64-aws", MacOSArmWithBrewNoGilBuild),
     ("ARM64 MacOS M1 Refleaks NoGIL", "itamaro-macos-arm64-aws", MacOSArmWithBrewNoGilRefleakBuild),
+
+    # WASI
+    ("wasm32-wasi Non-Debug", "bcannon-wasi", Wasm32WasiCrossBuild),
+    ("wasm32-wasi", "bcannon-wasi", Wasm32WasiDebugBuild),
 ]
 
 
@@ -175,10 +179,6 @@ STABLE_BUILDERS_TIER_3 = [
     # Windows aarch64 MSVC
     ("ARM64 Windows", "linaro-win-arm64", WindowsARM64Build),
     ("ARM64 Windows Non-Debug", "linaro-win-arm64", WindowsARM64ReleaseBuild),
-
-    # WASI
-    ("wasm32-wasi Non-Debug", "bcannon-wasi", Wasm32WasiCrossBuild),
-    ("wasm32-wasi", "bcannon-wasi", Wasm32WasiDebugBuild),
 ]
 
 
@@ -256,6 +256,9 @@ UNSTABLE_BUILDERS_TIER_2 = [
     ("aarch64 CentOS9 Refleaks", "cstratak-CentOS9-aarch64", UnixRefleakBuild),
     ("aarch64 CentOS9 LTO", "cstratak-CentOS9-aarch64", LTONonDebugUnixBuild),
     ("aarch64 CentOS9 LTO + PGO", "cstratak-CentOS9-aarch64", LTOPGONonDebugBuild),
+
+    # WebAssembly
+    ("wasm32 WASI 8Core", "kushaldas-wasi", Wasm32WasiCrossBuild),
 ]
 
 
@@ -276,9 +279,6 @@ UNSTABLE_BUILDERS_TIER_3 = [
     # FreBSD x86-64 clang
     # FreeBSD 15 is CURRENT: development branch (at 2023-10-17)
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
-
-    # WebAssembly
-    ("wasm32 WASI 8Core", "kushaldas-wasi", Wasm32WasiCrossBuild),
 ]
 
 
