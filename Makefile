@@ -71,8 +71,3 @@ stop-master: run-target
 
 run-target: $(VENV_CHECK)
 	$(BUILDBOT) $(TARGET) master; tail -n$(LOGLINES) master/twistd.log
-
-git-update-requirements:
-	git switch -c reqs
-	make regen-requirements
-	git ci -a -m "run make regen-requirements"
