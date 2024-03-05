@@ -6,4 +6,3 @@ requests
 treq
 sentry-sdk
 psycopg2
-buildbot_profiler
