@@ -279,6 +279,9 @@ UNSTABLE_BUILDERS_TIER_3 = [
     # FreBSD x86-64 clang
     # FreeBSD 15 is CURRENT: development branch (at 2023-10-17)
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
+
+    # riscv64 GCC
+    ("riscv64 Ubuntu23", "onder-riscv64", UnixBuild),
 ]
 
 
