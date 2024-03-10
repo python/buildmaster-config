@@ -314,4 +314,10 @@ def get_workers(settings):
             parallel_tests=4,
             parallel_builders=2,
         ),
+        cpw(
+            name="onder-riscv64",
+            tags=['linux', 'unix', 'ubuntu', 'riscv64'],
+            not_branches=['3.9', '3.10'],
+            parallel_tests=4,
+        ),
     ]

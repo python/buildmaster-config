@@ -301,6 +301,9 @@ UNSTABLE_BUILDERS_NO_TIER = [
 
     # Solaris sparcv9
     ("SPARCv9 Oracle Solaris 11.4", "kulikjak-solaris-sparcv9", UnixBuild),
+
+    # riscv64 GCC
+    ("riscv64 Ubuntu23", "onder-riscv64", UnixBuild),
 ]
 
 
