@@ -279,9 +279,6 @@ UNSTABLE_BUILDERS_TIER_3 = [
     # FreBSD x86-64 clang
     # FreeBSD 15 is CURRENT: development branch (at 2023-10-17)
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
-
-    # riscv64 GCC
-    ("riscv64 Ubuntu23", "onder-riscv64", UnixBuild),
 ]
 
 
@@ -304,6 +301,9 @@ UNSTABLE_BUILDERS_NO_TIER = [
 
     # Solaris sparcv9
     ("SPARCv9 Oracle Solaris 11.4", "kulikjak-solaris-sparcv9", UnixBuild),
+
+    # riscv64 GCC
+    ("riscv64 Ubuntu23", "onder-riscv64", UnixBuild),
 ]
 
 
