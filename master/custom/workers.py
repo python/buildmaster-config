@@ -317,6 +317,7 @@ def get_workers(settings):
         cpw(
             name="onder-riscv64",
             tags=['linux', 'unix', 'ubuntu', 'riscv64'],
+            not_branches=['3.9', '3.10'],
             parallel_tests=4,
         ),
     ]
