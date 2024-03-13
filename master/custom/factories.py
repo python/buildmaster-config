@@ -70,6 +70,9 @@ class UnixBuild(BaseBuild):
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         out_of_tree_dir = "build_oot"
 
+        # Adjust the timeout for this worker
+        self.test_timeout *= kwargs.get("timeout_factor", 1)
+
         if self.build_out_of_tree:
             self.addStep(
                 ShellCommand(
