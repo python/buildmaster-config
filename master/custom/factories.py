@@ -169,6 +169,9 @@ class UnixNoGilBuild(UnixBuild):
     buildersuffix = ".nogil"
     configureFlags = ["--with-pydebug", "--disable-gil"]
     factory_tags = ["nogil"]
+    # 2024-04-11: Free-threading can still be slower than regular build in some
+    # code paths, so tolerate longer timeout.
+    test_timeout = int(TEST_TIMEOUT * 1.5)
 
 
 class UnixNoGilRefleakBuild(UnixBuild):
