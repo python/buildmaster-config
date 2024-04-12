@@ -70,6 +70,9 @@ class UnixBuild(BaseBuild):
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         out_of_tree_dir = "build_oot"
 
+        # Adjust the timeout for this worker
+        self.test_timeout *= kwargs.get("timeout_factor", 1)
+
         if self.build_out_of_tree:
             self.addStep(
                 ShellCommand(
@@ -166,6 +169,9 @@ class UnixNoGilBuild(UnixBuild):
     buildersuffix = ".nogil"
     configureFlags = ["--with-pydebug", "--disable-gil"]
     factory_tags = ["nogil"]
+    # 2024-04-11: Free-threading can still be slower than regular build in some
+    # code paths, so tolerate longer timeout.
+    test_timeout = int(TEST_TIMEOUT * 1.5)
 
 
 class UnixNoGilRefleakBuild(UnixBuild):
