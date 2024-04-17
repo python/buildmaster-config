@@ -1070,7 +1070,7 @@ class _IOSSimulatorBuild(UnixBuild):
             f"--with-openssl={support_path}/openssl",
             f"--build={self.arch}-apple-darwin",
             f"--host={self.host}",
-            "--with-build-python=../build/python",
+            "--with-build-python=../build/python.exe",
             "--enable-framework"
         ]
 
