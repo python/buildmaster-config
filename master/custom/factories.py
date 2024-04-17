@@ -958,3 +958,178 @@ class _Wasm32WasiBuild(UnixBuild):
 class Wasm32WasiDebugBuild(_Wasm32WasiBuild):
     append_suffix = ".debug"
     pydebug = True
+
+
+class _IOSSimulatorBuild(UnixBuild):
+    """iOS Simulator build.
+
+    * Xcode must be installed, with all licenses accepted
+    * The iOS Simulator must be installed
+    * The ~buildbot/support/iphonesimulator.{arch} folder must be populated
+      with pre-compiled builds of libFFI, XZ, Bzip2 and OpenSSL.
+
+    Subclasses should define `arch`.
+
+    This workflow is largely the same as the UnixCrossBuild, except that:
+     * It has the required iOS configure options baked in
+     * It isolates the build path so that Homebrew and other macOS libraries
+       can't leak into the build
+     * It adds the environment flags and configuration paths for the binary
+       dependencies.
+     * It installs the host python after build (which finalizes the Framework
+       build)
+     * It invokes `make testios` as a test target
+    """
+    buildersuffix = ".iOS-simulator"
+    ios_min_version = "12.0"
+    factory_tags = ["iOS"]
+    extra_configure_flags = []
+    host_configure_cmd = ["../../configure"]
+
+    def __init__(self, source, **kwargs):
+        self.buildersuffix += f".{self.arch}"
+        self.host = f"{self.arch}-apple-ios{self.ios_min_version}-simulator"
+
+        super().__init__(source, **kwargs)
+
+    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+        out_of_tree_dir = "build_oot"
+        oot_dir_path = os.path.join("build", out_of_tree_dir)
+        oot_build_path = os.path.join(oot_dir_path, "build")
+        oot_host_path = os.path.join(oot_dir_path, "host")
+
+        # Create out of tree directory for "build", the platform we are
+        # currently running on
+        self.addStep(
+            ShellCommand(
+                name="mkdir build out-of-tree directory",
+                description="Create build out-of-tree directory",
+                command=["mkdir", "-p", oot_build_path],
+                warnOnFailure=True,
+            )
+        )
+        # Create directory for "host", the platform we want to compile *for*
+        self.addStep(
+            ShellCommand(
+                name="mkdir host out-of-tree directory",
+                description="Create host out-of-tree directory",
+                command=["mkdir", "-p", oot_host_path],
+                warnOnFailure=True,
+            )
+        )
+
+        # First, we build the "build" Python, which we need to cross compile
+        # the "host" Python
+        self.addStep(
+            Configure(
+                name="Configure build Python",
+                command=["../../configure"],
+                workdir=oot_build_path
+            )
+        )
+        if parallel:
+            compile = ["make", parallel]
+        else:
+            compile = ["make"]
+
+        self.addStep(
+            Compile(
+                name="Compile build Python",
+                command=compile,
+                workdir=oot_build_path
+            )
+        )
+
+        # Ensure the host path is isolated from Homebrew et al, but includes
+        # the host helper binaries. Also add the configuration paths for
+        # library dependencies.
+        support_path = f"/Users/buildbot/support/iphonesimulator.{self.arch}"
+        self.compile_environ.update({
+            "PATH": os.pathsep.join([
+                os.path.join(oot_host_path, "iOS/Resources/bin"),
+                "/usr/bin",
+                "/bin",
+                "/usr/sbin",
+                "/sbin",
+                "/Library/Apple/usr/bin",
+            ]),
+            "LIBLZMA_CFLAGS": f"-I{support_path}/xz/include",
+            "LIBLZMA_LIBS": f"-L{support_path}/xz/lib -llzma",
+            "BZIP2_CFLAGS": f"-I{support_path}/bzip2/include",
+            "BZIP2_LIBS": f"-L{support_path}/bzip2/lib -lbz2",
+            "LIBFFI_CFLAGS": f"-I{support_path}/libffi/include",
+            "LIBFFI_LIBS": f"-L{support_path}/libffi/lib -lffi",
+        })
+
+        # Now that we have a "build" architecture Python, we can use that
+        # to build a "host" (also known as the target we are cross compiling)
+        configure_cmd = self.host_configure_cmd
+        configure_cmd += self.configureFlags
+        configure_cmd += self.extra_configure_flags
+        configure_cmd += [
+            f"--with-openssl={support_path}/openssl",
+            f"--build={self.arch}-apple-darwin",
+            f"--host={self.host}",
+            "--with-build-python=../build/python",
+            "--enable-framework"
+        ]
+
+        self.addStep(
+            Configure(
+                name="Configure host Python",
+                command=configure_cmd,
+                env=self.compile_environ,
+                workdir=oot_host_path
+            )
+        )
+
+        if parallel:
+            compile = ["make", parallel, self.makeTarget]
+            install = ["make", parallel, "install"]
+        else:
+            compile = ["make", self.makeTarget]
+            install = ["make", "install"]
+
+        self.addStep(
+            Compile(
+                name="Compile host Python",
+                command=compile,
+                env=self.compile_environ,
+                workdir=oot_host_path,
+            )
+        )
+        self.addStep(
+            Compile(
+                name="Install host Python",
+                command=install,
+                env=self.compile_environ,
+                workdir=oot_host_path,
+            )
+        )
+        self.addStep(
+            Test(
+                command=["make", "testios"],
+                timeout=step_timeout(self.test_timeout),
+                usePTY=test_with_PTY,
+                env=self.test_environ,
+                workdir=oot_host_path,
+            )
+        )
+
+        self.addStep(
+            Clean(
+                name="Clean build Python",
+                workdir=oot_build_path,
+            )
+        )
+        self.addStep(
+            Clean(
+                name="Clean host Python",
+                workdir=oot_host_path,
+            )
+        )
+
+
+class IOSARM64SimulatorBuild(_IOSSimulatorBuild):
+    """An ARM64 iOS simulator build."""
+    arch = "arm64"
