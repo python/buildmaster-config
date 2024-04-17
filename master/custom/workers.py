@@ -320,4 +320,10 @@ def get_workers(settings):
             not_branches=['3.9', '3.10'],
             parallel_tests=4,
         ),
+        cpw(
+            name="rkm-arm64-ios-simulator",
+            tags=['iOS'],
+            not_branches=['3.9', '3.10', '3.11', '3.12'],
+            parallel_builders=4,
+        ),
     ]

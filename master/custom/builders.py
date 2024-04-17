@@ -44,6 +44,7 @@ from custom.factories import (
     WindowsARM64ReleaseBuild,
     Wasm32WasiCrossBuild,
     Wasm32WasiDebugBuild,
+    IOSARM64SimulatorBuild,
 )
 
 # A builder can be marked as stable when at least the 10 latest builds are
@@ -180,6 +181,9 @@ STABLE_BUILDERS_TIER_3 = [
     # Windows aarch64 MSVC
     ("ARM64 Windows", "linaro-win-arm64", WindowsARM64Build),
     ("ARM64 Windows Non-Debug", "linaro-win-arm64", WindowsARM64ReleaseBuild),
+
+    # iOS
+    ("iOS ARM64 Simulator", "rkm-arm64-ios-simulator", IOSARM64SimulatorBuild),
 ]
 
 
