@@ -1046,7 +1046,7 @@ class _IOSSimulatorBuild(UnixBuild):
         support_path = f"/Users/buildbot/support/iphonesimulator.{self.arch}"
         self.compile_environ.update({
             "PATH": os.pathsep.join([
-                os.path.join(oot_host_path, "iOS/Resources/bin"),
+                "${PWD}/iOS/Resources/bin",
                 "/usr/bin",
                 "/bin",
                 "/usr/sbin",
