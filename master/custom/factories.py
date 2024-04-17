@@ -1046,7 +1046,10 @@ class _IOSSimulatorBuild(UnixBuild):
         support_path = f"/Users/buildbot/support/iphonesimulator.{self.arch}"
         self.compile_environ.update({
             "PATH": os.pathsep.join([
-                "${PWD}/iOS/Resources/bin",
+                # This is intentionally a relative path. Buildbot doesn't expose
+                # the absolute working directory where the build is running as
+                # something that can be expanded into an environment variable.
+                "../../iOS/Resources/bin",
                 "/usr/bin",
                 "/bin",
                 "/usr/sbin",
