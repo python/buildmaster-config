@@ -1042,7 +1042,7 @@ class _IOSSimulatorBuild(UnixBuild):
         # the host helper binaries. Also add the configuration paths for
         # library dependencies.
         support_path = f"/Users/buildbot/support/iphonesimulator.{self.arch}"
-        self.compile_env.update({
+        self.compile_environ.update({
             "PATH": os.pathsep.join(
                 os.path.join(oot_host_path, "iOS/Resources/bin"),
                 "/usr/bin",
