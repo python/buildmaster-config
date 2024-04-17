@@ -983,6 +983,8 @@ class _IOSSimulatorBuild(UnixBuild):
     buildersuffix = ".iOS-simulator"
     ios_min_version = "12.0"
     factory_tags = ["iOS"]
+    extra_configure_flags = []
+    host_configure_cmd = ["../../configure"]
 
     def __init__(self, source, **kwargs):
         self.buildersuffix += f".{self.arch}"
@@ -1061,7 +1063,10 @@ class _IOSSimulatorBuild(UnixBuild):
 
         # Now that we have a "build" architecture Python, we can use that
         # to build a "host" (also known as the target we are cross compiling)
-        configure_cmd = self.host_configure_cmd + self.configureFlags + [
+        configure_cmd = self.host_configure_cmd
+        configure_cmd += self.configureFlags
+        configure_cmd += self.extra_configure_flags
+        configure_cmd += [
             f"--with-openssl={support_path}/openssl",
             f"--build={self.arch}-apple-darwin",
             f"--host={self.host}",
