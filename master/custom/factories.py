@@ -1043,14 +1043,14 @@ class _IOSSimulatorBuild(UnixBuild):
         # library dependencies.
         support_path = f"/Users/buildbot/support/iphonesimulator.{self.arch}"
         self.compile_environ.update({
-            "PATH": os.pathsep.join(
+            "PATH": os.pathsep.join([
                 os.path.join(oot_host_path, "iOS/Resources/bin"),
                 "/usr/bin",
                 "/bin",
                 "/usr/sbin",
                 "/sbin",
                 "/Library/Apple/usr/bin",
-            ),
+            ]),
             "LIBLZMA_CFLAGS": f"-I{support_path}/xz/include",
             "LIBLZMA_LIBS": f"-L{support_path}/xz/lib -llzma",
             "BZIP2_CFLAGS": f"-I{support_path}/bzip2/include",
