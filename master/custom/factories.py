@@ -1044,7 +1044,8 @@ class _IOSSimulatorBuild(UnixBuild):
         # the host helper binaries. Also add the configuration paths for
         # library dependencies.
         support_path = f"/Users/buildbot/support/iphonesimulator.{self.arch}"
-        self.compile_environ.update({
+        compile_environ = dict(self.compile_environ)
+        compile_environ.update({
             "PATH": os.pathsep.join([
                 # This is intentionally a relative path. Buildbot doesn't expose
                 # the absolute working directory where the build is running as
@@ -1081,7 +1082,7 @@ class _IOSSimulatorBuild(UnixBuild):
             Configure(
                 name="Configure host Python",
                 command=configure_cmd,
-                env=self.compile_environ,
+                env=compile_environ,
                 workdir=oot_host_path
             )
         )
@@ -1097,7 +1098,7 @@ class _IOSSimulatorBuild(UnixBuild):
             Compile(
                 name="Compile host Python",
                 command=compile,
-                env=self.compile_environ,
+                env=compile_environ,
                 workdir=oot_host_path,
             )
         )
@@ -1105,7 +1106,7 @@ class _IOSSimulatorBuild(UnixBuild):
             Compile(
                 name="Install host Python",
                 command=install,
-                env=self.compile_environ,
+                env=compile_environ,
                 workdir=oot_host_path,
             )
         )
