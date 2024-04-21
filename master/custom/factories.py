@@ -750,7 +750,9 @@ class UnixCrossBuild(UnixBuild):
 
         # Now that we have a "build" architecture Python, we can use that
         # to build a "host" (also known as the target we are cross compiling)
-        configure_cmd = self.host_configure_cmd + ["--prefix", "$(PWD)/target/host"]
+        # Take a copy so that the class-level definition isn't tainted
+        configure_cmd = list(self.host_configure_cmd)
+        configure_cmd += ["--prefix", "$(PWD)/target/host"]
         configure_cmd += self.configureFlags + self.extra_configure_flags
         configure_cmd += [util.Interpolate("--build=%(prop:build_triple)s")]
         configure_cmd += [f"--host={self.host}"]
@@ -1067,7 +1069,8 @@ class _IOSSimulatorBuild(UnixBuild):
 
         # Now that we have a "build" architecture Python, we can use that
         # to build a "host" (also known as the target we are cross compiling)
-        configure_cmd = self.host_configure_cmd
+        # Take a copy so that the class-level definition isn't tainted
+        configure_cmd = list(self.host_configure_cmd)
         configure_cmd += self.configureFlags
         configure_cmd += self.extra_configure_flags
         configure_cmd += [
