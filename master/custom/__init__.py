@@ -1,4 +1,4 @@
-MAIN_BRANCH_VERSION = "3.13"
+MAIN_BRANCH_VERSION = "3.14"
 CUSTOM_BRANCH_NAME = "custom"
 # The Git branch is called "main", but we give it a different name in buildbot.
 # See git_branches in master/master.cfg.
