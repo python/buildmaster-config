@@ -454,6 +454,15 @@ class FedoraRawhideBuild(FedoraStableBuild):
     pass
 
 
+class FedoraRawhideFreedthreadingBuild(FedoraRawhideBuild):
+    # Build on 64-bit Fedora Rawhide.
+    buildersuffix = ".nogil"
+    configureFlags = FedoraRawhideBuild.configureFlags + [
+        "--disable-gil",
+    ]
+    factory_tags = ["nogil"]
+
+
 class RHEL8NoBuiltinHashesUnixBuildExceptBlake2(RHEL8Build):
     # Build on 64-bit RHEL8 using: --with-builtin-hashlib-hashes=blake2
     buildersuffix = ".no-builtin-hashes-except-blake2"
