@@ -285,7 +285,7 @@ def get_workers(settings):
             name="itamaro-ubuntu-aws",
             tags=['linux', 'unix', 'ubuntu', 'amd64', 'x86-64'],
             not_branches=['3.9', '3.10', '3.11', '3.12'],
-            parallel_tests=10,
+            parallel_tests=4,
             parallel_builders=2,
         ),
         cpw(
