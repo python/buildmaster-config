@@ -969,6 +969,7 @@ class _Wasm32WasiBuild(UnixBuild):
 class Wasm32WasiDebugBuild(_Wasm32WasiBuild):
     append_suffix = ".debug"
     pydebug = True
+    testFlags = ["-u-cpu"]
 
 
 class _IOSSimulatorBuild(UnixBuild):
