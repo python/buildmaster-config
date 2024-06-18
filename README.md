@@ -19,18 +19,6 @@ Run locally:
 Create a PR. Merge the PR. The new venv will be recreated automatically on the
 server.
 
-If something goes wrong, commands to recreate the venv *manually* on the
-server:
-
-    make stop-master
-    git pull
-    mv venv old-venv
-    make venv
-    make start-master
-
-    # then you may watch logs in realtime:
-    # tail -F master/twistd.log
-
 Upgrading buildbot sometimes requires to run the command:
 
     ./venv/bin/buildbot upgrade-master /data/buildbot/master
