@@ -69,7 +69,6 @@ NO_TIER = None
 STABLE_BUILDERS_TIER_1 = [
     # Linux x86-64 GCC
     ("AMD64 Debian root", "angelico-debian-amd64", UnixBuild),
-    ("AMD64 Debian PGO", "gps-debian-profile-opt", PGOUnixBuild),
     ("AMD64 Ubuntu Shared", "bolen-ubuntu", SharedUnixBuild),
     ("AMD64 Fedora Stable", "cstratak-fedora-stable-x86_64", FedoraStableBuild),
     ("AMD64 Fedora Stable Refleaks", "cstratak-fedora-stable-x86_64", UnixRefleakBuild),
@@ -136,8 +135,6 @@ STABLE_BUILDERS_TIER_2 = [
     ("aarch64 RHEL8 Refleaks", "cstratak-RHEL8-aarch64", UnixRefleakBuild),
     ("aarch64 RHEL8 LTO", "cstratak-RHEL8-aarch64", LTONonDebugUnixBuild),
     ("aarch64 RHEL8 LTO + PGO", "cstratak-RHEL8-aarch64", LTOPGONonDebugBuild),
-
-    ("aarch64 Debian Clang LTO + PGO", "gps-arm64-debian", ClangLTOPGONonDebugBuild),
 
     # macOS aarch64 clang
     ("ARM64 macOS", "pablogsal-macos-m1", MacOSArmWithBrewBuild),
@@ -236,7 +233,6 @@ UNSTABLE_BUILDERS_TIER_2 = [
     # UBSan is a special build
     ("AMD64 Fedora Rawhide Clang", "cstratak-fedora-rawhide-x86_64", ClangUnixBuild),
     ("AMD64 Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-x86_64", ClangUnixInstalledBuild),
-    ("AMD64 Clang UBSan", "gps-clang-ubsan", ClangUbsanLinuxBuild),
 
     # Linux ppc64le GCC
     # Fedora Rawhide is unstable
