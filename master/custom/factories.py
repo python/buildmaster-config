@@ -96,7 +96,7 @@ class UnixBuild(BaseBuild):
         )
         compile = ["make", self.makeTarget]
         testopts = list(self.testFlags)
-        if not has_option("-R", self.testFlags):
+        if JUNIT_FILENAME and not has_option("-R", self.testFlags):
             testopts.extend(("--junit-xml", JUNIT_FILENAME))
         if parallel:
             compile = ["make", parallel, self.makeTarget]
@@ -131,7 +131,7 @@ class UnixBuild(BaseBuild):
             env=self.test_environ,
             **oot_kwargs
         ))
-        if branch not in ("3",) and not has_option("-R", self.testFlags):
+        if JUNIT_FILENAME and branch not in ("3",) and not has_option("-R", self.testFlags):
             filename = JUNIT_FILENAME
             if self.build_out_of_tree:
                 filename = os.path.join(out_of_tree_dir, filename)
@@ -587,7 +587,7 @@ class BaseWindowsBuild(BaseBuild):
     def setup(self, parallel, branch, **kwargs):
         build_command = self.build_command + self.buildFlags
         test_command = [*self.test_command, *self.testFlags]
-        if not has_option("-R", self.testFlags):
+        if JUNIT_FILENAME and not has_option("-R", self.testFlags):
             test_command.extend((r"--junit-xml", JUNIT_FILENAME))
         clean_command = self.clean_command + self.cleanFlags
         if parallel:
@@ -606,8 +606,8 @@ class BaseWindowsBuild(BaseBuild):
             command=test_command,
             timeout=step_timeout(self.test_timeout),
         ))
-        if branch not in ("3",) and not has_option("-R", self.testFlags):
-            self.addStep(UploadTestResults(branch))
+        if JUNIT_FILENAME and branch not in ("3",) and not has_option("-R", self.testFlags):
+            self.addStep(UploadTestResults(branch, filename=JUNIT_FILENAME))
         self.addStep(Clean(command=clean_command))
 
 
@@ -776,7 +776,7 @@ class UnixCrossBuild(UnixBuild):
         )
 
         testopts = list(self.testFlags)
-        if not has_option("-R", self.testFlags):
+        if JUNIT_FILENAME and not has_option("-R", self.testFlags):
             testopts.extend((" --junit-xml", JUNIT_FILENAME))
         if parallel:
             testopts.append(parallel)
@@ -821,7 +821,7 @@ class UnixCrossBuild(UnixBuild):
                 env=self.test_environ,
                 workdir=oot_host_path,
             ))
-            if branch not in ("3",) and not has_option("-R", self.testFlags):
+            if JUNIT_FILENAME and branch not in ("3",) and not has_option("-R", self.testFlags):
                 filename = os.path.join(oot_host_path, JUNIT_FILENAME)
                 self.addStep(UploadTestResults(branch, filename=filename))
         self.addStep(
@@ -930,7 +930,7 @@ class _Wasm32WasiBuild(UnixBuild):
 
         # Copied from UnixBuild.
         testopts = list(self.testFlags)
-        if not has_option("-R", self.testFlags):
+        if JUNIT_FILENAME and not has_option("-R", self.testFlags):
             testopts.extend(("--junit-xml", JUNIT_FILENAME))
         if parallel:
             testopts.append(parallel)
@@ -952,7 +952,7 @@ class _Wasm32WasiBuild(UnixBuild):
                 workdir=host_path,
             )
         )
-        if branch not in ("3",) and not has_option("-R", self.testFlags):
+        if JUNIT_FILENAME and branch not in ("3",) and not has_option("-R", self.testFlags):
             filename = os.path.join(host_path, JUNIT_FILENAME)
             self.addStep(UploadTestResults(branch, filename=filename))
 

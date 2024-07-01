@@ -177,7 +177,7 @@ class UploadTestResults(steps.FileUpload):
     def _has_the_build_failed(self, build):
         return self.getProperty("test_failed_to_build")
 
-    def __init__(self, branch, filename=JUNIT_FILENAME):
+    def __init__(self, branch, filename):
         super().__init__(
             doStepIf=self._has_the_build_failed,
             workersrc=filename,
