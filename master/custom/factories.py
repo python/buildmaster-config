@@ -993,7 +993,7 @@ class _IOSSimulatorBuild(UnixBuild):
      * It invokes `make testios` as a test target
     """
     buildersuffix = ".iOS-simulator"
-    ios_min_version = "12.0"
+    ios_min_version = ""  # use the default from the configure file
     factory_tags = ["iOS"]
     extra_configure_flags = []
     host_configure_cmd = ["../../configure"]
