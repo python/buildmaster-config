@@ -1,5 +1,5 @@
 buildbot[bundle,tls]
-buildbot_wsgi_dashboards
+buildbot-react-wsgi-dashboards
 flask
 PyYAML
 requests

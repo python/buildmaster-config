@@ -6,9 +6,9 @@ blinker==1.8.2
 buildbot==4.0.0
 buildbot-console-view==4.0.0
 buildbot-grid-view==4.0.0
+buildbot-react-wsgi-dashboards==4.0.0
 buildbot-waterfall-view==4.0.0
 buildbot-worker==4.0.0
-buildbot-wsgi-dashboards==4.0.0
 buildbot-www==4.0.0
 certifi==2024.7.4
 cffi==1.16.0
