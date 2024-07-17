@@ -36,7 +36,13 @@
                                 </div>
                                 <div class="panel-body">
                                     {% for builder, build in info %}
-                                    <div> <buildsummary buildid="{{ build.buildid }}" condensed="1"/> </div>
+                              <!-- BROKEN?      <div> <buildsummary buildid="{{build.buildid}}" condensed="1"/> </div> -->
+                                        <div>
+                                            <a class="badge-status badge results_{{build.results_text | upper}}"
+                                               href="#/builders/{{build.builderid}}/builds/{{build.number}}">
+                                               {{build.number}}
+                                            </a>
+                                        </div>
                                     {% endfor %}
                                 </div>
                             </div>
