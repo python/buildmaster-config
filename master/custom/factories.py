@@ -9,7 +9,7 @@ from buildbot.steps.shell import (
 
 from buildbot.plugins import util
 
-from . import (MAIN_BRANCH_VERSION, CUSTOM_BRANCH_NAME, MAIN_BRANCH_NAME,
+from . import (MAIN_BRANCH_VERSION, MAIN_BRANCH_NAME,
                JUNIT_FILENAME)
 from .steps import (
     Test,
@@ -32,10 +32,6 @@ def step_timeout(timeout):
     # faulthandler to kill the process. Tests should always be shorter than the
     # buildbot step timeout, unless faulthandler fails to kill the process.
     return timeout + 10 * 60
-
-
-def regrtest_has_cleanup(branch):
-    return branch not in {CUSTOM_BRANCH_NAME}
 
 
 class BaseBuild(factory.BuildFactory):
