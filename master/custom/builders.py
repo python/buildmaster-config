@@ -156,10 +156,10 @@ STABLE_BUILDERS_TIER_3 = [
     ("s390x Fedora Refleaks", "edelsohn-fedora-z", UnixRefleakBuild),
     ("s390x Fedora LTO", "edelsohn-fedora-z", LTONonDebugUnixBuild),
     ("s390x Fedora LTO + PGO", "edelsohn-fedora-z", LTOPGONonDebugBuild),
-    ("s390x RHEL7", "edelsohn-rhel-z", UnixBuild),
-    ("s390x RHEL7 Refleaks", "edelsohn-rhel-z", UnixRefleakBuild),
-    ("s390x RHEL7 LTO", "edelsohn-rhel-z", LTONonDebugUnixBuild),
-    ("s390x RHEL7 LTO + PGO", "edelsohn-rhel-z", LTOPGONonDebugBuild),
+    ("s390x RHEL9", "edelsohn-rhel-z", UnixBuild),
+    ("s390x RHEL9 Refleaks", "edelsohn-rhel-z", UnixRefleakBuild),
+    ("s390x RHEL9 LTO", "edelsohn-rhel-z", LTONonDebugUnixBuild),
+    ("s390x RHEL9 LTO + PGO", "edelsohn-rhel-z", LTOPGONonDebugBuild),
     ("s390x RHEL8", "edelsohn-rhel8-z", UnixBuild),
     ("s390x RHEL8 Refleaks", "edelsohn-rhel8-z", UnixRefleakBuild),
     ("s390x RHEL8 LTO", "edelsohn-rhel8-z", LTONonDebugUnixBuild),
@@ -358,7 +358,7 @@ DAILYBUILDERS = [
     # Linux s390x
     "s390x Fedora Rawhide Refleaks",
     "s390x Fedora Refleaks",
-    "s390x RHEL7 Refleaks",
+    "s390x RHEL9 Refleaks",
     "s390x RHEL8 Refleaks",
     # Linux aarch64
     "aarch64 Fedora Rawhide Refleaks",
