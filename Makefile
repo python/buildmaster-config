@@ -34,7 +34,7 @@ regen-requirements:
 .PHONY: check
 
 check: $(VENV_CHECK)
-	$(BUILDBOT) checkconfig master/master.cfg
+	$(BUILDBOT) checkconfig master
 
 # Management targets
 
