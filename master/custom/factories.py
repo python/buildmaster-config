@@ -380,8 +380,8 @@ class ClangLTOPGONonDebugBuild(NonDebugUnixBuild):
     factory_tags = ["lto", "pgo", "nondebug", "clang"]
 
 
-class RHEL7Build(UnixBuild):
-    # Build Python on 64-bit RHEL7.
+class RHEL8Build(UnixBuild):
+    # Build Python on 64-bit RHEL8.
     configureFlags = [
         "--with-pydebug",
         "--with-platlibdir=lib64",
@@ -395,13 +395,12 @@ class RHEL7Build(UnixBuild):
         "--enable-loadable-sqlite-extensions",
         "--with-ssl-default-suites=openssl",
         "--without-static-libpython",
+        "--with-lto",
         # Not all workers have dtrace installed
         # "--with-dtrace",
         # Not all workers have Valgrind headers installed
         # "--with-valgrind",
     ]
-    # Don't use --with-lto: building Python with LTO doesn't work
-    # with RHEL7 GCC.
 
     # Building Python out of tree: similar to what the specfile does, but
     # buildbot uses a single subdirectory, and the specfile uses two
@@ -411,13 +410,6 @@ class RHEL7Build(UnixBuild):
     # /builddir/build/BUILD/Python-3.11: source code
     # /builddir/build/BUILD/Python-3.11/build/optimized: configure, make, tests
     build_out_of_tree = True
-
-
-class RHEL8Build(RHEL7Build):
-    # Build Python on 64-bit RHEL8.
-    configureFlags = RHEL7Build.configureFlags + [
-        "--with-lto",
-    ]
 
 
 class CentOS9Build(RHEL8Build):
