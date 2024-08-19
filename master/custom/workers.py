@@ -85,11 +85,6 @@ def get_workers(settings):
             parallel_tests=10,
         ),
         cpw(
-            name="cstratak-RHEL7-x86_64",
-            tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
-            parallel_tests=10,
-        ),
-        cpw(
             name="cstratak-RHEL8-x86_64",
             tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
             parallel_tests=10,
@@ -117,11 +112,6 @@ def get_workers(settings):
         cpw(
             name="cstratak-fedora-stable-ppc64le",
             tags=['linux', 'unix', 'fedora', 'ppc64le'],
-            parallel_tests=10,
-        ),
-        cpw(
-            name="cstratak-RHEL7-ppc64le",
-            tags=['linux', 'unix', 'rhel', 'ppc64le'],
             parallel_tests=10,
         ),
         cpw(
