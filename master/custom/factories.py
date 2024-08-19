@@ -960,6 +960,10 @@ class Wasm32WasiDebugBuild(_Wasm32WasiBuild):
     testFlags = ["-u-cpu"]
 
 
+##############################################################################
+################################  IOS BUILDS  ################################
+##############################################################################
+
 class _IOSSimulatorBuild(UnixBuild):
     """iOS Simulator build.
 
@@ -1138,3 +1142,71 @@ class _IOSSimulatorBuild(UnixBuild):
 class IOSARM64SimulatorBuild(_IOSSimulatorBuild):
     """An ARM64 iOS simulator build."""
     arch = "arm64"
+
+
+##############################################################################
+##############################  ANDROID BUILDS  ##############################
+##############################################################################
+
+class AndroidBuild(BaseBuild):
+    """Build Python for Android on a Linux or Mac machine, and test it using a
+    Gradle-managed emulator. Worker setup instructions:
+
+    * Install all the usual tools and libraries needed to build Python for the
+      worker's own operating system.
+
+    * Follow the instructions in the Prerequisites section of
+      cpython/Android/README.md.
+
+    * On Linux:
+      * Make sure the worker has access to the KVM virtualization interface.
+      * Start an X server such as Xvfb, and set the DISPLAY environment variable
+        to point at it.
+    """
+
+    def setup(self, **kwargs):
+        android_py = "Android/android.py"
+        self.addSteps([
+            SetPropertyFromCommand(
+                name="Get build triple",
+                command=["./config.guess"],
+                property="build_triple",
+                haltOnFailure=True,
+            ),
+            Configure(
+                name="Configure build Python",
+                command=[android_py, "configure-build"],
+            ),
+            Compile(
+                name="Compile build Python",
+                command=[android_py, "make-build"],
+            ),
+            Configure(
+                name="Configure host Python",
+                command=[android_py, "configure-host", self.host_triple],
+            ),
+            Compile(
+                name="Compile host Python",
+                command=[android_py, "make-host", self.host_triple],
+            ),
+            Compile(
+                name="Build testbed",
+                command=[android_py, "build-testbed"],
+            ),
+            Test(
+                command=[
+                    android_py, "test", "--managed", "maxVersion", "--",
+                    "-W", "-uall",
+                ],
+                timeout=step_timeout(self.test_timeout),
+            ),
+            ShellCommand(
+                name="Clean",
+                command=[android_py, "clean"],
+            ),
+        ])
+
+    @util.renderer
+    def host_triple(props):
+        build_triple = props.getProperty("build_triple")
+        return build_triple.split("-")[0] + "-linux-android"

@@ -302,4 +302,16 @@ def get_workers(settings):
             not_branches=['3.9', '3.10', '3.11', '3.12'],
             parallel_builders=4,
         ),
+        cpw(
+            name="mhsmith-android-aarch64",
+            tags=['android'],
+            not_branches=['3.9', '3.10', '3.11', '3.12'],
+            parallel_builders=1,  # All builds use the same emulator and app ID.
+        ),
+        cpw(
+            name="mhsmith-android-x86_64",
+            tags=['android'],
+            not_branches=['3.9', '3.10', '3.11', '3.12'],
+            parallel_builders=1,  # All builds use the same emulator and app ID.
+        ),
     ]

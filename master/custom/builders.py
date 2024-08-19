@@ -45,6 +45,7 @@ from custom.factories import (
     Wasm32WasiCrossBuild,
     Wasm32WasiDebugBuild,
     IOSARM64SimulatorBuild,
+    AndroidBuild,
 )
 
 # A builder can be marked as stable when at least the 10 latest builds are
@@ -172,6 +173,10 @@ STABLE_BUILDERS_TIER_3 = [
 
     # iOS
     ("iOS ARM64 Simulator", "rkm-arm64-ios-simulator", IOSARM64SimulatorBuild),
+
+    # Android
+    ("aarch64 Android", "mhsmith-android-aarch64", AndroidBuild),
+    ("AMD64 Android", "mhsmith-android-x86_64", AndroidBuild),
 ]
 
 
