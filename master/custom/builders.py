@@ -335,32 +335,6 @@ def get_builders(settings):
     return all_builders
 
 
-DAILYBUILDERS = [
-    "AMD64 Windows11 Refleaks",
-    "AMD64 Fedora Rawhide Refleaks",
-    "AMD64 Fedora Stable Refleaks",
-    "AMD64 RHEL8 Refleaks",
-    "AMD64 CentOS9 Refleaks",
-    "AMD64 Fedora Rawhide NoGIL refleaks",
-    # Linux PPC64LE
-    "PPC64LE Fedora Rawhide Refleaks",
-    "PPC64LE Fedora Stable Refleaks",
-    "PPC64LE RHEL8 Refleaks",
-    "PPC64LE CentOS9 Refleaks",
-    "PPC64LE Fedora Rawhide NoGIL refleaks",
-    # Linux s390x
-    "s390x Fedora Rawhide Refleaks",
-    "s390x Fedora Refleaks",
-    "s390x RHEL9 Refleaks",
-    "s390x RHEL8 Refleaks",
-    # Linux aarch64
-    "aarch64 Fedora Rawhide Refleaks",
-    "aarch64 Fedora Stable Refleaks",
-    "aarch64 RHEL8 Refleaks",
-    "aarch64 CentOS9 Refleaks",
-    "aarch64 Fedora Rawhide NoGIL refleaks",
-]
-
 # Match builder name (excluding the branch name) of builders that should only
 # run on the main and "custom" branches.
 ONLY_MAIN_BRANCH = (
