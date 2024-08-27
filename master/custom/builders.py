@@ -19,6 +19,7 @@ from custom.factories import (
     PGOUnixBuild,
     ClangUnixBuild,
     ClangUbsanLinuxBuild,
+    ClangUbsanFunctionLinuxBuild,
     ClangUnixInstalledBuild,
     SharedUnixBuild,
     SlowNonDebugUnixBuild,
@@ -310,6 +311,9 @@ UNSTABLE_BUILDERS_NO_TIER = [
 
     # riscv64 GCC
     ("riscv64 Ubuntu23", "onder-riscv64", SlowUnixInstalledBuild),
+
+    # Arch Usan Function
+    ("AMD64 Arch Linux Usan Function", "pablogsal-arch-x86_64", ClangUbsanFunctionLinuxBuild),
 ]
 
 

@@ -322,6 +322,15 @@ class ClangUbsanLinuxBuild(UnixBuild):
     ]
     factory_tags = ["clang", "ubsan", "sanitizer"]
 
+class ClangUbsanFunctionLinuxBuild(UnixBuild):
+    buildersuffix = ".clang-ubsan-function"
+    configureFlags = [
+        "CC=clang",
+        "LD=clang",
+        "CFLAGS=-fsanitize=undefined -fno-sanitize=function -fsanitize-recover",
+        "--with-undefined-behavior-sanitizer",
+    ]
+    factory_tags = ["clang", "ubsan", "sanitizer"]
 
 class ClangUnixInstalledBuild(UnixInstalledBuild):
     buildersuffix = ".clang-installed"
