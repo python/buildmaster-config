@@ -1219,3 +1219,68 @@ class AndroidBuild(BaseBuild):
     def host_triple(props):
         build_triple = props.getProperty("build_triple")
         return build_triple.split("-")[0] + "-linux-android"
+
+
+class ValgrindBuild(UnixBuild):
+    buildersuffix = ".valgrind"
+    configureFlags = [
+        "--with-pydebug",
+        "--with-valgrind",
+        "--without-pymalloc",
+    ]
+    testFlags = [
+        "test_grammar",
+        "test_syntax",
+        "test_tokenize",
+        "test_fstring",
+        "test_ast",
+        "test_exceptions",
+    ]
+    factory_tags = ["valgrind"]
+    test_timeout = TEST_TIMEOUT * 5
+
+    def setup(self, parallel, branch, **kwargs):
+        self.addStep(
+            Configure(
+                command=["./configure", "--prefix", "$(PWD)/target"] + self.configureFlags
+            )
+        )
+        
+        compile = ["make", self.makeTarget]
+        if parallel:
+            compile = ["make", parallel, self.makeTarget]
+        
+        self.addStep(Compile(command=compile, env=self.compile_environ))
+        
+        self.addStep(
+            ShellCommand(
+                name="pythoninfo",
+                description="pythoninfo",
+                command=["make", "pythoninfo"],
+                warnOnFailure=True,
+                env=self.test_environ,
+            )
+        )
+        
+        test = [
+            "valgrind",
+            "--leak-check=full",
+            "--show-leak-kinds=definite",
+            "--error-exitcode=10",
+            "--gen-suppressions=all",
+            "--track-origins=yes",
+            "--trace-children=yes",
+            "--suppressions=$(PWD)/Misc/valgrind-python.supp",
+            "./python", 
+            "-m", "test",
+            *self.testFlags,
+            f"--timeout={self.test_timeout}",
+        ]
+        
+        self.addStep(Test(
+            command=test,
+            timeout=step_timeout(self.test_timeout),
+            env=self.test_environ,
+        ))
+        
+        self.addStep(Clean())
