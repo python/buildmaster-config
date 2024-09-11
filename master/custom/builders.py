@@ -47,6 +47,7 @@ from custom.factories import (
     Wasm32WasiDebugBuild,
     IOSARM64SimulatorBuild,
     AndroidBuild,
+    ValgrindBuild,
 )
 
 # A builder can be marked as stable when at least the 10 latest builds are
@@ -219,6 +220,8 @@ UNSTABLE_BUILDERS_TIER_1 = [
     ("AMD64 CentOS9 LTO + PGO", "cstratak-CentOS9-x86_64", LTOPGONonDebugBuild),
     ("AMD64 CentOS9 FIPS Only Blake2 Builtin Hash", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuildExceptBlake2),
     ("AMD64 CentOS9 FIPS No Builtin Hashes", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuild),
+
+    ("AMD64 Arch Linux Valgrind", "pablogsal-arch-x86_64", ValgrindBuild),
 ]
 
 
@@ -347,4 +350,5 @@ ONLY_MAIN_BRANCH = (
     "Cygwin",
     "ARM64 Windows",
     "AMD64 Arch Linux Perf",
+    "AMD64 Arch Linux Valgrind",
 )
