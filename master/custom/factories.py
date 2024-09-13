@@ -1159,18 +1159,15 @@ class IOSARM64SimulatorBuild(_IOSSimulatorBuild):
 
 class AndroidBuild(BaseBuild):
     """Build Python for Android on a Linux or Mac machine, and test it using a
-    Gradle-managed emulator. Worker setup instructions:
+    Gradle-managed emulator.
 
-    * Install all the usual tools and libraries needed to build Python for the
-      worker's own operating system.
+    To set up a worker, see cpython/Android/README.md, especially the following
+    sections:
 
-    * Follow the instructions in the Prerequisites section of
-      cpython/Android/README.md.
-
-    * On Linux:
-      * Make sure the worker has access to the KVM virtualization interface.
-      * Start an X server such as Xvfb, and set the DISPLAY environment variable
-        to point at it.
+    * Install everything listed under "Prerequisites".
+    * Do any OS-specific setup mentioned under "Testing".
+    * If the managed emulator appears to be running out of memory, increase
+      its RAM size as described under "Testing".
     """
 
     def setup(self, **kwargs):
@@ -1198,14 +1195,10 @@ class AndroidBuild(BaseBuild):
                 name="Compile host Python",
                 command=[android_py, "make-host", self.host_triple],
             ),
-            Compile(
-                name="Build testbed",
-                command=[android_py, "build-testbed"],
-            ),
             Test(
                 command=[
-                    android_py, "test", "--managed", "maxVersion", "--",
-                    "-W", "-uall",
+                    android_py, "test", "--managed", "maxVersion", "-v", "--",
+                    "-uall", "--single-process", "--rerun", "-W",
                 ],
                 timeout=step_timeout(self.test_timeout),
             ),
