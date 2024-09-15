@@ -222,6 +222,9 @@ UNSTABLE_BUILDERS_TIER_1 = [
     ("AMD64 CentOS9 FIPS No Builtin Hashes", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuild),
 
     ("AMD64 Arch Linux Valgrind", "pablogsal-arch-x86_64", ValgrindBuild),
+
+    ("AMD64 CentOS9 NoGIL", "itamaro-centos-aws", UnixNoGilBuild),
+    ("AMD64 CentOS9 NoGIL Refleaks", "itamaro-centos-aws", UnixNoGilRefleakBuild),
 ]
 
 
