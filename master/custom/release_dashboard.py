@@ -69,7 +69,8 @@ def get_release_status_app(buildernames):
 
             failed_builds.append((builder, last_build))
 
-        def tier_sort_key(tier, data):
+        def tier_sort_key(item):
+            tier, data = item
             if tier == 'no tier':
                 return 'zzz'  # sort last
             return tier
