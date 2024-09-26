@@ -49,7 +49,7 @@ def get_release_status_app(buildernames):
             if not branch:
                 continue
 
-            failed_builds_by_tier = failed_builds_by_branch_and_tier.setdefault(branch, [])
+            failed_builds_by_tier = failed_builds_by_branch_and_tier.setdefault(branch, {})
             failed_builds = failed_builds_by_tier.setdefault(tier, [])
 
             endpoint = ("builders", builder["builderid"], "builds")
