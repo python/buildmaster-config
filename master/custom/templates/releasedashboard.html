@@ -5,6 +5,8 @@
         <h1>Branch release status dashboard</h1>
     </div>
 
+    <h2>Failing stable builders</h2>
+
     <div class="container">
         <div class="col-sm-12">
             <div class="row">
@@ -52,6 +54,21 @@
             </div>
         </div>
     </div>
+
+    <h2>Disconnected stable workers</h2>
+
+    <div class="container">
+        {% for worker in disconnected_workers %}
+            <div class="row">
+                <a href="#/workers/{{ worker.workerid }}">
+                    {{ worker.name }}
+                </a>
+            </div>
+        {% else %}
+            None.
+        {% endfor %}
+    </div>
+
     <div class="container">
         <small>Generated at <time id="generatedAt" datetime="{{generated_at}}">{{generated_at}}</time></small>
     </div>

@@ -23,6 +23,7 @@ def get_release_status_app(buildernames):
         builders = release_status_app.buildbot_api.dataGet("/builders")
 
         failed_builds_by_branch = {}
+        disconnected_workers = {}
 
         for builder in builders:
             if builder["name"] not in buildernames:
@@ -58,12 +59,20 @@ def get_release_status_app(buildernames):
 
             failed_builds_by_branch[branch].append((builder, last_build))
 
+            for worker in release_status_app.buildbot_api.dataGet(
+                ("builders", builder["builderid"], "workers"),
+            ):
+                if not worker["connected_to"]:
+                    disconnected_workers[worker["name"]] = worker
+
         generated_at = datetime.datetime.now(tz=datetime.timezone.utc)
         failed_builders = sorted(failed_builds_by_branch.items(), reverse=True)
+
         return render_template(
             "releasedashboard.html",
             failed_builders=failed_builders,
             generated_at=generated_at,
+            disconnected_workers=disconnected_workers,
         )
 
     @release_status_app.route("/index.html")
