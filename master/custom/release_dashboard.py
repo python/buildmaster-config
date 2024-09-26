@@ -72,7 +72,7 @@ def get_release_status_app(buildernames):
             "releasedashboard.html",
             failed_builders=failed_builders,
             generated_at=generated_at,
-            disconnected_workers=disconnected_workers,
+            disconnected_workers=sorted(disconnected_workers.items()),
         )
 
     @release_status_app.route("/index.html")

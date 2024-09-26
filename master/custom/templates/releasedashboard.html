@@ -58,10 +58,11 @@
     <h2>Disconnected stable workers</h2>
 
     <div class="container">
-        {% for worker in disconnected_workers %}
+        {% for name, worker in disconnected_workers %}
             <div class="row">
+                -
                 <a href="#/workers/{{ worker.workerid }}">
-                    {{ worker.name }}
+                    {{ name }}
                 </a>
             </div>
         {% else %}
