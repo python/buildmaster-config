@@ -32,6 +32,12 @@ def get_release_status_app(buildernames):
             if "stable" not in builder["tags"]:
                 continue
 
+            for worker in release_status_app.buildbot_api.dataGet(
+                ("builders", builder["builderid"], "workers"),
+            ):
+                if not worker["connected_to"]:
+                    disconnected_workers[worker["name"]] = worker
+
             branch = [tag for tag in builder["tags"] if "3." in tag]
 
             if not branch:
@@ -58,12 +64,6 @@ def get_release_status_app(buildernames):
                 continue
 
             failed_builds_by_branch[branch].append((builder, last_build))
-
-            for worker in release_status_app.buildbot_api.dataGet(
-                ("builders", builder["builderid"], "workers"),
-            ):
-                if not worker["connected_to"]:
-                    disconnected_workers[worker["name"]] = worker
 
         generated_at = datetime.datetime.now(tz=datetime.timezone.utc)
         failed_builders = sorted(failed_builds_by_branch.items(), reverse=True)
