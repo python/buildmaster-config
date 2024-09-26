@@ -22,7 +22,7 @@ def get_release_status_app(buildernames):
     def get_release_status():
         builders = release_status_app.buildbot_api.dataGet("/builders")
 
-        failed_builds_by_tier_and_branch = {}
+        failed_builds_by_branch_and_tier = {}
         disconnected_workers = {}
 
         for builder in builders:
