@@ -104,8 +104,6 @@ STABLE_BUILDERS_TIER_2 = [
     ("AMD64 Fedora Stable Clang Installed", "cstratak-fedora-stable-x86_64", ClangUnixInstalledBuild),
 
     # Linux ppc64le GCC
-    ("PPC64 Fedora", "edelsohn-fedora-ppc64", FedoraStableBuild),
-
     ("PPC64LE Fedora Stable", "cstratak-fedora-stable-ppc64le", FedoraStableBuild),
     ("PPC64LE Fedora Stable Refleaks", "cstratak-fedora-stable-ppc64le", UnixRefleakBuild),
     ("PPC64LE Fedora Stable LTO", "cstratak-fedora-stable-ppc64le", LTONonDebugUnixBuild),
