@@ -76,13 +76,23 @@ def get_release_status_app(buildernames):
             if tier == 'no tier':
                 return 'zzz'  # sort last
             return tier
+
         failed_builders = []
         for branch, failed_builds_by_tier in failed_builds_by_branch_and_tier.items():
             failed_builders.append((
                 branch,
                 sorted(failed_builds_by_tier.items(), key=tier_sort_key)
             ))
-        failed_builders.sort(reverse=True)
+
+        def branch_sort_key(item):
+            branch, *_ = item
+            minor = branch.split('.')[-1]
+            try:
+                return int(minor)
+            except ValueError:
+                return 99
+
+        failed_builders.sort(reverse=True, key=branch_sort_key)
 
         generated_at = datetime.datetime.now(tz=datetime.timezone.utc)
 
