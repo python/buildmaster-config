@@ -5,12 +5,14 @@
         <h1>Branch release status dashboard</h1>
     </div>
 
+    <h2>Failing stable builders</h2>
+
     <div class="container">
         <div class="col-sm-12">
             <div class="row">
-                {% for branch, info in failed_builders %}
+                {% for branch, info_by_tier in failed_builders %}
                     <div class="col-md-4 ng-scope">
-                        {% if not info %}
+                        {% if not info_by_tier %}
                             <div class="panel panel-success">
                                 <div class="panel-heading">
                                     <div style="text-align: center;">
@@ -30,19 +32,22 @@
                                 <div class="panel-heading">
                                     <div style="text-align: center;">
                                         <h4 class="panel-title">
-                                            Branch {{ branch }} status: Not Releaseable
+                                            Branch {{ branch }} status:
                                         </h4>
                                     </div>
                                 </div>
                                 <div class="panel-body">
-                                    {% for builder, build in info %}
-                              <!-- BROKEN?      <div> <buildsummary buildid="{{build.buildid}}" condensed="1"/> </div> -->
-                                        <div>
-                                            <a class="badge-status badge results_{{build.results_text | upper}}"
-                                               href="#/builders/{{build.builderid}}/builds/{{build.number}}">
-                                               {{build.number}}
-                                            </a>
-                                        </div>
+                                    {% for tier, info in info_by_tier %}
+                                        <h5>{{ tier }}</h5>
+                                        {% for builder, build in info %}
+                                <!-- BROKEN?      <div> <buildsummary buildid="{{build.buildid}}" condensed="1"/> </div> -->
+                                            <div>
+                                                <a class="badge-status badge results_{{build.results_text | upper}}"
+                                                href="#/builders/{{build.builderid}}/builds/{{build.number}}">
+                                                {{ builder.name }}: #{{ build.number }}
+                                                </a>
+                                            </div>
+                                        {% endfor %}
                                     {% endfor %}
                                 </div>
                             </div>
@@ -52,6 +57,22 @@
             </div>
         </div>
     </div>
+
+    <h2>Disconnected stable workers</h2>
+
+    <div class="container">
+        {% for name, worker in disconnected_workers %}
+            <div class="row">
+                -
+                <a href="#/workers/{{ worker.workerid }}">
+                    {{ name }}
+                </a>
+            </div>
+        {% else %}
+            None.
+        {% endfor %}
+    </div>
+
     <div class="container">
         <small>Generated at <time id="generatedAt" datetime="{{generated_at}}">{{generated_at}}</time></small>
     </div>
