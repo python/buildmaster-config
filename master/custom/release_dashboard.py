@@ -50,7 +50,6 @@ def get_release_status_app(buildernames):
                 continue
 
             failed_builds_by_tier = failed_builds_by_branch_and_tier.setdefault(branch, {})
-            failed_builds = failed_builds_by_tier.setdefault(tier, [])
 
             endpoint = ("builders", builder["builderid"], "builds")
             last_build = release_status_app.buildbot_api.dataGet(
@@ -67,6 +66,7 @@ def get_release_status_app(buildernames):
             if last_build["results"] != FAILED_BUILD_STATUS:
                 continue
 
+            failed_builds = failed_builds_by_tier.setdefault(tier, [])
             failed_builds.append((builder, last_build))
 
         def tier_sort_key(item):
