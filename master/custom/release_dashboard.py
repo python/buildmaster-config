@@ -9,9 +9,11 @@ from buildbot.data.resultspec import Filter
 
 FAILED_BUILD_STATUS = 2
 
-# Cache result for 5 minutes. Generating the page is slow and a Python build
-# takes at least 5 minutes, a common build takes 10 to 30 minutes.
-CACHE_DURATION = 5 * 60
+# Cache result for 6 minutes. Generating the page is slow and a Python build
+# takes at least 5 minutes, a common build takes 10 to 30 minutes.  There is a
+# cronjob that forces a refresh every 5 minutes, so all human requests should
+# get a cache hit.
+CACHE_DURATION = 6 * 60
 
 
 def get_release_status_app(buildernames):
