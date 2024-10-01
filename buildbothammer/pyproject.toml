@@ -1,0 +1,16 @@
+[project]
+name = "buildbothammer"
+version = "0.1.0"
+description = "Automatic revert failing CPython PRs"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "requests>=2.32.3",
+    "pygithub>=2.4.0",
+    "filelock>=3.16.1",
+    "aiohttp",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
