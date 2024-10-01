@@ -16,8 +16,8 @@ Run locally:
 
     make git-update-requirements
 
-Create a PR. Merge the PR. The new venv will be recreated automatically on the
-server.
+Review updated packages, pay attention to buildbot updates. Create a PR. Merge
+the PR. The new venv will be recreated automatically on the server.
 
 Upgrading buildbot sometimes requires to run the command:
 
