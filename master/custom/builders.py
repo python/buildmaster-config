@@ -173,6 +173,10 @@ STABLE_BUILDERS_NO_TIER = [
     ("AMD64 Arch Linux Asan Debug", "pablogsal-arch-x86_64", UnixAsanDebugBuild),
     ("AMD64 Arch Linux TraceRefs", "pablogsal-arch-x86_64", UnixTraceRefsBuild),
     ("AMD64 Arch Linux Perf", "pablogsal-arch-x86_64", UnixPerfBuild),
+
+    # Linux x86 (32-bit) GCC
+    ("x86 Debian Non-Debug with X", "ware-debian-x86", NonDebugUnixBuild),
+    ("x86 Debian Installed with X", "ware-debian-x86", UnixInstalledBuild),
 ]
 
 
@@ -266,10 +270,6 @@ UNSTABLE_BUILDERS_NO_TIER = [
     ("AMD64 Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-x86_64", UnixNoGilRefleakBuild),
     ("aarch64 Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-aarch64", UnixNoGilRefleakBuild),
     ("PPC64LE Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-ppc64le", UnixNoGilRefleakBuild),
-
-    # Linux x86 (32-bit) GCC
-    ("x86 Debian Non-Debug with X", "ware-debian-x86", NonDebugUnixBuild),
-    ("x86 Debian Installed with X", "ware-debian-x86", UnixInstalledBuild),
 
     # AIX ppc64
     ("PPC64 AIX", "edelsohn-aix-ppc64", AIXBuild),
