@@ -16,7 +16,6 @@ from custom.factories import (
     MacOSAsanNoGilBuild,
     AIXBuild,
     AIXBuildWithXLC,
-    PGOUnixBuild,
     ClangUnixBuild,
     ClangUbsanLinuxBuild,
     ClangUbsanFunctionLinuxBuild,
@@ -28,7 +27,6 @@ from custom.factories import (
     UnixInstalledBuild,
     LTONonDebugUnixBuild,
     LTOPGONonDebugBuild,
-    ClangLTOPGONonDebugBuild,
     RHEL8NoBuiltinHashesUnixBuild,
     RHEL8NoBuiltinHashesUnixBuildExceptBlake2,
     CentOS9NoBuiltinHashesUnixBuild,
@@ -140,22 +138,6 @@ STABLE_BUILDERS_TIER_2 = [
 
 # -- Stable Tier-3 builder ----------------------------------------------
 STABLE_BUILDERS_TIER_3 = [
-    # Linux s390x GCC
-    ("s390x SLES", "edelsohn-sles-z", UnixBuild),
-    ("s390x Debian", "edelsohn-debian-z", UnixBuild),
-    ("s390x Fedora", "edelsohn-fedora-z", UnixBuild),
-    ("s390x Fedora Refleaks", "edelsohn-fedora-z", UnixRefleakBuild),
-    ("s390x Fedora LTO", "edelsohn-fedora-z", LTONonDebugUnixBuild),
-    ("s390x Fedora LTO + PGO", "edelsohn-fedora-z", LTOPGONonDebugBuild),
-    ("s390x RHEL9", "edelsohn-rhel-z", UnixBuild),
-    ("s390x RHEL9 Refleaks", "edelsohn-rhel-z", UnixRefleakBuild),
-    ("s390x RHEL9 LTO", "edelsohn-rhel-z", LTONonDebugUnixBuild),
-    ("s390x RHEL9 LTO + PGO", "edelsohn-rhel-z", LTOPGONonDebugBuild),
-    ("s390x RHEL8", "edelsohn-rhel8-z", UnixBuild),
-    ("s390x RHEL8 Refleaks", "edelsohn-rhel8-z", UnixRefleakBuild),
-    ("s390x RHEL8 LTO", "edelsohn-rhel8-z", LTONonDebugUnixBuild),
-    ("s390x RHEL8 LTO + PGO", "edelsohn-rhel8-z", LTOPGONonDebugBuild),
-
     # Linux ppc64le Clang
     ("PPC64LE Fedora Stable Clang", "cstratak-fedora-stable-ppc64le", ClangUnixBuild),
     ("PPC64LE Fedora Stable Clang Installed", "cstratak-fedora-stable-ppc64le", ClangUnixInstalledBuild),
@@ -191,10 +173,6 @@ STABLE_BUILDERS_NO_TIER = [
     ("AMD64 Arch Linux Asan Debug", "pablogsal-arch-x86_64", UnixAsanDebugBuild),
     ("AMD64 Arch Linux TraceRefs", "pablogsal-arch-x86_64", UnixTraceRefsBuild),
     ("AMD64 Arch Linux Perf", "pablogsal-arch-x86_64", UnixPerfBuild),
-
-    # Linux s390x Clang
-    ("s390x Fedora Clang", "edelsohn-fedora-z", ClangUnixBuild),
-    ("s390x Fedora Clang Installed", "edelsohn-fedora-z", ClangUnixInstalledBuild),
 ]
 
 
@@ -269,13 +247,6 @@ UNSTABLE_BUILDERS_TIER_3 = [
     ("PPC64LE Fedora Rawhide Clang", "cstratak-fedora-rawhide-ppc64le", ClangUnixBuild),
     ("PPC64LE Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-ppc64le", ClangUnixInstalledBuild),
 
-    # Linux s390x GCC
-    # Fedora Rawhide is unstable
-    ("s390x Fedora Rawhide", "edelsohn-fedora-rawhide-z", UnixBuild),
-    ("s390x Fedora Rawhide Refleaks", "edelsohn-fedora-rawhide-z", UnixRefleakBuild),
-    ("s390x Fedora Rawhide LTO", "edelsohn-fedora-rawhide-z", LTONonDebugUnixBuild),
-    ("s390x Fedora Rawhide LTO + PGO", "edelsohn-fedora-rawhide-z", LTOPGONonDebugBuild),
-
     # FreBSD x86-64 clang
     # FreeBSD 15 is CURRENT: development branch (at 2023-10-17)
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
@@ -299,10 +270,6 @@ UNSTABLE_BUILDERS_NO_TIER = [
     # Linux x86 (32-bit) GCC
     ("x86 Debian Non-Debug with X", "ware-debian-x86", NonDebugUnixBuild),
     ("x86 Debian Installed with X", "ware-debian-x86", UnixInstalledBuild),
-
-    # Linux s390x Clang
-    ("s390x Fedora Rawhide Clang", "edelsohn-fedora-rawhide-z", ClangUnixBuild),
-    ("s390x Fedora Rawhide Clang Installed", "edelsohn-fedora-rawhide-z", ClangUnixInstalledBuild),
 
     # AIX ppc64
     ("PPC64 AIX", "edelsohn-aix-ppc64", AIXBuild),
