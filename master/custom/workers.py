@@ -150,36 +150,6 @@ def get_workers(settings):
             parallel_tests=10,
         ),
         cpw(
-            name="edelsohn-debian-z",
-            tags=['linux', 'unix', 'debian', 's390x'],
-            parallel_tests=6,
-        ),
-        cpw(
-            name="edelsohn-fedora-rawhide-z",
-            tags=['linux', 'unix', 'fedora', 's390x'],
-            parallel_tests=6,
-        ),
-        cpw(
-            name="edelsohn-fedora-z",
-            tags=['linux', 'unix', 'fedora', 's390x'],
-            parallel_tests=6,
-        ),
-        cpw(
-            name="edelsohn-rhel-z",
-            tags=['linux', 'unix', 'rhel', 's390x'],
-            parallel_tests=6,
-        ),
-        cpw(
-            name="edelsohn-rhel8-z",
-            tags=['linux', 'unix', 'rhel', 's390x'],
-            parallel_tests=6,
-        ),
-        cpw(
-            name="edelsohn-sles-z",
-            tags=['linux', 'unix', 'sles', 's390x'],
-            parallel_tests=6,
-        ),
-        cpw(
             name="gps-raspbian",
             tags=['linux', 'unix', 'raspbian', 'debian', 'armv6', 'armv7l',
                   'aarch32', 'arm'],
