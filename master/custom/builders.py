@@ -169,10 +169,12 @@ STABLE_BUILDERS_NO_TIER = [
     # Special builds: FIPS, ASAN, UBSAN, TraceRefs, Perf, etc.
     ("AMD64 RHEL8 FIPS Only Blake2 Builtin Hash", "cstratak-RHEL8-fips-x86_64", RHEL8NoBuiltinHashesUnixBuildExceptBlake2),
     ("AMD64 Arch Linux Asan", "pablogsal-arch-x86_64", UnixAsanBuild),
-    ("AMD64 Arch Linux Usan", "pablogsal-arch-x86_64", ClangUbsanLinuxBuild),
     ("AMD64 Arch Linux Asan Debug", "pablogsal-arch-x86_64", UnixAsanDebugBuild),
     ("AMD64 Arch Linux TraceRefs", "pablogsal-arch-x86_64", UnixTraceRefsBuild),
     ("AMD64 Arch Linux Perf", "pablogsal-arch-x86_64", UnixPerfBuild),
+    # UBSAN with -fno-sanitize=function, without which we currently fail (as
+    #  tracked in gh-111178). The full "AMD64 Arch Linux Usan" is unstable, below
+    ("AMD64 Arch Linux Usan Function", "pablogsal-arch-x86_64", ClangUbsanFunctionLinuxBuild),
 
     # Linux x86 (32-bit) GCC
     ("x86 Debian Non-Debug with X", "ware-debian-x86", NonDebugUnixBuild),
@@ -281,8 +283,8 @@ UNSTABLE_BUILDERS_NO_TIER = [
     # riscv64 GCC
     ("riscv64 Ubuntu23", "onder-riscv64", SlowUnixInstalledBuild),
 
-    # Arch Usan Function
-    ("AMD64 Arch Linux Usan Function", "pablogsal-arch-x86_64", ClangUbsanFunctionLinuxBuild),
+    # Arch Usan (see stable "AMD64 Arch Linux Usan Function" above)
+    ("AMD64 Arch Linux Usan", "pablogsal-arch-x86_64", ClangUbsanLinuxBuild),
 ]
 
 
