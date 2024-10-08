@@ -145,6 +145,16 @@ def get_workers(settings):
             parallel_tests=40,
         ),
         cpw(
+            name="cstratak-rhel8-s390x",
+            tags=['linux', 'unix', 'rhel', 's390x'],
+            parallel_tests=10,
+        ),
+        cpw(
+            name="cstratak-rhel9-s390x",
+            tags=['linux', 'unix', 'rhel', 's390x'],
+            parallel_tests=10,
+        ),
+        cpw(
             name="edelsohn-aix-ppc64",
             tags=['aix', 'unix', 'ppc64'],
             parallel_tests=10,

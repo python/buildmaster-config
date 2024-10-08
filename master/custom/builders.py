@@ -138,6 +138,17 @@ STABLE_BUILDERS_TIER_2 = [
 
 # -- Stable Tier-3 builder ----------------------------------------------
 STABLE_BUILDERS_TIER_3 = [
+
+    # Linux s390x GCC
+    ("s390x RHEL9", "cstratak-rhel9-s390x", UnixBuild),
+    ("s390x RHEL9 Refleaks", "cstratak-rhel9-s390x", UnixRefleakBuild),
+    ("s390x RHEL9 LTO", "cstratak-rhel9-s390x", LTONonDebugUnixBuild),
+    ("s390x RHEL9 LTO + PGO", "cstratak-rhel9-s390x", LTOPGONonDebugBuild),
+    ("s390x RHEL8", "cstratak-rhel8-s390x", UnixBuild),
+    ("s390x RHEL8 Refleaks", "cstratak-rhel8-s390x", UnixRefleakBuild),
+    ("s390x RHEL8 LTO", "cstratak-rhel8-s390x", LTONonDebugUnixBuild),
+    ("s390x RHEL8 LTO + PGO", "cstratak-rhel8-s390x", LTOPGONonDebugBuild),
+
     # Linux ppc64le Clang
     ("PPC64LE Fedora Stable Clang", "cstratak-fedora-stable-ppc64le", ClangUnixBuild),
     ("PPC64LE Fedora Stable Clang Installed", "cstratak-fedora-stable-ppc64le", ClangUnixInstalledBuild),
