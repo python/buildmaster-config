@@ -135,32 +135,32 @@ async def get_failing_builders(session, limit=N_BUILDS):
         b for b in builders if "3.x" in b["tags"] and "stable" in b["tags"]
     ]
 
-    builder_builds = await asyncio.gather(
-        *[get_builder_builds(session, builder, limit) for builder in relevant_builders],
-        return_exceptions=True,
-    )
-
     failing_builders = []
     all_builders_status = []
-    for result in builder_builds:
-        if isinstance(result, Exception):
-            logger.error(f"Error fetching builder builds: {result}")
-            continue
-        builder, builds, status_graph = result
-        is_failing, last_failing_build = is_failing_builder(builds)
-        if last_failing_build:
-            status_graph = list(status_graph)
-            status_graph[builds.index(last_failing_build)] = "🟪"
-            status_graph = "".join(status_graph)
-            print(f"{builder['name']}\n{status_graph}\n")
-        all_builders_status.append((builder["name"], status_graph))
-        if is_failing:
-            logger.info(
-                f"Found failing builder: {builder['name']} with last failing build {last_failing_build['buildid']}"
-            )
-            failing_builders.append((builder, last_failing_build))
-        else:
-            logger.debug(f"Builder {builder['name']} is not failing")
+
+    async def process_builder(builder):
+        try:
+            builder, builds, status_graph = await get_builder_builds(session, builder, limit)
+            is_failing, last_failing_build = is_failing_builder(builds)
+            if last_failing_build:
+                status_graph = list(status_graph)
+                status_graph[builds.index(last_failing_build)] = "🟪"
+                status_graph = "".join(status_graph)
+                print(f"{builder['name']}\n{status_graph}\n")
+            all_builders_status.append((builder["name"], status_graph))
+            if is_failing:
+                logger.info(
+                    f"Found failing builder: {builder['name']} with last failing build {last_failing_build['buildid']}"
+                )
+                failing_builders.append((builder, last_failing_build))
+            else:
+                logger.debug(f"Builder {builder['name']} is not failing")
+        except Exception as e:
+            logger.error(f"Error processing builder {builder['name']}: {str(e)}")
+
+    async with asyncio.TaskGroup() as tg:
+        for builder in relevant_builders:
+            tg.create_task(process_builder(builder))
 
     logger.info(f"Total failing builders found: {len(failing_builders)}")
     return failing_builders, all_builders_status
