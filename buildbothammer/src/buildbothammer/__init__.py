@@ -197,12 +197,30 @@ def ensure_repo_clone():
         run_command(["git", "reset", "--hard", "origin/main"], cwd=str(REPO_CLONE_DIR))
 
 
+def check_existing_pr(repo, branch_name):
+    logger.info(f"Checking for existing PR for branch: {branch_name}")
+    existing_prs = repo.get_pulls(state='open', head=f"{FORK_OWNER}:{branch_name}")
+    return next(existing_prs, None)
+
+
 def create_revert_pr(commit_sha, builder, failing_build):
     logger.info(f"Creating revert PR for commit: {commit_sha}")
     g = Github(GITHUB_TOKEN)
 
     try:
         main_repo = g.get_repo(f"{REPO_OWNER}/{REPO_NAME}")
+
+        branch_name = f"revert-{commit_sha[:7]}"
+        
+        # Check for existing PR
+        existing_pr = check_existing_pr(main_repo, branch_name)
+        if existing_pr:
+            logger.info(f"Existing PR found: {existing_pr.html_url}")
+            return None, None
+
+        with FileLock(LOCK_FILE):
+            ensure_repo_clone()
+
 
         with FileLock(LOCK_FILE):
             ensure_repo_clone()
@@ -215,7 +233,6 @@ def create_revert_pr(commit_sha, builder, failing_build):
                 cwd=str(REPO_CLONE_DIR),
             )
 
-            branch_name = f"revert-{commit_sha[:7]}"
             run_command(["git", "checkout", "-b", branch_name], cwd=str(REPO_CLONE_DIR))
             logger.info(f"Created and checked out new branch: {branch_name}")
 
@@ -322,7 +339,7 @@ async def process_builder(session, builder, first_failing_build):
             pr_url, discord_message = create_revert_pr(
                 commit_sha, builder, first_failing_build
             )
-            if pr_url:
+            if pr_url and discord_message:
                 logger.info(f"Created revert PR for commit {commit_sha}: {pr_url}")
                 await send_discord_notification(session, discord_message)
             else:
