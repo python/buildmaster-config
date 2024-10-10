@@ -373,7 +373,7 @@ async def main():
         except Exception as e:
             logger.error(f"An error occurred in the main execution: {str(e)}")
         finally:
-            logger.info("Script execution completed")
+            logger.info("Buildbothammer execution completed")
 
 
 if __name__ == "__main__":
