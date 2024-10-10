@@ -140,7 +140,9 @@ async def get_failing_builders(session, limit=N_BUILDS):
 
     async def process_builder(builder):
         try:
-            builder, builds, status_graph = await get_builder_builds(session, builder, limit)
+            builder, builds, status_graph = await get_builder_builds(
+                session, builder, limit
+            )
             is_failing, last_failing_build = is_failing_builder(builds)
             if last_failing_build:
                 status_graph = list(status_graph)
@@ -199,7 +201,7 @@ def ensure_repo_clone():
 
 def check_existing_pr(repo, branch_name):
     logger.info(f"Checking for existing PR for branch: {branch_name}")
-    existing_prs = repo.get_pulls(state='open', head=f"{FORK_OWNER}:{branch_name}")
+    existing_prs = repo.get_pulls(state="open", head=f"{FORK_OWNER}:{branch_name}")
     return next(existing_prs, None)
 
 
@@ -211,7 +213,7 @@ def create_revert_pr(commit_sha, builder, failing_build):
         main_repo = g.get_repo(f"{REPO_OWNER}/{REPO_NAME}")
 
         branch_name = f"revert-{commit_sha[:7]}"
-        
+
         # Check for existing PR
         existing_pr = check_existing_pr(main_repo, branch_name)
         if existing_pr:
@@ -220,7 +222,6 @@ def create_revert_pr(commit_sha, builder, failing_build):
 
         with FileLock(LOCK_FILE):
             ensure_repo_clone()
-
 
         with FileLock(LOCK_FILE):
             ensure_repo_clone()
@@ -360,20 +361,24 @@ async def main():
         try:
             failing_builders, all_builders_status = await get_failing_builders(session)
 
-            results = await asyncio.gather(
-                *[
-                    process_builder(session, builder, first_failing_build)
-                    for builder, first_failing_build in failing_builders
-                ],
-                return_exceptions=True,
-            )
-            for result in results:
-                if isinstance(result, Exception):
-                    logger.error(f"Error in processing a builder: {result}")
+            async def process_failing_builder(builder, first_failing_build):
+                try:
+                    await process_builder(session, builder, first_failing_build)
+                except Exception as e:
+                    logger.error(
+                        f"Error processing builder {builder['name']}: {str(e)}"
+                    )
+
+            async with asyncio.TaskGroup() as tg:
+                for builder, first_failing_build in failing_builders:
+                    tg.create_task(
+                        process_failing_builder(builder, first_failing_build)
+                    )
+
         except Exception as e:
             logger.error(f"An error occurred in the main execution: {str(e)}")
         finally:
-            logger.info("Buildbothammer execution completed")
+            logger.info("BuildbotHammer execution completed")
 
 
 if __name__ == "__main__":
