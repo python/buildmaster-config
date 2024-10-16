@@ -15,19 +15,19 @@ REFLEAK_TESTING_LABEL = ":hammer: test-with-refleak-buildbots"
 
 GITHUB_PROPERTIES_WHITELIST = ["*.labels"]
 
-BUILD_SCHEDULED_MESSAGE = f"""\
-:robot: New build scheduled with the buildbot fleet by @{{user}} for commit {{commit}} :robot:
+BUILD_SCHEDULED_MESSAGE_TEMPLATE = """\
+:robot: New build scheduled with the buildbot fleet by @{user} for commit {commit} :robot:
 
-If you want to schedule another build, you need to add the <kbd>{{label}}</kbd> label again.
+If you want to schedule another build, you need to add the <kbd>{label}</kbd> label again.
 """
 
-BUILD_COMMAND_SCHEDULED_MESSAGE = f"""\
-:robot: New build scheduled with the buildbot fleet by @{{user}} for commit {{commit}} :robot:
+BUILD_COMMAND_SCHEDULED_MESSAGE_TEMPLATE = """\
+:robot: New build scheduled with the buildbot fleet by @{user} for commit {commit} :robot:
 
-The command will test the builders whose names match following regular expression: `{{filter}}`
+The command will test the builders whose names match following regular expression: `{filter}`
 
 The builders matched are:
-{{builders}}
+{builders}
 """
 
 BUILDBOT_COMMAND = re.compile(r"!buildbot (.+)")
@@ -82,7 +82,7 @@ class CustomGitHubEventHandler(GitHubEventHandler):
         yield http.post(
             url.replace(self.github_api_endpoint, ""),
             json={
-                "body": BUILD_SCHEDULED_MESSAGE.format(
+                "body": BUILD_SCHEDULED_MESSAGE_TEMPLATE.format(
                     user=username, commit=commit, label=label
                 )
             },
@@ -273,7 +273,7 @@ class CustomGitHubEventHandler(GitHubEventHandler):
 
         yield self._post_comment(
             payload["issue"]["comments_url"],
-            BUILD_COMMAND_SCHEDULED_MESSAGE.format(
+            BUILD_COMMAND_SCHEDULED_MESSAGE_TEMPLATE.format(
                 user=payload["sender"]["login"],
                 commit=head_sha,
                 filter=builder_filter,
