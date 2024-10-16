@@ -322,6 +322,7 @@ class ClangUbsanLinuxBuild(UnixBuild):
     ]
     factory_tags = ["clang", "ubsan", "sanitizer"]
 
+
 class ClangUbsanFunctionLinuxBuild(UnixBuild):
     buildersuffix = ".clang-ubsan-function"
     configureFlags = [
@@ -331,6 +332,7 @@ class ClangUbsanFunctionLinuxBuild(UnixBuild):
         "--with-undefined-behavior-sanitizer",
     ]
     factory_tags = ["clang", "ubsan", "sanitizer"]
+
 
 class ClangUnixInstalledBuild(UnixInstalledBuild):
     buildersuffix = ".clang-installed"
@@ -1238,13 +1240,13 @@ class ValgrindBuild(UnixBuild):
                 command=["./configure", "--prefix", "$(PWD)/target"] + self.configureFlags
             )
         )
-        
+
         compile = ["make", self.makeTarget]
         if parallel:
             compile = ["make", parallel, self.makeTarget]
-        
+
         self.addStep(Compile(command=compile, env=self.compile_environ))
-        
+
         self.addStep(
             ShellCommand(
                 name="pythoninfo",
@@ -1254,7 +1256,7 @@ class ValgrindBuild(UnixBuild):
                 env=self.test_environ,
             )
         )
-        
+
         test = [
             "valgrind",
             "--leak-check=full",
@@ -1264,16 +1266,16 @@ class ValgrindBuild(UnixBuild):
             "--track-origins=yes",
             "--trace-children=yes",
             "--suppressions=$(PWD)/Misc/valgrind-python.supp",
-            "./python", 
+            "./python",
             "-m", "test",
             *self.testFlags,
             f"--timeout={self.test_timeout}",
         ]
-        
+
         self.addStep(Test(
             command=test,
             timeout=step_timeout(self.test_timeout),
             env=self.test_environ,
         ))
-        
+
         self.addStep(Clean())
