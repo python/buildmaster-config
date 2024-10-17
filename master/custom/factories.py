@@ -23,7 +23,10 @@ from .steps import (
 # This (default) timeout is for each individual test file.
 # It is a bit more than the default faulthandler timeout in regrtest.py
 # (the latter isn't easily changed under Windows).
-TEST_TIMEOUT = 20 * 60
+TEST_TIMEOUT = 20 * 60  # 20 minutes
+
+# Refleak timeout (-R 3:3) for each individual test file.
+REFLEAK_TIMEOUT = 45 * 60  # 45 minutes
 
 
 def step_timeout(timeout):
@@ -154,10 +157,7 @@ class UnixVintageParserBuild(UnixBuild):
 class UnixRefleakBuild(UnixBuild):
     buildersuffix = ".refleak"
     testFlags = ["-R", "3:3", "-u-cpu"]
-    # -R 3:3 is supposed to only require timeout x 6, but in practice,
-    # it's much more slower. Use timeout x 10 to prevent timeout
-    # caused by --huntrleaks.
-    test_timeout = TEST_TIMEOUT * 10
+    test_timeout = REFLEAK_TIMEOUT
     factory_tags = ["refleak"]
 
 
@@ -174,10 +174,7 @@ class UnixNoGilRefleakBuild(UnixBuild):
     buildersuffix = ".refleak.nogil"
     configureFlags = ["--with-pydebug", "--disable-gil"]
     testFlags = ["-R", "3:3", "-u-cpu"]
-    # -R 3:3 is supposed to only require timeout x 6, but in practice,
-    # it's much more slower. Use timeout x 10 to prevent timeout
-    # caused by --huntrleaks.
-    test_timeout = TEST_TIMEOUT * 10
+    test_timeout = REFLEAK_TIMEOUT
     factory_tags = ["nogil", "refleak"]
 
 
@@ -617,10 +614,7 @@ class WindowsBuild(BaseWindowsBuild):
 class WindowsRefleakBuild(BaseWindowsBuild):
     buildersuffix = ".x32.refleak"
     testFlags = ["-j2", "-R", "3:3", "-u-cpu"]
-    # -R 3:3 is supposed to only require timeout x 6, but in practice,
-    # it's much more slower. Use timeout x 10 to prevent timeout
-    # caused by --huntrleaks.
-    test_timeout = TEST_TIMEOUT * 10
+    test_timeout = REFLEAK_TIMEOUT
     factory_tags = ["win32", "refleak"]
 
 
@@ -648,10 +642,7 @@ class Windows64BigmemBuild(BaseWindowsBuild):
 class Windows64RefleakBuild(Windows64Build):
     buildersuffix = ".refleak"
     testFlags = ["-p", "x64", *WindowsRefleakBuild.testFlags]
-    # -R 3:3 is supposed to only require timeout x 6, but in practice,
-    # it's much more slower. Use timeout x 10 to prevent timeout
-    # caused by --huntrleaks.
-    test_timeout = TEST_TIMEOUT * 10
+    test_timeout = REFLEAK_TIMEOUT
     factory_tags = ["win64", "refleak"]
 
 
