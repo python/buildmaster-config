@@ -264,6 +264,12 @@ class UnixBuildWithoutDocStrings(UnixBuild):
     configureFlags = ["--with-pydebug", "--without-doc-strings"]
 
 
+class UnixBigmemBuild(UnixBuild):
+    buildersuffix = ".bigmem"
+    testFlags = ["-M60g", "-j4", "-uall,extralargefile"]
+    factory_tags = ["aarch64", "bigmem"]
+
+
 class AIXBuild(UnixBuild):
     configureFlags = [
         "--with-pydebug",
