@@ -72,6 +72,11 @@ class UnixBuild(BaseBuild):
         # Adjust the timeout for this worker
         self.test_timeout *= kwargs.get("timeout_factor", 1)
 
+        # In 3.9 and 3.10, test_asyncio wasn't split out, and refleaks tests
+        # need more time.
+        if branch in ("3.9", "3.10") and has_option("-R", self.testFlags):
+            self.test_timeout *= 2
+
         if self.build_out_of_tree:
             self.addStep(
                 ShellCommand(
