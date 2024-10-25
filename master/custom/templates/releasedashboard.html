@@ -1,80 +1,227 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Python Branch Release Status Dashboard</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link href="{{ url_for('static', filename='dashboard.css') }}" rel="stylesheet">
-</head>
-<body>
-    <div class="container release_status">
-        <div class="header">
-            <img src="https://www.python.org/static/community_logos/python-logo-master-v3-TM.png" alt="Python Logo" width="480" height="162">
-            <h1>Branch Release Status Dashboard</h1>
-        </div>
-        <h2>Failing Stable Builders</h2>
-        <div class="row">
-            {% for branch, info_by_tier in failed_builders %}
-                <div class="col-md-4">
-                    {% if not info_by_tier %}
-                        <div class="panel panel-success">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    Branch {{ branch }} status: Releasable
-                                </h4>
-                            </div>
-                            <div class="panel-body">
-                                <div style="text-align: center;">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                            </div>
+{% macro build_dot(build) -%}
+    <a
+        href="#/builders/{{build.builderid}}/builds/{{ build.number }}"
+        class="build-dot build-results-{{ build.css_color_class }}"
+        title="{{ build_summary(build) }}"
+    >
+        {{ build.results_symbol }}
+    </a>
+{% endmacro -%}
+{%- macro build_summary(build) -%}
+    #{{- build.number -}}
+    {{- ' ' -}}
+    (
+        {{- build.results_string -}},
+        {{- ' ' -}}
+        {{- build.started_at | format_datetime -}}
+        {%- if build.duration -%}
+            ; took {{ build.duration | format_timedelta -}}
+        {%- endif -%}
+    )
+{%- endmacro -%}
+{% macro build_info(build) -%}
+    {{ build_dot(build) }}
+    {{ build_summary(build) }}
+    {% if build.builder.is_stable %}
+        {% if build.junit_results %}
+            {% for name, result in build.junit_results.contents.items() %}
+                {{ junit_result(build.junit_results, name, toplevel=True) }}
+            {% endfor %}
+        {% endif %}
+        {% if build.changes %}
+            <details {% if build.changes|length <= 3 %}open{% endif %}>
+                <summary>
+                    {{ build.changes|length }}
+                    change{% if build.changes|length != 1 %}s{% endif %}
+                </summary>
+                <ul>
+                    {% for change in build.changes %}
+                        <li>
+                            <a href="{{ change.revlink }}" title="{{ change }}">
+                                {{ change.comments | first_line }}
+                            </a>
+                            by {{ change.author | committer_name }}
+                            {% if change.files %}
+                                <details {% if change.files|length <= 3 %}open{% endif %}>
+                                    <summary>
+                                        {{ change.files|length }}
+                                        file{% if change.files|length != 1 %}s{% endif %}
+                                        changed
+                                    </summary>
+                                    <ul>
+                                        {% for file in change.files %}
+                                            <li>
+                                                {{ file }}
+                                            </li>
+                                        {% endfor  %}
+                                    </ul>
+                                </details>
+                            {% endif %}
+                        </li>
+                    {% endfor -%}
+                </ul>
+            </details>
+        {% endif -%}
+    {% endif -%}
+{% endmacro -%}
+{% macro junit_result(result, name, toplevel=False) %}
+    {% if (result.contents | length == 1) and (not result.errors) %}
+        {% for cname, child in result.contents.items() %}
+            {{ junit_result(
+                child,
+                name + ('.' if name else '') + cname,
+                toplevel=toplevel,
+            ) }}
+        {% endfor %}
+    {% else %}
+        <details {% if not toplevel %}open{% endif %} class="junit-result">
+            <summary>
+                <code>{{ name }}</code>
+                <span class="exception-summary">
+                    (
+                    {%- for type in result.error_types | sort -%}
+                        {%- if loop.index > 3 -%}
+                            ...
+                            {% break %}
+                        {%- endif -%}
+                        <code>{{ type }}</code>
+                        {%- if not loop.first %}, {% endif -%}
+                    {%- endfor -%}
+                    )
+                </span>
+            </summary>
+            {% for error in result.errors %}
+                <details class="junit-error">
+                    <summary><code>{{ error.type }}</code></summary>
+                    <pre class="junit-traceback">{{ error.text }}</pre>
+                </details>
+            {% endfor %}
+            {% for cname, child in result.contents.items() %}
+                {{ junit_result(child, cname) }}
+            {% endfor %}
+        </details>
+    {% endif %}
+{% endmacro %}
+
+<div class="container release_status">
+    <div style="text-align: center;">
+        <h1>Python Release Status Dashboard</h1>
+    </div>
+
+    <div class="branch-panels">
+        {% for branch in state.branches %}
+            {% if branch.tag == 'no-branch' %}
+                {% continue %}
+            {% endif %}
+            <div
+                class="branch-panel panel-{{ branch.featured_problem.severity.css_color_class }}"
+                {#- Buildbot's React UI takes over `#` in the URL, so a HTML fragment link won't work here...  #}
+                onclick="document.getElementById('branch-section-{{branch}}').scrollIntoView();"
+            >
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        {{ branch.version }}
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <div class="releasability">
+                        <span class="severity-symbol">
+                            {{ branch.featured_problem.severity.symbol }}
+                        </span>
+                        {{ branch.featured_problem.severity.releasability }}
+                    </div>
+                    {{ branch.featured_problem }}
+                </div>
+                <div class="panel-footer">
+                    <div>
+                        {{ branch.status | title }} branch
+                        <code>{{ branch.branch }}</code>
+                    </div>
+                    {% if branch.pep is defined %}
+                        <div>
+                            Schedule:
+                            <a href="https://peps.python.org/pep-{{ branch.pep }}/">
+                                PEP {{ branch.pep }}
+                            </a>
                         </div>
-                    {% else %}
-                        <div class="panel panel-danger">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    Branch {{ branch }} status:
-                                </h4>
-                            </div>
-                            <div class="panel-body">
-                                {% for tier, info in info_by_tier %}
-                                    <div class="tier-title">{{ tier }}</div>
-                                    {% for builder, build in info %}
-                                        <div>
-                                            <a class="badge badge-status results_{{build.results_text | upper}}"
-                                               href="#/builders/{{build.builderid}}/builds/{{build.number}}">
-                                                {{ builder.name }}: #{{ build.number }}
-                                            </a>
-                                        </div>
-                                    {% endfor %}
-                                {% endfor %}
-                            </div>
+                    {% endif %}
+                    {% if branch.release_manager is defined %}
+                        <div>
+                            <abbr title="Release Manager">RM</abbr>:
+                            {{ branch.release_manager | short_rm_name }}
                         </div>
                     {% endif %}
                 </div>
-            {% endfor %}
-        </div>
-        <h2>Disconnected Stable Workers</h2>
-        <div class="container">
-            {% for name, worker in disconnected_workers %}
-                <div class="row">
-                    <a href="#/workers/{{ worker.workerid }}">
-                        {{ name }}
-                    </a>
-                </div>
-            {% else %}
-                None.
-            {% endfor %}
-        </div>
-        <div class="container">
-            <small>Generated at <time id="generatedAt" datetime="{{generated_at}}">{{generated_at}}</time></small>
-        </div>
+            </div>
+        {% endfor %}
     </div>
-    <script>
-        let elem = document.getElementById("generatedAt");
-        let date = new Date(elem.dateTime);
-        elem.innerText = date.toLocaleDateString("en-CA") + " " + date.toLocaleTimeString("pl-PL");
-    </script>
-</body>
-</html>
+
+    <h2>Problems by Branch</h2>
+
+    {% for branch in state.branches %}
+        <section class="branch-status status-{{ branch.featured_problem.severity.css_color_class }}" id="branch-section-{{branch}}">
+            <h3>
+                {{ branch.title }}
+                {% if branch.version is defined and branch.version != branch.title %}
+                    ({{ branch.version }})
+                {% endif %}
+            </h3>
+            {% for description, problems in branch.get_grouped_problems() %}
+                <details {% if problems[0].severity > Severity.TRIVIAL %}open{% endif %}>
+                    <summary class="tier-name">
+                        {{ description }} ({{ problems|length }})
+                    </summary>
+                    <section>
+                        {% for problem in problems %}
+                            <section>
+                                {% if problem.builder is defined %}
+                                    {% set builder = problem.builder %}
+                                    <h5>
+                                        <a href="#/builders/{{builder.builderid}}">
+                                            {{ builder.name -}}
+                                        </a>
+                                        {% for tag in builder.tags %}
+                                            <span class="tag">
+                                                {{ tag }}
+                                            </span>
+                                        {% endfor %}
+                                    </h5>
+                                    {% if not builder.connected_workers %}
+                                        <div>
+                                            Disconnected! 🔌
+                                            {% if builder.builds %}
+                                                Last build
+                                                {{ builder.builds[0].started_at | format_datetime }}
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                    <div class="build-dots">
+                                        {% for build in builder.builds %}
+                                            {{ build_dot(build) }}
+                                        {% endfor %}
+                                    </div>
+                                    {% for label, build in problem.affected_builds.items() %}
+                                        <div>
+                                            {{ label }}: {{ build_info(build) }}
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    {{ problem }}
+                                {% endif %}
+                            </section>
+                        {% endfor %}
+                    </section>
+                </details>
+            {% endfor %}
+        </section>
+    {% endfor %}
+
+    <div class="container">
+        <small>Generated at <time id="generatedAt" datetime="{{generated_at}}">{{generated_at}}</time></small>
+    </div>
+</div>
+<script>
+    let elem = document.getElementById("generatedAt");
+    let date = new Date(elem.dateTime);
+    elem.innerText = date.toLocaleDateString("en-CA") + " " + date.toLocaleTimeString("pl-PL");
+</script>
