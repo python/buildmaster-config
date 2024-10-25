@@ -267,7 +267,7 @@ class UnixBuildWithoutDocStrings(UnixBuild):
 class UnixBigmemBuild(UnixBuild):
     buildersuffix = ".bigmem"
     testFlags = ["-M60g", "-j4", "-uall,extralargefile"]
-    factory_tags = ["aarch64", "bigmem"]
+    factory_tags = ["bigmem"]
 
 
 class AIXBuild(UnixBuild):

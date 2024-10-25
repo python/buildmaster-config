@@ -126,8 +126,6 @@ STABLE_BUILDERS_TIER_2 = [
     ("aarch64 RHEL8 LTO", "cstratak-RHEL8-aarch64", LTONonDebugUnixBuild),
     ("aarch64 RHEL8 LTO + PGO", "cstratak-RHEL8-aarch64", LTOPGONonDebugBuild),
 
-    ("aarch64 Ubuntu 22.04 BigMem", "diegorusso-aarch64-bigmem", UnixBigmemBuild),
-
     # macOS aarch64 clang
     ("ARM64 macOS", "pablogsal-macos-m1", MacOSArmWithBrewBuild),
     ("ARM64 MacOS M1 NoGIL", "itamaro-macos-arm64-aws", MacOSArmWithBrewNoGilBuild),
@@ -243,6 +241,8 @@ UNSTABLE_BUILDERS_TIER_2 = [
     ("PPC64LE CentOS9 LTO + PGO", "cstratak-CentOS9-ppc64le", LTOPGONonDebugBuild),
 
     # Linux aarch64 GCC/Clang
+    ("aarch64 Ubuntu 22.04 BigMem", "diegorusso-aarch64-bigmem", UnixBigmemBuild),
+
     # Fedora Rawhide is unstable
     ("aarch64 Fedora Rawhide", "cstratak-fedora-rawhide-aarch64", FedoraRawhideBuild),
     ("aarch64 Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-aarch64", UnixRefleakBuild),
