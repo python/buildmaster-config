@@ -8,6 +8,7 @@ from custom.factories import (
     FedoraRawhideFreedthreadingBuild,
     UnixAsanBuild,
     UnixAsanDebugBuild,
+    UnixBigmemBuild,
     UnixTraceRefsBuild,
     UnixVintageParserBuild,
     UnixRefleakBuild,
@@ -240,6 +241,8 @@ UNSTABLE_BUILDERS_TIER_2 = [
     ("PPC64LE CentOS9 LTO + PGO", "cstratak-CentOS9-ppc64le", LTOPGONonDebugBuild),
 
     # Linux aarch64 GCC/Clang
+    ("aarch64 Ubuntu 22.04 BigMem", "diegorusso-aarch64-bigmem", UnixBigmemBuild),
+
     # Fedora Rawhide is unstable
     ("aarch64 Fedora Rawhide", "cstratak-fedora-rawhide-aarch64", FedoraRawhideBuild),
     ("aarch64 Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-aarch64", UnixRefleakBuild),
