@@ -196,7 +196,7 @@
                                         </div>
                                     {% endif %}
                                     <div class="build-dots">
-                                        {% for build in builder.builds %}
+                                        {% for build in builder.builds[:70] %}
                                             {{ build_dot(build) }}
                                         {% endfor %}
                                     </div>

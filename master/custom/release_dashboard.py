@@ -33,7 +33,7 @@ BRANCHES_URL = "https://raw.githubusercontent.com/python/devguide/main/include/r
 
 
 def _gimme_error(func):
-    """Decorator to turn AttributeError into a different Exception
+    """Debug decorator to turn AttributeError into a different Exception
 
     jinja2 tends to swallow AttributeError or report it in some place it
     didn't happen. When that's a problem, use this decorator to get
@@ -43,8 +43,10 @@ def _gimme_error(func):
         try:
             return func(*args, **kwargs)
         except AttributeError as e:
-            raise Exception(f'your error: {e!r}')
+            raise _WrappedAttributeError(f'your error: {e!r}')
     return decorated
+
+class _WrappedAttributeError(Exception): pass
 
 
 class DashboardObject:
@@ -307,13 +309,10 @@ class Branch(_BranchTierBase):
 
     @cached_property
     def featured_problem(self):
-       try:
         try:
             return self.problems[0]
         except IndexError:
             return NoProblem()
-       except AttributeError:
-           raise SystemError
 
     def get_grouped_problems(self):
         def key(problem):
@@ -411,18 +410,35 @@ class Build(DashboardObject):
 
     @cached_property
     def junit_results(self):
-        filepath = (
-            self._root._app.test_result_dir
-            / self.builder.branch.tag
-            / self.builder["name"]
-            / f'build_{self["number"]}.xml'
-        )
-        try:
-            file = filepath.open()
-        except OSError:
+        if not self._root._app.test_result_dir:
             return None
-        with file:
-            etree = ElementTree.parse(file)
+
+        try:
+            filepath = (
+                self._root._app.test_result_dir
+                / self.builder.branch.tag
+                / self.builder["name"]
+                / f'build_{self["number"]}.xml'
+            ).resolve()
+
+            # Ensure path doesn't escape test_result_dir
+            if not filepath.is_relative_to(self._root._app.test_result_dir):
+                return None
+
+            if not filepath.is_file():
+                return None
+
+            with filepath.open() as file:
+                etree = ElementTree.parse(file)
+
+        # We don't have a logger set up, this returns None on common failures
+        # (meaning failures won't show on the dashboard).
+        # TODO: set up monitoring and log failures (in the whole method).
+        except OSError as e:
+            return None
+        except ElementTree.ParseError as e:
+            return None
+
         result = JunitResult(self, {})
         for element in etree.iterfind('.//error/..'):
             result.add(element)
@@ -449,6 +465,22 @@ class JunitResult(DashboardObject):
         self.error_types = set()
 
     def add(self, element):
+        """Add errors from a XML element.
+
+        JunitResult are arranged in a tree, grouped by test modules, classes
+        and methods (i.e. dot-separated parts of the test name).
+
+        JunitError instances are added to the lowest level of the tree.
+        They're deduplicated, because we re-run failing tests and often
+        get two copies of the same error (with the same traceback).
+
+        Exception type names are added to *all* levels of the tree:
+        if the details of a test module/class/methods aren't expanded,
+        the dashboard shows exception types from all the hidden failures.
+        """
+        # Gather all the errors (as dicts), and their exception types
+        # (as strings), from *element*.
+        # Usually there's only one error per element.
         errors = []
         error_types = set()
         for error_elem in element.iterfind('error'):
@@ -458,6 +490,9 @@ class JunitResult(DashboardObject):
             })
             errors.append(new_error)
             error_types.add(new_error["type"])
+
+        # Find/add the leaf JunitResult, updating result.error_types for each
+        # Result along the way
         result = self
         name_parts = element.attrib.get('name', '??').split('.')
         if name_parts[0] == 'test':
@@ -465,6 +500,8 @@ class JunitResult(DashboardObject):
         for part in name_parts:
             result.error_types.update(error_types)
             result = result.contents.setdefault(part, JunitResult(self, {}))
+
+        # Add error details to the leaf
         result.error_types.update(error_types)
         for error in errors:
             if error not in result.errors:
@@ -665,7 +702,7 @@ class ReleaseDashboard:
         self.flask_app.jinja_env.add_extension('jinja2.ext.loopcontrols')
         self.flask_app.jinja_env.undefined = jinja2.StrictUndefined
 
-        self.test_result_dir = Path(test_result_dir)
+        self.test_result_dir = Path(test_result_dir).resolve()
 
         @self.flask_app.route('/')
         @self.flask_app.route("/index.html")
