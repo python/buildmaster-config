@@ -83,7 +83,12 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
         log.msg("Considering reporting build :{}".format(buildid), logLevel=logging.INFO)
 
         if state != "failure":
-            log.msg("Not reporting build {} as it is not a failure".format(buildid), logLevel=logging.INFO)
+            log.msg(
+                f"Not reporting build {buildid};"
+                f" state is {state!r} (from {build['results']!r}),"
+                f" not failure ({FAILURE!r})",
+                logLevel=logging.INFO,
+            )
             return
 
         yield getDetailsForBuild(self.master, build, want_logs=True, want_logs_content=True, want_steps=True)
