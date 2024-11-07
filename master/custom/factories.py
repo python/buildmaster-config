@@ -911,13 +911,13 @@ class _Wasm32WasiBuild(UnixBuild):
             # Pydebug build automatically inferred from build Python.
             Configure(
                 name="Configure host Python",
-                command=["python3", wasi_py, "configure-host", "--target-triple", host_triple],
+                command=["python3", wasi_py, "configure-host"],
             )
         )
         self.addStep(
             Compile(
                 name="Compile host Python",
-                command=["python3", wasi_py, "make-host", "--target-triple", host_triple],
+                command=["python3", wasi_py, "make-host"],
             )
         )
 
