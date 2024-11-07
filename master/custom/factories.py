@@ -872,7 +872,7 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
         super().setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
 
 
-class _Wasm32WasiBuild(UnixBuild):
+class _Wasm32WasiPreview1Build(UnixBuild):
     """Build Python for wasm32-wasi using Tools/wasm/wasi.py."""
     buildersuffix = ".wasi"
     factory_tags = ["wasm", "wasi"]
@@ -969,7 +969,7 @@ class _Wasm32WasiBuild(UnixBuild):
 
 # Preventing this from running on versions older than 3.13 is managed in
 # master.cfg.
-class Wasm32WasiDebugBuild(_Wasm32WasiBuild):
+class Wasm32WasiPreview1DebugBuild(_Wasm32WasiPreview1Build):
     append_suffix = ".debug"
     pydebug = True
     testFlags = ["-u-cpu"]

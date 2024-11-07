@@ -43,7 +43,7 @@ from custom.factories import (
     WindowsARM64Build,
     WindowsARM64ReleaseBuild,
     Wasm32WasiCrossBuild,
-    Wasm32WasiDebugBuild,
+    Wasm32WasiPreview1DebugBuild,
     IOSARM64SimulatorBuild,
     AndroidBuild,
     ValgrindBuild,
@@ -133,7 +133,7 @@ STABLE_BUILDERS_TIER_2 = [
 
     # WASI
     ("wasm32-wasi Non-Debug", "bcannon-wasi", Wasm32WasiCrossBuild),
-    ("wasm32-wasi", "bcannon-wasi", Wasm32WasiDebugBuild),
+    ("wasm32-wasi", "bcannon-wasi", Wasm32WasiPreview1DebugBuild),
 ]
 
 
