@@ -9,9 +9,11 @@ from buildbot.data.resultspec import Filter
 
 FAILED_BUILD_STATUS = 2
 
-# Cache result for 5 minutes. Generating the page is slow and a Python build
-# takes at least 5 minutes, a common build takes 10 to 30 minutes.
-CACHE_DURATION = 5 * 60
+# Cache result for 6 minutes. Generating the page is slow and a Python build
+# takes at least 5 minutes, a common build takes 10 to 30 minutes.  There is a
+# cronjob that forces a refresh every 5 minutes, so all human requests should
+# get a cache hit.
+CACHE_DURATION = 6 * 60
 
 
 def get_release_status_app(buildernames):
@@ -22,7 +24,8 @@ def get_release_status_app(buildernames):
     def get_release_status():
         builders = release_status_app.buildbot_api.dataGet("/builders")
 
-        failed_builds_by_branch = {}
+        failed_builds_by_branch_and_tier = {}
+        disconnected_workers = {}
 
         for builder in builders:
             if builder["name"] not in buildernames:
@@ -31,15 +34,24 @@ def get_release_status_app(buildernames):
             if "stable" not in builder["tags"]:
                 continue
 
-            branch = [tag for tag in builder["tags"] if "3." in tag]
+            for worker in release_status_app.buildbot_api.dataGet(
+                ("builders", builder["builderid"], "workers"),
+            ):
+                if not worker["connected_to"]:
+                    disconnected_workers[worker["name"]] = worker
+
+            branch = None
+            tier = 'no tier'
+            for tag in builder["tags"]:
+                if "3." in tag:
+                    branch = tag
+                if tag.startswith('tier-'):
+                    tier = tag
 
             if not branch:
                 continue
 
-            (branch,) = branch
-
-            if branch not in failed_builds_by_branch:
-                failed_builds_by_branch[branch] = []
+            failed_builds_by_tier = failed_builds_by_branch_and_tier.setdefault(branch, {})
 
             endpoint = ("builders", builder["builderid"], "builds")
             last_build = release_status_app.buildbot_api.dataGet(
@@ -56,14 +68,39 @@ def get_release_status_app(buildernames):
             if last_build["results"] != FAILED_BUILD_STATUS:
                 continue
 
-            failed_builds_by_branch[branch].append((builder, last_build))
+            failed_builds = failed_builds_by_tier.setdefault(tier, [])
+            failed_builds.append((builder, last_build))
+
+        def tier_sort_key(item):
+            tier, data = item
+            if tier == 'no tier':
+                return 'zzz'  # sort last
+            return tier
+
+        failed_builders = []
+        for branch, failed_builds_by_tier in failed_builds_by_branch_and_tier.items():
+            failed_builders.append((
+                branch,
+                sorted(failed_builds_by_tier.items(), key=tier_sort_key)
+            ))
+
+        def branch_sort_key(item):
+            branch, *_ = item
+            minor = branch.split('.')[-1]
+            try:
+                return int(minor)
+            except ValueError:
+                return 99
+
+        failed_builders.sort(reverse=True, key=branch_sort_key)
 
         generated_at = datetime.datetime.now(tz=datetime.timezone.utc)
-        failed_builders = sorted(failed_builds_by_branch.items(), reverse=True)
+
         return render_template(
             "releasedashboard.html",
             failed_builders=failed_builders,
             generated_at=generated_at,
+            disconnected_workers=sorted(disconnected_workers.items()),
         )
 
     @release_status_app.route("/index.html")

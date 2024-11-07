@@ -141,7 +141,7 @@ class DiscordReporter(reporters.HttpStatusPush):
 
     def _getURLForBuild(self, builderid, build_number):
         prefix = self.master.config.buildbotURL
-        return prefix + "#builders/%d/builds/%d" % (builderid, build_number)
+        return prefix + "#/builders/%d/builds/%d" % (builderid, build_number)
 
     def createReport(
         self,

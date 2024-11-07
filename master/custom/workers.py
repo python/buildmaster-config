@@ -85,11 +85,6 @@ def get_workers(settings):
             parallel_tests=10,
         ),
         cpw(
-            name="cstratak-RHEL7-x86_64",
-            tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
-            parallel_tests=10,
-        ),
-        cpw(
             name="cstratak-RHEL8-x86_64",
             tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
             parallel_tests=10,
@@ -117,11 +112,6 @@ def get_workers(settings):
         cpw(
             name="cstratak-fedora-stable-ppc64le",
             tags=['linux', 'unix', 'fedora', 'ppc64le'],
-            parallel_tests=10,
-        ),
-        cpw(
-            name="cstratak-RHEL7-ppc64le",
-            tags=['linux', 'unix', 'rhel', 'ppc64le'],
             parallel_tests=10,
         ),
         cpw(
@@ -155,57 +145,25 @@ def get_workers(settings):
             parallel_tests=40,
         ),
         cpw(
-            name="edelsohn-aix-ppc64",
-            tags=['aix', 'unix', 'ppc64'],
+            name="diegorusso-aarch64-bigmem",
+            tags=['linux', 'unix', 'ubuntu', 'arm', 'arm64', 'aarch64', 'bigmem'],
+            not_branches=['3.9', '3.10', '3.11', '3.12', '3.13'],
+            parallel_tests=4,
+        ),
+        cpw(
+            name="cstratak-rhel8-s390x",
+            tags=['linux', 'unix', 'rhel', 's390x'],
             parallel_tests=10,
         ),
         cpw(
-            name="edelsohn-debian-z",
-            tags=['linux', 'unix', 'debian', 's390x'],
-            parallel_tests=6,
-        ),
-        cpw(
-            name="edelsohn-fedora-rawhide-z",
-            tags=['linux', 'unix', 'fedora', 's390x'],
-            parallel_tests=6,
-        ),
-        cpw(
-            name="edelsohn-fedora-ppc64",
-            tags=['linux', 'unix', 'fedora', 'ppc64'],
-        ),
-        cpw(
-            name="edelsohn-fedora-z",
-            tags=['linux', 'unix', 'fedora', 's390x'],
-            parallel_tests=6,
-        ),
-        cpw(
-            name="edelsohn-rhel-z",
+            name="cstratak-rhel9-s390x",
             tags=['linux', 'unix', 'rhel', 's390x'],
-            parallel_tests=6,
+            parallel_tests=10,
         ),
         cpw(
-            name="edelsohn-rhel8-z",
-            tags=['linux', 'unix', 'rhel', 's390x'],
-            parallel_tests=6,
-        ),
-        cpw(
-            name="edelsohn-sles-z",
-            tags=['linux', 'unix', 'sles', 's390x'],
-            parallel_tests=6,
-        ),
-        cpw(
-            name="gps-clang-ubsan",
-            tags=['linux', 'unix', 'amd64', 'x86-64'],
-        ),
-        cpw(
-            name="gps-debian-profile-opt",
-            tags=['linux', 'unix', 'debian', 'amd64', 'x86-64'],
-        ),
-        cpw(
-            name="gps-arm64-debian",
-            tags=['linux', 'unix', 'arm64', 'aarch64', 'arm', 'debian'],
-            parallel_tests=7,  # Shortest test time; 4 vCPU host.
-            not_branches=['3.9'],
+            name="edelsohn-aix-ppc64",
+            tags=['aix', 'unix', 'ppc64'],
+            parallel_tests=10,
         ),
         cpw(
             name="gps-raspbian",
@@ -278,12 +236,12 @@ def get_workers(settings):
         cpw(
             name="ambv-bb-win11",
             tags=['windows', 'win11', 'amd64', 'x86-64', 'bigmem'],
-            not_branches=['3.9', '3.10', '3.11', '3.12'],
+            not_branches=['3.9', '3.10', '3.11', '3.12', '3.13'],
             parallel_tests=4,
         ),
         cpw(
-            name="itamaro-ubuntu-aws",
-            tags=['linux', 'unix', 'ubuntu', 'amd64', 'x86-64'],
+            name="itamaro-centos-aws",
+            tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
             not_branches=['3.9', '3.10', '3.11', '3.12'],
             parallel_tests=10,
             parallel_builders=2,
@@ -313,5 +271,29 @@ def get_workers(settings):
             not_branches=['3.9', '3.10'],
             parallel_tests=4,
             parallel_builders=2,
+        ),
+        cpw(
+            name="onder-riscv64",
+            tags=['linux', 'unix', 'ubuntu', 'riscv64'],
+            not_branches=['3.9', '3.10'],
+            parallel_tests=4,
+        ),
+        cpw(
+            name="rkm-arm64-ios-simulator",
+            tags=['iOS'],
+            not_branches=['3.9', '3.10', '3.11', '3.12'],
+            parallel_builders=4,
+        ),
+        cpw(
+            name="mhsmith-android-aarch64",
+            tags=['android'],
+            not_branches=['3.9', '3.10', '3.11', '3.12'],
+            parallel_builders=1,  # All builds use the same emulator and app ID.
+        ),
+        cpw(
+            name="mhsmith-android-x86_64",
+            tags=['android'],
+            not_branches=['3.9', '3.10', '3.11', '3.12'],
+            parallel_builders=1,  # All builds use the same emulator and app ID.
         ),
     ]

@@ -9,7 +9,7 @@ from buildbot.steps.shell import (
 
 from buildbot.plugins import util
 
-from . import (MAIN_BRANCH_VERSION, CUSTOM_BRANCH_NAME, MAIN_BRANCH_NAME,
+from . import (MAIN_BRANCH_VERSION, MAIN_BRANCH_NAME,
                JUNIT_FILENAME)
 from .steps import (
     Test,
@@ -23,7 +23,10 @@ from .steps import (
 # This (default) timeout is for each individual test file.
 # It is a bit more than the default faulthandler timeout in regrtest.py
 # (the latter isn't easily changed under Windows).
-TEST_TIMEOUT = 20 * 60
+TEST_TIMEOUT = 20 * 60  # 20 minutes
+
+# Refleak timeout (-R 3:3) for each individual test file.
+REFLEAK_TIMEOUT = 45 * 60  # 45 minutes
 
 
 def step_timeout(timeout):
@@ -32,10 +35,6 @@ def step_timeout(timeout):
     # faulthandler to kill the process. Tests should always be shorter than the
     # buildbot step timeout, unless faulthandler fails to kill the process.
     return timeout + 10 * 60
-
-
-def regrtest_has_cleanup(branch):
-    return branch not in {CUSTOM_BRANCH_NAME}
 
 
 class BaseBuild(factory.BuildFactory):
@@ -69,6 +68,14 @@ class UnixBuild(BaseBuild):
 
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         out_of_tree_dir = "build_oot"
+
+        # Adjust the timeout for this worker
+        self.test_timeout *= kwargs.get("timeout_factor", 1)
+
+        # In 3.9 and 3.10, test_asyncio wasn't split out, and refleaks tests
+        # need more time.
+        if branch in ("3.9", "3.10") and has_option("-R", self.testFlags):
+            self.test_timeout *= 2
 
         if self.build_out_of_tree:
             self.addStep(
@@ -155,10 +162,7 @@ class UnixVintageParserBuild(UnixBuild):
 class UnixRefleakBuild(UnixBuild):
     buildersuffix = ".refleak"
     testFlags = ["-R", "3:3", "-u-cpu"]
-    # -R 3:3 is supposed to only require timeout x 6, but in practice,
-    # it's much more slower. Use timeout x 10 to prevent timeout
-    # caused by --huntrleaks.
-    test_timeout = TEST_TIMEOUT * 10
+    test_timeout = REFLEAK_TIMEOUT
     factory_tags = ["refleak"]
 
 
@@ -166,16 +170,16 @@ class UnixNoGilBuild(UnixBuild):
     buildersuffix = ".nogil"
     configureFlags = ["--with-pydebug", "--disable-gil"]
     factory_tags = ["nogil"]
+    # 2024-04-11: Free-threading can still be slower than regular build in some
+    # code paths, so tolerate longer timeout.
+    test_timeout = int(TEST_TIMEOUT * 1.5)
 
 
 class UnixNoGilRefleakBuild(UnixBuild):
     buildersuffix = ".refleak.nogil"
     configureFlags = ["--with-pydebug", "--disable-gil"]
     testFlags = ["-R", "3:3", "-u-cpu"]
-    # -R 3:3 is supposed to only require timeout x 6, but in practice,
-    # it's much more slower. Use timeout x 10 to prevent timeout
-    # caused by --huntrleaks.
-    test_timeout = TEST_TIMEOUT * 10
+    test_timeout = REFLEAK_TIMEOUT
     factory_tags = ["nogil", "refleak"]
 
 
@@ -260,6 +264,13 @@ class UnixBuildWithoutDocStrings(UnixBuild):
     configureFlags = ["--with-pydebug", "--without-doc-strings"]
 
 
+class UnixBigmemBuild(UnixBuild):
+    buildersuffix = ".bigmem"
+    testFlags = ["-M60g", "-j4", "-uall,extralargefile"]
+    test_timeout = TEST_TIMEOUT * 4
+    factory_tags = ["bigmem"]
+
+
 class AIXBuild(UnixBuild):
     configureFlags = [
         "--with-pydebug",
@@ -316,6 +327,17 @@ class ClangUbsanLinuxBuild(UnixBuild):
         "CC=clang",
         "LD=clang",
         "CFLAGS=-fno-sanitize-recover",
+        "--with-undefined-behavior-sanitizer",
+    ]
+    factory_tags = ["clang", "ubsan", "sanitizer"]
+
+
+class ClangUbsanFunctionLinuxBuild(UnixBuild):
+    buildersuffix = ".clang-ubsan-function"
+    configureFlags = [
+        "CC=clang",
+        "LD=clang",
+        "CFLAGS=-fsanitize=undefined -fno-sanitize=function -fsanitize-recover",
         "--with-undefined-behavior-sanitizer",
     ]
     factory_tags = ["clang", "ubsan", "sanitizer"]
@@ -378,8 +400,8 @@ class ClangLTOPGONonDebugBuild(NonDebugUnixBuild):
     factory_tags = ["lto", "pgo", "nondebug", "clang"]
 
 
-class RHEL7Build(UnixBuild):
-    # Build Python on 64-bit RHEL7.
+class RHEL8Build(UnixBuild):
+    # Build Python on 64-bit RHEL8.
     configureFlags = [
         "--with-pydebug",
         "--with-platlibdir=lib64",
@@ -393,13 +415,12 @@ class RHEL7Build(UnixBuild):
         "--enable-loadable-sqlite-extensions",
         "--with-ssl-default-suites=openssl",
         "--without-static-libpython",
+        "--with-lto",
         # Not all workers have dtrace installed
         # "--with-dtrace",
         # Not all workers have Valgrind headers installed
         # "--with-valgrind",
     ]
-    # Don't use --with-lto: building Python with LTO doesn't work
-    # with RHEL7 GCC.
 
     # Building Python out of tree: similar to what the specfile does, but
     # buildbot uses a single subdirectory, and the specfile uses two
@@ -409,13 +430,6 @@ class RHEL7Build(UnixBuild):
     # /builddir/build/BUILD/Python-3.11: source code
     # /builddir/build/BUILD/Python-3.11/build/optimized: configure, make, tests
     build_out_of_tree = True
-
-
-class RHEL8Build(RHEL7Build):
-    # Build Python on 64-bit RHEL8.
-    configureFlags = RHEL7Build.configureFlags + [
-        "--with-lto",
-    ]
 
 
 class CentOS9Build(RHEL8Build):
@@ -446,6 +460,15 @@ class FedoraRawhideBuild(FedoraStableBuild):
     # For now, it's the same than Fedora Stable, but later it may get different
     # options.
     pass
+
+
+class FedoraRawhideFreedthreadingBuild(FedoraRawhideBuild):
+    # Build on 64-bit Fedora Rawhide.
+    buildersuffix = ".nogil"
+    configureFlags = FedoraRawhideBuild.configureFlags + [
+        "--disable-gil",
+    ]
+    factory_tags = ["nogil"]
 
 
 class RHEL8NoBuiltinHashesUnixBuildExceptBlake2(RHEL8Build):
@@ -603,10 +626,7 @@ class WindowsBuild(BaseWindowsBuild):
 class WindowsRefleakBuild(BaseWindowsBuild):
     buildersuffix = ".x32.refleak"
     testFlags = ["-j2", "-R", "3:3", "-u-cpu"]
-    # -R 3:3 is supposed to only require timeout x 6, but in practice,
-    # it's much more slower. Use timeout x 10 to prevent timeout
-    # caused by --huntrleaks.
-    test_timeout = TEST_TIMEOUT * 10
+    test_timeout = REFLEAK_TIMEOUT
     factory_tags = ["win32", "refleak"]
 
 
@@ -634,10 +654,7 @@ class Windows64BigmemBuild(BaseWindowsBuild):
 class Windows64RefleakBuild(Windows64Build):
     buildersuffix = ".refleak"
     testFlags = ["-p", "x64", *WindowsRefleakBuild.testFlags]
-    # -R 3:3 is supposed to only require timeout x 6, but in practice,
-    # it's much more slower. Use timeout x 10 to prevent timeout
-    # caused by --huntrleaks.
-    test_timeout = TEST_TIMEOUT * 10
+    test_timeout = REFLEAK_TIMEOUT
     factory_tags = ["win64", "refleak"]
 
 
@@ -744,7 +761,9 @@ class UnixCrossBuild(UnixBuild):
 
         # Now that we have a "build" architecture Python, we can use that
         # to build a "host" (also known as the target we are cross compiling)
-        configure_cmd = self.host_configure_cmd + ["--prefix", "$(PWD)/target/host"]
+        # Take a copy so that the class-level definition isn't tainted
+        configure_cmd = list(self.host_configure_cmd)
+        configure_cmd += ["--prefix", "$(PWD)/target/host"]
         configure_cmd += self.configureFlags + self.extra_configure_flags
         configure_cmd += [util.Interpolate("--build=%(prop:build_triple)s")]
         configure_cmd += [f"--host={self.host}"]
@@ -837,12 +856,6 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
     ]
     compile_environ = {
         "CONFIG_SITE": "../../Tools/wasm/config.site-wasm32-wasi",
-        # Silence warnings about using the old CLI as raised by wasmtime 14+.
-        "WASMTIME_NEW_CLI": "0",
-    }
-    test_environ = {
-        # Silence warnings about using the old CLI as raised by wasmtime 14+.
-        "WASMTIME_NEW_CLI": "0",
     }
     host = "wasm32-unknown-wasi"
     host_configure_cmd = ["../../Tools/wasm/wasi-env", "../../configure"]
@@ -959,3 +972,314 @@ class _Wasm32WasiBuild(UnixBuild):
 class Wasm32WasiDebugBuild(_Wasm32WasiBuild):
     append_suffix = ".debug"
     pydebug = True
+    testFlags = ["-u-cpu"]
+
+
+##############################################################################
+################################  IOS BUILDS  ################################
+##############################################################################
+
+class _IOSSimulatorBuild(UnixBuild):
+    """iOS Simulator build.
+
+    * Xcode must be installed, with all licenses accepted
+    * The iOS Simulator must be installed
+    * The ~buildbot/support/iphonesimulator.{arch} folder must be populated
+      with pre-compiled builds of libFFI, XZ, Bzip2 and OpenSSL.
+
+    Subclasses should define `arch`.
+
+    This workflow is largely the same as the UnixCrossBuild, except that:
+     * It has the required iOS configure options baked in
+     * It isolates the build path so that Homebrew and other macOS libraries
+       can't leak into the build
+     * It adds the environment flags and configuration paths for the binary
+       dependencies.
+     * It installs the host python after build (which finalizes the Framework
+       build)
+     * It invokes `make testios` as a test target
+    """
+    buildersuffix = ".iOS-simulator"
+    ios_min_version = ""  # use the default from the configure file
+    factory_tags = ["iOS"]
+    extra_configure_flags = []
+    host_configure_cmd = ["../../configure"]
+
+    def __init__(self, source, **kwargs):
+        self.buildersuffix += f".{self.arch}"
+        self.host = f"{self.arch}-apple-ios{self.ios_min_version}-simulator"
+
+        super().__init__(source, **kwargs)
+
+    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+        out_of_tree_dir = "build_oot"
+        oot_dir_path = os.path.join("build", out_of_tree_dir)
+        oot_build_path = os.path.join(oot_dir_path, "build")
+        oot_host_path = os.path.join(oot_dir_path, "host")
+
+        # Create out of tree directory for "build", the platform we are
+        # currently running on
+        self.addStep(
+            ShellCommand(
+                name="mkdir build out-of-tree directory",
+                description="Create build out-of-tree directory",
+                command=["mkdir", "-p", oot_build_path],
+                warnOnFailure=True,
+            )
+        )
+        # Create directory for "host", the platform we want to compile *for*
+        self.addStep(
+            ShellCommand(
+                name="mkdir host out-of-tree directory",
+                description="Create host out-of-tree directory",
+                command=["mkdir", "-p", oot_host_path],
+                warnOnFailure=True,
+            )
+        )
+
+        # First, we build the "build" Python, which we need to cross compile
+        # the "host" Python
+        self.addStep(
+            Configure(
+                name="Configure build Python",
+                command=["../../configure"],
+                workdir=oot_build_path
+            )
+        )
+        if parallel:
+            compile = ["make", parallel]
+        else:
+            compile = ["make"]
+
+        self.addStep(
+            Compile(
+                name="Compile build Python",
+                command=compile,
+                workdir=oot_build_path
+            )
+        )
+
+        # Ensure the host path is isolated from Homebrew et al, but includes
+        # the host helper binaries. Also add the configuration paths for
+        # library dependencies.
+        support_path = f"/Users/buildbot/support/iphonesimulator.{self.arch}"
+        compile_environ = dict(self.compile_environ)
+        compile_environ.update({
+            "PATH": os.pathsep.join([
+                # This is intentionally a relative path. Buildbot doesn't expose
+                # the absolute working directory where the build is running as
+                # something that can be expanded into an environment variable.
+                "../../iOS/Resources/bin",
+                "/usr/bin",
+                "/bin",
+                "/usr/sbin",
+                "/sbin",
+                "/Library/Apple/usr/bin",
+            ]),
+            "LIBLZMA_CFLAGS": f"-I{support_path}/xz/include",
+            "LIBLZMA_LIBS": f"-L{support_path}/xz/lib -llzma",
+            "BZIP2_CFLAGS": f"-I{support_path}/bzip2/include",
+            "BZIP2_LIBS": f"-L{support_path}/bzip2/lib -lbz2",
+            "LIBFFI_CFLAGS": f"-I{support_path}/libffi/include",
+            "LIBFFI_LIBS": f"-L{support_path}/libffi/lib -lffi",
+        })
+
+        # Now that we have a "build" architecture Python, we can use that
+        # to build a "host" (also known as the target we are cross compiling)
+        # Take a copy so that the class-level definition isn't tainted
+        configure_cmd = list(self.host_configure_cmd)
+        configure_cmd += self.configureFlags
+        configure_cmd += self.extra_configure_flags
+        configure_cmd += [
+            f"--with-openssl={support_path}/openssl",
+            f"--build={self.arch}-apple-darwin",
+            f"--host={self.host}",
+            "--with-build-python=../build/python.exe",
+            "--enable-framework"
+        ]
+
+        self.addStep(
+            Configure(
+                name="Configure host Python",
+                command=configure_cmd,
+                env=compile_environ,
+                workdir=oot_host_path
+            )
+        )
+
+        if parallel:
+            compile = ["make", parallel, self.makeTarget]
+            install = ["make", parallel, "install"]
+        else:
+            compile = ["make", self.makeTarget]
+            install = ["make", "install"]
+
+        self.addStep(
+            Compile(
+                name="Compile host Python",
+                command=compile,
+                env=compile_environ,
+                workdir=oot_host_path,
+            )
+        )
+        self.addStep(
+            Compile(
+                name="Install host Python",
+                command=install,
+                env=compile_environ,
+                workdir=oot_host_path,
+            )
+        )
+        self.addStep(
+            Test(
+                command=["make", "testios"],
+                timeout=step_timeout(self.test_timeout),
+                usePTY=test_with_PTY,
+                env=self.test_environ,
+                workdir=oot_host_path,
+            )
+        )
+
+        self.addStep(
+            Clean(
+                name="Clean build Python",
+                workdir=oot_build_path,
+            )
+        )
+        self.addStep(
+            Clean(
+                name="Clean host Python",
+                workdir=oot_host_path,
+            )
+        )
+
+
+class IOSARM64SimulatorBuild(_IOSSimulatorBuild):
+    """An ARM64 iOS simulator build."""
+    arch = "arm64"
+
+
+##############################################################################
+##############################  ANDROID BUILDS  ##############################
+##############################################################################
+
+class AndroidBuild(BaseBuild):
+    """Build Python for Android on a Linux or Mac machine, and test it using a
+    Gradle-managed emulator.
+
+    To set up a worker, see cpython/Android/README.md, especially the following
+    sections:
+
+    * Install everything listed under "Prerequisites".
+    * Do any OS-specific setup mentioned under "Testing".
+    * If the managed emulator appears to be running out of memory, increase
+      its RAM size as described under "Testing".
+    """
+
+    def setup(self, **kwargs):
+        android_py = "Android/android.py"
+        self.addSteps([
+            SetPropertyFromCommand(
+                name="Get build triple",
+                command=["./config.guess"],
+                property="build_triple",
+                haltOnFailure=True,
+            ),
+            Configure(
+                name="Configure build Python",
+                command=[android_py, "configure-build"],
+            ),
+            Compile(
+                name="Compile build Python",
+                command=[android_py, "make-build"],
+            ),
+            Configure(
+                name="Configure host Python",
+                command=[android_py, "configure-host", self.host_triple],
+            ),
+            Compile(
+                name="Compile host Python",
+                command=[android_py, "make-host", self.host_triple],
+            ),
+            Test(
+                command=[
+                    android_py, "test", "--managed", "maxVersion", "-v", "--",
+                    "-uall", "--single-process", "--rerun", "-W",
+                ],
+                timeout=step_timeout(self.test_timeout),
+            ),
+            ShellCommand(
+                name="Clean",
+                command=[android_py, "clean"],
+            ),
+        ])
+
+    @util.renderer
+    def host_triple(props):
+        build_triple = props.getProperty("build_triple")
+        return build_triple.split("-")[0] + "-linux-android"
+
+
+class ValgrindBuild(UnixBuild):
+    buildersuffix = ".valgrind"
+    configureFlags = [
+        "--with-pydebug",
+        "--with-valgrind",
+        "--without-pymalloc",
+    ]
+    testFlags = [
+        "test_grammar",
+        "test_syntax",
+        "test_tokenize",
+        "test_fstring",
+        "test_ast",
+        "test_exceptions",
+    ]
+    factory_tags = ["valgrind"]
+    test_timeout = TEST_TIMEOUT * 5
+
+    def setup(self, parallel, branch, **kwargs):
+        self.addStep(
+            Configure(
+                command=["./configure", "--prefix", "$(PWD)/target"] + self.configureFlags
+            )
+        )
+
+        compile = ["make", self.makeTarget]
+        if parallel:
+            compile = ["make", parallel, self.makeTarget]
+
+        self.addStep(Compile(command=compile, env=self.compile_environ))
+
+        self.addStep(
+            ShellCommand(
+                name="pythoninfo",
+                description="pythoninfo",
+                command=["make", "pythoninfo"],
+                warnOnFailure=True,
+                env=self.test_environ,
+            )
+        )
+
+        test = [
+            "valgrind",
+            "--leak-check=full",
+            "--show-leak-kinds=definite",
+            "--error-exitcode=10",
+            "--gen-suppressions=all",
+            "--track-origins=yes",
+            "--trace-children=yes",
+            "--suppressions=$(PWD)/Misc/valgrind-python.supp",
+            "./python",
+            "-m", "test",
+            *self.testFlags,
+            f"--timeout={self.test_timeout}",
+        ]
+
+        self.addStep(Test(
+            command=test,
+            timeout=step_timeout(self.test_timeout),
+            env=self.test_environ,
+        ))
+
+        self.addStep(Clean())

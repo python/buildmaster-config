@@ -1,13 +1,14 @@
 from custom.factories import (
     UnixBuild,
     UnixPerfBuild,
-    RHEL7Build,
     RHEL8Build,
     CentOS9Build,
     FedoraStableBuild,
     FedoraRawhideBuild,
+    FedoraRawhideFreedthreadingBuild,
     UnixAsanBuild,
     UnixAsanDebugBuild,
+    UnixBigmemBuild,
     UnixTraceRefsBuild,
     UnixVintageParserBuild,
     UnixRefleakBuild,
@@ -16,17 +17,17 @@ from custom.factories import (
     MacOSAsanNoGilBuild,
     AIXBuild,
     AIXBuildWithXLC,
-    PGOUnixBuild,
     ClangUnixBuild,
     ClangUbsanLinuxBuild,
+    ClangUbsanFunctionLinuxBuild,
     ClangUnixInstalledBuild,
     SharedUnixBuild,
     SlowNonDebugUnixBuild,
+    SlowUnixInstalledBuild,
     NonDebugUnixBuild,
     UnixInstalledBuild,
     LTONonDebugUnixBuild,
     LTOPGONonDebugBuild,
-    ClangLTOPGONonDebugBuild,
     RHEL8NoBuiltinHashesUnixBuild,
     RHEL8NoBuiltinHashesUnixBuildExceptBlake2,
     CentOS9NoBuiltinHashesUnixBuild,
@@ -43,6 +44,9 @@ from custom.factories import (
     WindowsARM64ReleaseBuild,
     Wasm32WasiCrossBuild,
     Wasm32WasiDebugBuild,
+    IOSARM64SimulatorBuild,
+    AndroidBuild,
+    ValgrindBuild,
 )
 
 # A builder can be marked as stable when at least the 10 latest builds are
@@ -66,22 +70,17 @@ NO_TIER = None
 STABLE_BUILDERS_TIER_1 = [
     # Linux x86-64 GCC
     ("AMD64 Debian root", "angelico-debian-amd64", UnixBuild),
-    ("AMD64 Debian PGO", "gps-debian-profile-opt", PGOUnixBuild),
     ("AMD64 Ubuntu Shared", "bolen-ubuntu", SharedUnixBuild),
     ("AMD64 Fedora Stable", "cstratak-fedora-stable-x86_64", FedoraStableBuild),
     ("AMD64 Fedora Stable Refleaks", "cstratak-fedora-stable-x86_64", UnixRefleakBuild),
     ("AMD64 Fedora Stable LTO", "cstratak-fedora-stable-x86_64", LTONonDebugUnixBuild),
     ("AMD64 Fedora Stable LTO + PGO", "cstratak-fedora-stable-x86_64", LTOPGONonDebugBuild),
-    ("AMD64 RHEL7", "cstratak-RHEL7-x86_64", RHEL7Build),
-    ("AMD64 RHEL7 Refleaks", "cstratak-RHEL7-x86_64", UnixRefleakBuild),
-    ("AMD64 RHEL7 LTO", "cstratak-RHEL7-x86_64", LTONonDebugUnixBuild),
-    ("AMD64 RHEL7 LTO + PGO", "cstratak-RHEL7-x86_64", LTOPGONonDebugBuild),
     ("AMD64 RHEL8", "cstratak-RHEL8-x86_64", RHEL8Build),
     ("AMD64 RHEL8 Refleaks", "cstratak-RHEL8-x86_64", UnixRefleakBuild),
     ("AMD64 RHEL8 LTO", "cstratak-RHEL8-x86_64", LTONonDebugUnixBuild),
     ("AMD64 RHEL8 LTO + PGO", "cstratak-RHEL8-x86_64", LTOPGONonDebugBuild),
-    ("AMD64 Ubuntu NoGIL", "itamaro-ubuntu-aws", UnixNoGilBuild),
-    ("AMD64 Ubuntu NoGIL Refleaks", "itamaro-ubuntu-aws", UnixNoGilRefleakBuild),
+    ("AMD64 CentOS9 NoGIL", "itamaro-centos-aws", UnixNoGilBuild),
+    ("AMD64 CentOS9 NoGIL Refleaks", "itamaro-centos-aws", UnixNoGilRefleakBuild),
 
     # Windows x86-64 MSVC
     ("AMD64 Windows10", "bolen-windows10", Windows64Build),
@@ -104,17 +103,10 @@ STABLE_BUILDERS_TIER_2 = [
     ("AMD64 Fedora Stable Clang Installed", "cstratak-fedora-stable-x86_64", ClangUnixInstalledBuild),
 
     # Linux ppc64le GCC
-    ("PPC64 Fedora", "edelsohn-fedora-ppc64", FedoraStableBuild),
-
     ("PPC64LE Fedora Stable", "cstratak-fedora-stable-ppc64le", FedoraStableBuild),
     ("PPC64LE Fedora Stable Refleaks", "cstratak-fedora-stable-ppc64le", UnixRefleakBuild),
     ("PPC64LE Fedora Stable LTO", "cstratak-fedora-stable-ppc64le", LTONonDebugUnixBuild),
     ("PPC64LE Fedora Stable LTO + PGO", "cstratak-fedora-stable-ppc64le", LTOPGONonDebugBuild),
-
-    ("PPC64LE RHEL7", "cstratak-RHEL7-ppc64le", RHEL7Build),
-    ("PPC64LE RHEL7 Refleaks", "cstratak-RHEL7-ppc64le", UnixRefleakBuild),
-    ("PPC64LE RHEL7 LTO", "cstratak-RHEL7-ppc64le", LTONonDebugUnixBuild),
-    ("PPC64LE RHEL7 LTO + PGO", "cstratak-RHEL7-ppc64le", LTOPGONonDebugBuild),
 
     ("PPC64LE RHEL8", "cstratak-RHEL8-ppc64le", RHEL8Build),
     ("PPC64LE RHEL8 Refleaks", "cstratak-RHEL8-ppc64le", UnixRefleakBuild),
@@ -134,8 +126,6 @@ STABLE_BUILDERS_TIER_2 = [
     ("aarch64 RHEL8 LTO", "cstratak-RHEL8-aarch64", LTONonDebugUnixBuild),
     ("aarch64 RHEL8 LTO + PGO", "cstratak-RHEL8-aarch64", LTOPGONonDebugBuild),
 
-    ("aarch64 Debian Clang LTO + PGO", "gps-arm64-debian", ClangLTOPGONonDebugBuild),
-
     # macOS aarch64 clang
     ("ARM64 macOS", "pablogsal-macos-m1", MacOSArmWithBrewBuild),
     ("ARM64 MacOS M1 NoGIL", "itamaro-macos-arm64-aws", MacOSArmWithBrewNoGilBuild),
@@ -149,21 +139,16 @@ STABLE_BUILDERS_TIER_2 = [
 
 # -- Stable Tier-3 builder ----------------------------------------------
 STABLE_BUILDERS_TIER_3 = [
+
     # Linux s390x GCC
-    ("s390x SLES", "edelsohn-sles-z", UnixBuild),
-    ("s390x Debian", "edelsohn-debian-z", UnixBuild),
-    ("s390x Fedora", "edelsohn-fedora-z", UnixBuild),
-    ("s390x Fedora Refleaks", "edelsohn-fedora-z", UnixRefleakBuild),
-    ("s390x Fedora LTO", "edelsohn-fedora-z", LTONonDebugUnixBuild),
-    ("s390x Fedora LTO + PGO", "edelsohn-fedora-z", LTOPGONonDebugBuild),
-    ("s390x RHEL7", "edelsohn-rhel-z", UnixBuild),
-    ("s390x RHEL7 Refleaks", "edelsohn-rhel-z", UnixRefleakBuild),
-    ("s390x RHEL7 LTO", "edelsohn-rhel-z", LTONonDebugUnixBuild),
-    ("s390x RHEL7 LTO + PGO", "edelsohn-rhel-z", LTOPGONonDebugBuild),
-    ("s390x RHEL8", "edelsohn-rhel8-z", UnixBuild),
-    ("s390x RHEL8 Refleaks", "edelsohn-rhel8-z", UnixRefleakBuild),
-    ("s390x RHEL8 LTO", "edelsohn-rhel8-z", LTONonDebugUnixBuild),
-    ("s390x RHEL8 LTO + PGO", "edelsohn-rhel8-z", LTOPGONonDebugBuild),
+    ("s390x RHEL9", "cstratak-rhel9-s390x", UnixBuild),
+    ("s390x RHEL9 Refleaks", "cstratak-rhel9-s390x", UnixRefleakBuild),
+    ("s390x RHEL9 LTO", "cstratak-rhel9-s390x", LTONonDebugUnixBuild),
+    ("s390x RHEL9 LTO + PGO", "cstratak-rhel9-s390x", LTOPGONonDebugBuild),
+    ("s390x RHEL8", "cstratak-rhel8-s390x", UnixBuild),
+    ("s390x RHEL8 Refleaks", "cstratak-rhel8-s390x", UnixRefleakBuild),
+    ("s390x RHEL8 LTO", "cstratak-rhel8-s390x", LTONonDebugUnixBuild),
+    ("s390x RHEL8 LTO + PGO", "cstratak-rhel8-s390x", LTOPGONonDebugBuild),
 
     # Linux ppc64le Clang
     ("PPC64LE Fedora Stable Clang", "cstratak-fedora-stable-ppc64le", ClangUnixBuild),
@@ -174,11 +159,19 @@ STABLE_BUILDERS_TIER_3 = [
 
     # FreBSD x86-64 clang
     ("AMD64 FreeBSD", "ware-freebsd", UnixBuild),
+    ("AMD64 FreeBSD Refleaks", "ware-freebsd", UnixRefleakBuild),
     ("AMD64 FreeBSD14", "opsec-fbsd14", UnixBuild),
 
     # Windows aarch64 MSVC
     ("ARM64 Windows", "linaro-win-arm64", WindowsARM64Build),
     ("ARM64 Windows Non-Debug", "linaro-win-arm64", WindowsARM64ReleaseBuild),
+
+    # iOS
+    ("iOS ARM64 Simulator", "rkm-arm64-ios-simulator", IOSARM64SimulatorBuild),
+
+    # Android
+    ("aarch64 Android", "mhsmith-android-aarch64", AndroidBuild),
+    ("AMD64 Android", "mhsmith-android-x86_64", AndroidBuild),
 ]
 
 
@@ -188,14 +181,16 @@ STABLE_BUILDERS_NO_TIER = [
     # Special builds: FIPS, ASAN, UBSAN, TraceRefs, Perf, etc.
     ("AMD64 RHEL8 FIPS Only Blake2 Builtin Hash", "cstratak-RHEL8-fips-x86_64", RHEL8NoBuiltinHashesUnixBuildExceptBlake2),
     ("AMD64 Arch Linux Asan", "pablogsal-arch-x86_64", UnixAsanBuild),
-    ("AMD64 Arch Linux Usan", "pablogsal-arch-x86_64", ClangUbsanLinuxBuild),
     ("AMD64 Arch Linux Asan Debug", "pablogsal-arch-x86_64", UnixAsanDebugBuild),
     ("AMD64 Arch Linux TraceRefs", "pablogsal-arch-x86_64", UnixTraceRefsBuild),
     ("AMD64 Arch Linux Perf", "pablogsal-arch-x86_64", UnixPerfBuild),
+    # UBSAN with -fno-sanitize=function, without which we currently fail (as
+    #  tracked in gh-111178). The full "AMD64 Arch Linux Usan" is unstable, below
+    ("AMD64 Arch Linux Usan Function", "pablogsal-arch-x86_64", ClangUbsanFunctionLinuxBuild),
 
-    # Linux s390x Clang
-    ("s390x Fedora Clang", "edelsohn-fedora-z", ClangUnixBuild),
-    ("s390x Fedora Clang Installed", "edelsohn-fedora-z", ClangUnixInstalledBuild),
+    # Linux x86 (32-bit) GCC
+    ("x86 Debian Non-Debug with X", "ware-debian-x86", NonDebugUnixBuild),
+    ("x86 Debian Installed with X", "ware-debian-x86", UnixInstalledBuild),
 ]
 
 
@@ -220,6 +215,8 @@ UNSTABLE_BUILDERS_TIER_1 = [
     ("AMD64 CentOS9 LTO + PGO", "cstratak-CentOS9-x86_64", LTOPGONonDebugBuild),
     ("AMD64 CentOS9 FIPS Only Blake2 Builtin Hash", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuildExceptBlake2),
     ("AMD64 CentOS9 FIPS No Builtin Hashes", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuild),
+
+    ("AMD64 Arch Linux Valgrind", "pablogsal-arch-x86_64", ValgrindBuild),
 ]
 
 
@@ -230,7 +227,6 @@ UNSTABLE_BUILDERS_TIER_2 = [
     # UBSan is a special build
     ("AMD64 Fedora Rawhide Clang", "cstratak-fedora-rawhide-x86_64", ClangUnixBuild),
     ("AMD64 Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-x86_64", ClangUnixInstalledBuild),
-    ("AMD64 Clang UBSan", "gps-clang-ubsan", ClangUbsanLinuxBuild),
 
     # Linux ppc64le GCC
     # Fedora Rawhide is unstable
@@ -245,6 +241,8 @@ UNSTABLE_BUILDERS_TIER_2 = [
     ("PPC64LE CentOS9 LTO + PGO", "cstratak-CentOS9-ppc64le", LTOPGONonDebugBuild),
 
     # Linux aarch64 GCC/Clang
+    ("aarch64 Ubuntu 22.04 BigMem", "diegorusso-aarch64-bigmem", UnixBigmemBuild),
+
     # Fedora Rawhide is unstable
     ("aarch64 Fedora Rawhide", "cstratak-fedora-rawhide-aarch64", FedoraRawhideBuild),
     ("aarch64 Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-aarch64", UnixRefleakBuild),
@@ -269,13 +267,6 @@ UNSTABLE_BUILDERS_TIER_3 = [
     ("PPC64LE Fedora Rawhide Clang", "cstratak-fedora-rawhide-ppc64le", ClangUnixBuild),
     ("PPC64LE Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-ppc64le", ClangUnixInstalledBuild),
 
-    # Linux s390x GCC
-    # Fedora Rawhide is unstable
-    ("s390x Fedora Rawhide", "edelsohn-fedora-rawhide-z", UnixBuild),
-    ("s390x Fedora Rawhide Refleaks", "edelsohn-fedora-rawhide-z", UnixRefleakBuild),
-    ("s390x Fedora Rawhide LTO", "edelsohn-fedora-rawhide-z", LTONonDebugUnixBuild),
-    ("s390x Fedora Rawhide LTO + PGO", "edelsohn-fedora-rawhide-z", LTOPGONonDebugBuild),
-
     # FreBSD x86-64 clang
     # FreeBSD 15 is CURRENT: development branch (at 2023-10-17)
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
@@ -287,13 +278,14 @@ UNSTABLE_BUILDERS_NO_TIER = [
     # Linux x86-64 GCC musl
     ("AMD64 Alpine Linux", "ware-alpine", UnixBuild),
 
-    # Linux x86 (32-bit) GCC
-    ("x86 Debian Non-Debug with X", "ware-debian-x86", NonDebugUnixBuild),
-    ("x86 Debian Installed with X", "ware-debian-x86", UnixInstalledBuild),
-
-    # Linux s390x Clang
-    ("s390x Fedora Rawhide Clang", "edelsohn-fedora-rawhide-z", ClangUnixBuild),
-    ("s390x Fedora Rawhide Clang Installed", "edelsohn-fedora-rawhide-z", ClangUnixInstalledBuild),
+    # Linux x86-64 GCC Fedora Rawhide Freethreading builders
+    ("AMD64 Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-x86_64", FedoraRawhideFreedthreadingBuild),
+    ("aarch64 Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-aarch64", FedoraRawhideFreedthreadingBuild),
+    ("PPC64LE Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-ppc64le", FedoraRawhideFreedthreadingBuild),
+    # Linux x86-64 GCC Fedora Rawhide Freethreading refleak builders
+    ("AMD64 Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-x86_64", UnixNoGilRefleakBuild),
+    ("aarch64 Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-aarch64", UnixNoGilRefleakBuild),
+    ("PPC64LE Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-ppc64le", UnixNoGilRefleakBuild),
 
     # AIX ppc64
     ("PPC64 AIX", "edelsohn-aix-ppc64", AIXBuild),
@@ -301,6 +293,12 @@ UNSTABLE_BUILDERS_NO_TIER = [
 
     # Solaris sparcv9
     ("SPARCv9 Oracle Solaris 11.4", "kulikjak-solaris-sparcv9", UnixBuild),
+
+    # riscv64 GCC
+    ("riscv64 Ubuntu23", "onder-riscv64", SlowUnixInstalledBuild),
+
+    # Arch Usan (see stable "AMD64 Arch Linux Usan Function" above)
+    ("AMD64 Arch Linux Usan", "pablogsal-arch-x86_64", ClangUbsanLinuxBuild),
 ]
 
 
@@ -326,31 +324,6 @@ def get_builders(settings):
     return all_builders
 
 
-DAILYBUILDERS = [
-    "AMD64 Windows11 Refleaks",
-    "AMD64 Fedora Rawhide Refleaks",
-    "AMD64 Fedora Stable Refleaks",
-    "AMD64 RHEL7 Refleaks",
-    "AMD64 RHEL8 Refleaks",
-    "AMD64 CentOS9 Refleaks",
-    # Linux PPC64LE
-    "PPC64LE Fedora Rawhide Refleaks",
-    "PPC64LE Fedora Stable Refleaks",
-    "PPC64LE RHEL7 Refleaks",
-    "PPC64LE RHEL8 Refleaks",
-    "PPC64LE CentOS9 Refleaks",
-    # Linux s390x
-    "s390x Fedora Rawhide Refleaks",
-    "s390x Fedora Refleaks",
-    "s390x RHEL7 Refleaks",
-    "s390x RHEL8 Refleaks",
-    # Linux aarch64
-    "aarch64 Fedora Rawhide Refleaks",
-    "aarch64 Fedora Stable Refleaks",
-    "aarch64 RHEL8 Refleaks",
-    "aarch64 CentOS9 Refleaks",
-]
-
 # Match builder name (excluding the branch name) of builders that should only
 # run on the main and "custom" branches.
 ONLY_MAIN_BRANCH = (
@@ -359,4 +332,5 @@ ONLY_MAIN_BRANCH = (
     "Cygwin",
     "ARM64 Windows",
     "AMD64 Arch Linux Perf",
+    "AMD64 Arch Linux Valgrind",
 )

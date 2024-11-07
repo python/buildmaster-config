@@ -1,4 +1,5 @@
 import re
+import logging
 
 from twisted.internet import defer
 from twisted.python import log
@@ -62,7 +63,6 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
     @defer.inlineCallbacks
     def sendMessage(self, reports):
         build = reports[0]['builds'][0]
-
         props = Properties.fromDict(build["properties"])
         props.master = self.master
 
@@ -79,7 +79,16 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
         else:
             return
 
+        buildid = build.get('buildid', "???")
+        log.msg("Considering reporting build :{}".format(buildid), logLevel=logging.INFO)
+
         if state != "failure":
+            log.msg(
+                f"Not reporting build {buildid};"
+                f" state is {state!r} (from {build['results']!r}),"
+                f" not failure ({FAILURE!r})",
+                logLevel=logging.INFO,
+            )
             return
 
         yield getDetailsForBuild(self.master, build, want_logs=True, want_logs_content=True, want_steps=True)
@@ -91,23 +100,28 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
         sourcestamps = build["buildset"].get("sourcestamps")
 
         if not (sourcestamps and sourcestamps[0]):
+            log.msg("Build {} not reported as it doesn't have source stamps".format(buildid), logLevel=logging.INFO)
             return
 
         changes = yield self.master.data.get(("builds", build["buildid"], "changes"))
 
         if len(changes) != 1:
+            log.msg("Build {} not reported as it has more than one change".format(buildid), logLevel=logging.INFO)
             return
 
         change = changes[0]
         change_comments = change["comments"]
 
         if not change_comments:
+            log.msg("Build {} not reported as no change comments could be found".format(buildid), logLevel=logging.INFO)
             return
 
         # GH-42, gh-42, or #42
         m = re.search(r"\((?:GH-|#)(\d+)\)", change_comments, flags=re.IGNORECASE)
 
         if m is None:
+            log.msg("Build {} not reported as the issue could not be identified from the title".format(
+buildid), logLevel=logging.INFO)
             return
 
         issue = m.groups()[-1]
@@ -128,6 +142,7 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
                 )
             )
 
+        log.msg("Attempting to issue a PR comment for failed build for build {}".format(buildid), logLevel=logging.INFO)
         try:
             repo_user = repoOwner
             repo_name = repoName
@@ -171,8 +186,8 @@ class GitHubPullRequestReporter(reporters.GitHubStatusPush):
             )
 
     def _getURLForBuild(self, builderid, build_number):
-        prefix = self.master.config.buildbotURL
-        return prefix + "#builders/%d/builds/%d" % (builderid, build_number)
+        prefix = self.master.config.buildbotURL.rstrip('/')
+        return f"{prefix}/#/builders/{builderid}/builds/{build_number}"
 
     def createStatus(
         self,

@@ -20,12 +20,12 @@ clean:
 
 $(VENV_CHECK): requirements.txt
 	$(SYSTEM_PYTHON) -m venv --clear venv
-	$(PIP) install -U pip 'setuptools<58.0' wheel
+	$(PIP) install -U pip
 	$(PIP) install -r requirements.txt
 
 regen-requirements:
 	$(SYSTEM_PYTHON) -m venv --clear venv
-	$(PIP) install -U pip 'setuptools<58.0' wheel
+	$(PIP) install -U pip
 	$(PIP) install -U -r requirements.in
 	$(PIP) freeze > requirements.txt
 
@@ -34,7 +34,7 @@ regen-requirements:
 .PHONY: check
 
 check: $(VENV_CHECK)
-	$(BUILDBOT) checkconfig master/master.cfg
+	$(BUILDBOT) checkconfig master
 
 # Management targets
 
@@ -71,3 +71,10 @@ stop-master: run-target
 
 run-target: $(VENV_CHECK)
 	$(BUILDBOT) $(TARGET) master; tail -n$(LOGLINES) master/twistd.log
+
+git-update-requirements:
+	git switch main
+	git pull
+	git switch -c reqs main
+	make regen-requirements
+	git ci -a -m "run make regen-requirements"

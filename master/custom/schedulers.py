@@ -50,7 +50,7 @@ class GitHubPrScheduler(AnyBranchScheduler):
                 kwargs.update(builderNames=builder_names)
                 yield super().addBuildsetForChanges(**kwargs)
             else:
-                log.msg(f"No matching builders after filtering - breaking out")
+                log.msg("No matching builders after filtering - breaking out")
             return
 
         log.msg("Scheduling regular non-filtered buildset")

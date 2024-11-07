@@ -14,24 +14,10 @@ contains secrets like the IRC nickname password.
 
 Run locally:
 
-    git switch -c reqs
-    make regen-requirements
-    git ci -a -m "run make regen-requirements"
+    make git-update-requirements
 
-Create a PR. Merge the PR. The new venv will be recreated automatically on the
-server.
-
-If something goes wrong, commands to recreate the venv *manually* on the
-server:
-
-    make stop-master
-    git pull
-    mv venv old-venv
-    make venv
-    make start-master
-
-    # then you may watch logs in realtime:
-    # tail -F master/twistd.log
+Review updated packages, pay attention to buildbot updates. Create a PR. Merge
+the PR. The new venv will be recreated automatically on the server.
 
 Upgrading buildbot sometimes requires to run the command:
 
