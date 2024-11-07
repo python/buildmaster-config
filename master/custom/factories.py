@@ -873,7 +873,8 @@ class _Wasm32WasiBuild(UnixBuild):
 
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         wasi_py = "Tools/wasm/wasi.py"
-        host_path = "build/cross-build/wasm32-wasi"
+        host_triple = "wasm32-wasip1"
+        host_path = f"build/cross-build/{host_triple}"
 
         # Build Python
         build_configure = ["python3", wasi_py, "configure-build-python"]
@@ -897,13 +898,13 @@ class _Wasm32WasiBuild(UnixBuild):
             # Pydebug build automatically inferred from build Python.
             Configure(
                 name="Configure host Python",
-                command=["python3", wasi_py, "configure-host"],
+                command=["python3", wasi_py, "configure-host", "--target-triple", host_triple],
             )
         )
         self.addStep(
             Compile(
                 name="Compile host Python",
-                command=["python3", wasi_py, "make-host"],
+                command=["python3", wasi_py, "make-host", "--target-triple", host_triple],
             )
         )
 
