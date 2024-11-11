@@ -85,7 +85,7 @@
                             {% break %}
                         {%- endif -%}
                         <code>{{ type }}</code>
-                        {%- if not loop.first %}, {% endif -%}
+                        {%- if not loop.last %}, {% endif -%}
                     {%- endfor -%}
                     )
                 </span>
