@@ -1,6 +1,7 @@
 buildbot[bundle,tls]
 buildbot_wsgi_dashboards
 flask
+humanize
 PyYAML
 requests
 treq

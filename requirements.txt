@@ -19,6 +19,7 @@ croniter==3.0.3
 cryptography==43.0.1
 Flask==3.0.3
 greenlet==3.1.1
+humanize==4.11.0
 hyperlink==21.0.0
 idna==3.10
 importlib_metadata==8.5.0
