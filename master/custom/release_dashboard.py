@@ -659,7 +659,6 @@ class BuilderDisconnected(Problem):
     builder: Builder
 
     def get_severity_and_description(self):
-       try:
         if not self.builder.is_stable:
             severity = Severity.disconnected_unstable_builder
             description = "Disconnected unstable builder"
@@ -678,8 +677,6 @@ class BuilderDisconnected(Problem):
                     severity = Severity.TRIVIAL
             break
         return severity, description
-       except:
-           raise SystemError
 
 
 class NoProblem(Problem):
