@@ -145,6 +145,12 @@ def get_workers(settings):
             parallel_tests=40,
         ),
         cpw(
+            name="diegorusso-aarch64-bigmem",
+            tags=['linux', 'unix', 'ubuntu', 'arm', 'arm64', 'aarch64', 'bigmem'],
+            not_branches=['3.9', '3.10', '3.11', '3.12', '3.13'],
+            parallel_tests=4,
+        ),
+        cpw(
             name="cstratak-rhel8-s390x",
             tags=['linux', 'unix', 'rhel', 's390x'],
             parallel_tests=10,

@@ -8,6 +8,7 @@ from custom.factories import (
     FedoraRawhideFreedthreadingBuild,
     UnixAsanBuild,
     UnixAsanDebugBuild,
+    UnixBigmemBuild,
     UnixTraceRefsBuild,
     UnixVintageParserBuild,
     UnixRefleakBuild,
@@ -42,7 +43,7 @@ from custom.factories import (
     WindowsARM64Build,
     WindowsARM64ReleaseBuild,
     Wasm32WasiCrossBuild,
-    Wasm32WasiDebugBuild,
+    Wasm32WasiPreview1DebugBuild,
     IOSARM64SimulatorBuild,
     AndroidBuild,
     ValgrindBuild,
@@ -132,7 +133,7 @@ STABLE_BUILDERS_TIER_2 = [
 
     # WASI
     ("wasm32-wasi Non-Debug", "bcannon-wasi", Wasm32WasiCrossBuild),
-    ("wasm32-wasi", "bcannon-wasi", Wasm32WasiDebugBuild),
+    ("wasm32-wasi", "bcannon-wasi", Wasm32WasiPreview1DebugBuild),
 ]
 
 
@@ -240,6 +241,8 @@ UNSTABLE_BUILDERS_TIER_2 = [
     ("PPC64LE CentOS9 LTO + PGO", "cstratak-CentOS9-ppc64le", LTOPGONonDebugBuild),
 
     # Linux aarch64 GCC/Clang
+    ("aarch64 Ubuntu 22.04 BigMem", "diegorusso-aarch64-bigmem", UnixBigmemBuild),
+
     # Fedora Rawhide is unstable
     ("aarch64 Fedora Rawhide", "cstratak-fedora-rawhide-aarch64", FedoraRawhideBuild),
     ("aarch64 Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-aarch64", UnixRefleakBuild),

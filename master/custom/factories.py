@@ -264,6 +264,13 @@ class UnixBuildWithoutDocStrings(UnixBuild):
     configureFlags = ["--with-pydebug", "--without-doc-strings"]
 
 
+class UnixBigmemBuild(UnixBuild):
+    buildersuffix = ".bigmem"
+    testFlags = ["-M60g", "-j4", "-uall,extralargefile"]
+    test_timeout = TEST_TIMEOUT * 4
+    factory_tags = ["bigmem"]
+
+
 class AIXBuild(UnixBuild):
     configureFlags = [
         "--with-pydebug",
@@ -865,7 +872,7 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
         super().setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
 
 
-class _Wasm32WasiBuild(UnixBuild):
+class _Wasm32WasiPreview1Build(UnixBuild):
     """Build Python for wasm32-wasi using Tools/wasm/wasi.py."""
     buildersuffix = ".wasi"
     factory_tags = ["wasm", "wasi"]
@@ -879,7 +886,8 @@ class _Wasm32WasiBuild(UnixBuild):
 
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         wasi_py = "Tools/wasm/wasi.py"
-        host_path = "build/cross-build/wasm32-wasi"
+        host_triple = "wasm32-wasip1"
+        host_path = f"build/cross-build/{host_triple}"
 
         # Build Python
         build_configure = ["python3", wasi_py, "configure-build-python"]
@@ -961,7 +969,7 @@ class _Wasm32WasiBuild(UnixBuild):
 
 # Preventing this from running on versions older than 3.13 is managed in
 # master.cfg.
-class Wasm32WasiDebugBuild(_Wasm32WasiBuild):
+class Wasm32WasiPreview1DebugBuild(_Wasm32WasiPreview1Build):
     append_suffix = ".debug"
     pydebug = True
     testFlags = ["-u-cpu"]
