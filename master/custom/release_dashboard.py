@@ -367,8 +367,11 @@ class Build(DashboardObject):
 
     @cached_property
     def started_at(self):
-        if self["started_at"]:
-            return datetime.datetime.fromtimestamp(self["started_at"],
+        started_at = self["started_at"]
+        if isinstance(started_at, datetime.datetime):
+            return started_at
+        if started_at:
+            return datetime.datetime.fromtimestamp(started_at,
                                                    tz=datetime.timezone.utc)
 
     @cached_property
