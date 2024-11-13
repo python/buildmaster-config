@@ -1,3 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Branch Release Status Dashboard</title>
+    <link href="{{ url_for('static', filename='dashboard.css') }}" rel="stylesheet">
+</head>
+<body>
+
 {% macro build_dot(build) -%}
     <a
         href="#/builders/{{build.builderid}}/builds/{{ build.number }}"
@@ -225,3 +235,6 @@
     let date = new Date(elem.dateTime);
     elem.innerText = date.toLocaleDateString("en-CA") + " " + date.toLocaleTimeString("pl-PL");
 </script>
+
+</body>
+</html>
