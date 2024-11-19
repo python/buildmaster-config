@@ -57,6 +57,10 @@ Summary of the results of the build (if available):
 """
 
 
+class PrReporterError(Exception):
+    pass
+
+
 class GitHubPullRequestReporter(reporters.GitHubStatusPush):
     name = "GitHubPullRequestReporter"
 
@@ -135,53 +139,57 @@ buildid), logLevel=logging.INFO)
             repoOwner = giturl.owner
             repoName = giturl.repo
 
-        if self.verbose:
-            log.msg(
-                "Updating github status: repoOwner={repoOwner}, repoName={repoName}".format(
-                    repoOwner=repoOwner, repoName=repoName
-                )
+        log.msg(
+            "Updating github status: repoOwner={repoOwner}, repoName={repoName}".format(
+                repoOwner=repoOwner, repoName=repoName
             )
+        )
 
         log.msg("Attempting to issue a PR comment for failed build for build {}".format(buildid), logLevel=logging.INFO)
+        response = None
         try:
             repo_user = repoOwner
             repo_name = repoName
             sha = change["revision"]
             target_url = build["url"]
             context = context
-            yield self.createStatus(
+            response = yield self.createStatus(
                 build=build,
                 repo_user=repo_user,
                 repo_name=repo_name,
                 sha=sha,
                 state=state,
+                props=props,
                 target_url=target_url,
                 context=context,
                 issue=issue,
                 tracebacks=tracebacks,
                 logs=logs,
             )
-            if self.verbose:
-                log.msg(
-                    "Issued a Pull Request comment for {repoOwner}/{repoName} "
-                    'at {sha}, context "{context}", issue {issue}.'.format(
-                        repoOwner=repoOwner,
-                        repoName=repoName,
-                        sha=sha,
-                        issue=issue,
-                        context=context,
-                    )
-                )
-        except Exception as e:
-            log.err(
-                e,
-                "Failed to issue a Pull Request comment for {repoOwner}/{repoName} "
+            if not response or not self.is_status_2xx(response.code):
+                raise PrReporterError()
+            log.msg(
+                "Issued a Pull Request comment for {repoOwner}/{repoName} "
                 'at {sha}, context "{context}", issue {issue}.'.format(
                     repoOwner=repoOwner,
                     repoName=repoName,
                     sha=sha,
                     issue=issue,
                     context=context,
+                )
+            )
+        except Exception as e:
+            if response:
+                content = yield response.content()
+                code = response.code
+            else:
+                content = code = "n/a"
+            log.err(
+                e,
+                (
+                    f'Failed to issue a Pull Request comment for {repoOwner}/{repoName} '
+                    f'at {sha}, context "{context}", issue {issue}. '
+                    f'http {code}, {content}'
                 ),
             )
 
@@ -189,6 +197,7 @@ buildid), logLevel=logging.INFO)
         prefix = self.master.config.buildbotURL.rstrip('/')
         return f"{prefix}/#/builders/{builderid}/builds/{build_number}"
 
+    @defer.inlineCallbacks
     def createStatus(
         self,
         build,
@@ -196,6 +205,7 @@ buildid), logLevel=logging.INFO)
         repo_name,
         sha,
         state,
+        props,
         target_url=None,
         context=None,
         issue=None,
@@ -215,8 +225,10 @@ buildid), logLevel=logging.INFO)
         )
 
         payload = {"body": message}
+        headers = yield self._get_auth_header(props)
 
         return self._http.post(
             "/".join(["/repos", repo_user, repo_name, "issues", issue, "comments"]),
             json=payload,
+            headers=headers,
         )
