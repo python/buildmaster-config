@@ -91,7 +91,7 @@ def get_workers(settings):
         ),
         cpw(
             name="cstratak-RHEL8-fips-x86_64",
-            tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
+            tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64', 'fips'],
             parallel_tests=6,
         ),
         cpw(
@@ -101,7 +101,7 @@ def get_workers(settings):
         ),
         cpw(
             name="cstratak-CentOS9-fips-x86_64",
-            tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
+            tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64', 'fips'],
             parallel_tests=6,
         ),
         cpw(
