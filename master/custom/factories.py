@@ -666,6 +666,13 @@ class Windows64ReleaseBuild(Windows64Build):
     factory_tags = ["win64", "nondebug"]
 
 
+class Windows64PGOBuild(Windows64ReleaseBuild):
+    buildersuffix = ".pgo"
+    buildFlags = Windows64Build.buildFlags + ["--pgo"]
+    testFlags = [*Windows64Build.testFlags, "+d"]
+    factory_tags = ["win64", "nondebug", "pgo"]
+
+
 class Windows64NoGilBuild(Windows64Build):
     buildersuffix = '.x64.nogil'
     buildFlags = Windows64Build.buildFlags + ["--disable-gil"]
