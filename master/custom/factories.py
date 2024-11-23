@@ -1276,7 +1276,7 @@ class ValgrindBuild(UnixBuild):
             "--gen-suppressions=all",
             "--track-origins=yes",
             "--trace-children=yes",
-            "--suppressions=./Misc/valgrind-python.supp",
+            util.Interpolate("--suppressions=%(prop:builddir)s/build/Misc/valgrind-python.supp"),
             "./python",
             "-m", "test",
             *self.testFlags,
