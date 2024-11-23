@@ -328,7 +328,7 @@ def get_builders(settings):
 
 
 # Match builder name (excluding the branch name) of builders that should only
-# run on the main and "custom" branches.
+# run on the main and PR branches.
 ONLY_MAIN_BRANCH = (
     "Alpine Linux",
     "ARM64 Windows",
