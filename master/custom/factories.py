@@ -1276,7 +1276,7 @@ class ValgrindBuild(UnixBuild):
             "--gen-suppressions=all",
             "--track-origins=yes",
             "--trace-children=yes",
-            "--suppressions=$(PWD)/Misc/valgrind-python.supp",
+            "--suppressions=./Misc/valgrind-python.supp",
             "./python",
             "-m", "test",
             *self.testFlags,
