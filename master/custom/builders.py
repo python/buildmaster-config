@@ -331,8 +331,6 @@ def get_builders(settings):
 # run on the main and "custom" branches.
 ONLY_MAIN_BRANCH = (
     "Alpine Linux",
-    # Cygwin is not supported on 2.7, 3.6, 3.7
-    "Cygwin",
     "ARM64 Windows",
     "Windows PGO",
     "AMD64 Arch Linux Perf",
