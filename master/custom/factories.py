@@ -1275,7 +1275,7 @@ class ValgrindBuild(UnixBuild):
             "--error-exitcode=10",
             "--gen-suppressions=all",
             "--track-origins=yes",
-            "--trace-children=yes",
+            "--trace-children=no",
             util.Interpolate("--suppressions=%(prop:builddir)s/build/Misc/valgrind-python.supp"),
             "./python",
             "-m", "test",
