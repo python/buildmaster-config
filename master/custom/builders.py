@@ -35,6 +35,7 @@ from custom.factories import (
     Windows64Build,
     Windows64BigmemBuild,
     Windows64NoGilBuild,
+    Windows64PGOBuild,
     Windows64RefleakBuild,
     Windows64ReleaseBuild,
     MacOSArmWithBrewBuild,
@@ -219,6 +220,9 @@ UNSTABLE_BUILDERS_TIER_1 = [
     ("AMD64 CentOS9 FIPS No Builtin Hashes", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuild),
 
     ("AMD64 Arch Linux Valgrind", "pablogsal-arch-x86_64", ValgrindBuild),
+
+    # Windows MSVC
+    ("AMD64 Windows PGO", "bolen-windows10", Windows64PGOBuild),
 ]
 
 
@@ -324,12 +328,11 @@ def get_builders(settings):
 
 
 # Match builder name (excluding the branch name) of builders that should only
-# run on the main and "custom" branches.
+# run on the main and PR branches.
 ONLY_MAIN_BRANCH = (
     "Alpine Linux",
-    # Cygwin is not supported on 2.7, 3.6, 3.7
-    "Cygwin",
     "ARM64 Windows",
+    "Windows PGO",
     "AMD64 Arch Linux Perf",
     "AMD64 Arch Linux Valgrind",
 )
