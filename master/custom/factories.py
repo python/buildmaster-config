@@ -680,6 +680,13 @@ class Windows64NoGilBuild(Windows64Build):
     factory_tags = ["win64", "nogil"]
 
 
+class Windows64PGONoGilBuild(Windows64PGOBuild):
+    buildersuffix = '.nogil.pgo'
+    buildFlags = Windows64PGOBuild.buildFlags + ["--disable-gil"]
+    testFlags = Windows64PGOBuild.testFlags + ["--disable-gil"]
+    factory_tags = ["win64", "nogil", "nondebug", "pgo"]
+
+
 class WindowsARM64Build(BaseWindowsBuild):
     buildFlags = ["-p", "ARM64"]
     testFlags = ["-p", "ARM64", "-j2"]
