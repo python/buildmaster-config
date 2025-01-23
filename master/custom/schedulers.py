@@ -18,7 +18,7 @@ class GitHubPrScheduler(AnyBranchScheduler):
             yield super().addBuildsetForChanges(**kwargs)
             return
 
-        # Is possible that we get multiple changeids if there are multiple
+        # It is possible that we get multiple changeids if there are multiple
         # requests being made in quick succession. All these changeids will
         # have the same properties, so we can just pick the first one.
         changeid = changeids[0]
