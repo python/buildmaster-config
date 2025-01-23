@@ -11,7 +11,7 @@ class GitHubPrScheduler(AnyBranchScheduler):
 
     @defer.inlineCallbacks
     def addBuildsetForChanges(self, **kwargs):
-        log.msg("Preapring buildset for PR changes")
+        log.msg("Preparing buildset for PR changes")
         changeids = kwargs.get("changeids")
         if changeids is None or len(changeids) == 0:
             log.msg("No changeids found")
@@ -22,10 +22,10 @@ class GitHubPrScheduler(AnyBranchScheduler):
         # requests being made in quick succession. All these changeids will
         # have the same properties, so we can just pick the first one.
         changeid = changeids[0]
-        chdict = yield self.master.db.changes.getChange(changeid)
+        change = yield self.master.db.changes.getChange(changeid)
 
-        builder_filter = chdict["properties"].get("builderfilter", None)
-        event = chdict["properties"].get("event", None)
+        builder_filter = change.properties.get("builderfilter", None)
+        event = change.properties.get("event", None)
         if event:
             # looks like `("issue_comment", "Change")` for a comment
             event, _ = event
