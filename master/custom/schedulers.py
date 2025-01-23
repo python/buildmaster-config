@@ -13,11 +13,14 @@ class GitHubPrScheduler(AnyBranchScheduler):
     def addBuildsetForChanges(self, **kwargs):
         log.msg("Preapring buildset for PR changes")
         changeids = kwargs.get("changeids")
-        if changeids is None or len(changeids) != 1:
-            log.msg("No changeids or more than one changeid found")
+        if changeids is None or len(changeids) == 0:
+            log.msg("No changeids found")
             yield super().addBuildsetForChanges(**kwargs)
             return
 
+        # It is possible that we get multiple changeids if there are multiple
+        # requests being made in quick succession. All these changeids will
+        # have the same properties, so we can just pick the first one.
         changeid = changeids[0]
         chdict = yield self.master.db.changes.getChange(changeid)
 

@@ -52,8 +52,8 @@ class CustomGitHubEventHandler(GitHubEventHandler):
         if self._token:
             headers["Authorization"] = "token " + self._token
 
-        http = yield httpclientservice.HTTPClientService.getService(
-            self.master,
+        http = yield httpclientservice.HTTPSession(
+            self.master.httpservice,
             self.github_api_endpoint,
             headers=headers,
             debug=self.debug,
@@ -71,8 +71,8 @@ class CustomGitHubEventHandler(GitHubEventHandler):
         if self._token:
             headers["Authorization"] = "token " + self._token
 
-        http = yield httpclientservice.HTTPClientService.getService(
-            self.master,
+        http = yield httpclientservice.HTTPSession(
+            self.master.httpservice,
             self.github_api_endpoint,
             headers=headers,
             debug=self.debug,
@@ -102,8 +102,8 @@ class CustomGitHubEventHandler(GitHubEventHandler):
         if self._token:
             headers["Authorization"] = "token " + self._token
 
-        http = yield httpclientservice.HTTPClientService.getService(
-            self.master,
+        http = yield httpclientservice.HTTPSession(
+            self.master.httpservice,
             self.github_api_endpoint,
             headers=headers,
             debug=self.debug,
@@ -126,8 +126,8 @@ class CustomGitHubEventHandler(GitHubEventHandler):
         headers = {"User-Agent": "Buildbot"}
         if self._token:
             headers["Authorization"] = "token " + self._token
-        http = yield httpclientservice.HTTPClientService.getService(
-            self.master,
+        http = yield httpclientservice.HTTPSession(
+            self.master.httpservice,
             self.github_api_endpoint,
             headers=headers,
             debug=self.debug,
