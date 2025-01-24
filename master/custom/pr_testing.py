@@ -15,19 +15,20 @@ REFLEAK_TESTING_LABEL = ":hammer: test-with-refleak-buildbots"
 
 GITHUB_PROPERTIES_WHITELIST = ["*.labels"]
 
-BUILD_SCHEDULED_MESSAGE_TEMPLATE = """\
+BUILD_MESSAGE_HEADER = """\
 :robot: New build scheduled with the buildbot fleet by @{user} for commit {commit} :robot:
 
 Results will be shown at:
 
-https://buildbot.python.org/all/#/grid?branch=refs%2Fpull%2F30617%2Fmerge
+https://buildbot.python.org/all/#/grid?branch=refs%2Fpull%2F{pr_number}%2Fmerge
 
+"""
+
+BUILD_SCHEDULED_MESSAGE_TEMPLATE = BUILD_MESSAGE_HEADER + """\
 If you want to schedule another build, you need to add the <kbd>{label}</kbd> label again.
 """
 
-BUILD_COMMAND_SCHEDULED_MESSAGE_TEMPLATE = """\
-:robot: New build scheduled with the buildbot fleet by @{user} for commit {commit} :robot:
-
+BUILD_COMMAND_SCHEDULED_MESSAGE_TEMPLATE = BUILD_MESSAGE_HEADER + """\
 The command will test the builders whose names match following regular expression: `{filter}`
 
 The builders matched are:
@@ -83,11 +84,15 @@ class CustomGitHubEventHandler(GitHubEventHandler):
         url = payload["pull_request"]["comments_url"]
         username = payload["sender"]["login"]
         commit = payload["pull_request"]["head"]["sha"]
+        pr_number = payload["issue"]["number"]
         yield http.post(
             url.replace(self.github_api_endpoint, ""),
             json={
                 "body": BUILD_SCHEDULED_MESSAGE_TEMPLATE.format(
-                    user=username, commit=commit, label=label
+                    user=username,
+                    commit=commit,
+                    label=label,
+                    pr_number=pr_number,
                 )
             },
         )
@@ -281,6 +286,7 @@ class CustomGitHubEventHandler(GitHubEventHandler):
                 user=payload["sender"]["login"],
                 commit=head_sha,
                 filter=builder_filter,
+                pr_number=number,
                 builders="\n".join(
                     {
                         f"- `{builder}`"
