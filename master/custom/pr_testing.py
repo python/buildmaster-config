@@ -84,7 +84,7 @@ class CustomGitHubEventHandler(GitHubEventHandler):
         url = payload["pull_request"]["comments_url"]
         username = payload["sender"]["login"]
         commit = payload["pull_request"]["head"]["sha"]
-        pr_number = payload["issue"]["number"]
+        pr_number = payload["pull_request"]["number"]
         yield http.post(
             url.replace(self.github_api_endpoint, ""),
             json={
