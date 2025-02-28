@@ -282,9 +282,7 @@ def get_workers(settings):
             name="rkm-arm64-ios-simulator",
             tags=['iOS'],
             not_branches=['3.9', '3.10', '3.11', '3.12'],
-            # Starting/running simulators in parallel can be problematic;
-            # see python/cpython#129200
-            parallel_builders=1,
+            parallel_builders=4,
         ),
         cpw(
             name="mhsmith-android-aarch64",
