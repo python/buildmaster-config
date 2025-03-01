@@ -61,7 +61,7 @@ STABLE = "stable"
 # Tier-2 builder.
 UNSTABLE = "unstable"
 
-# https://peps.python.org/pep-0011/ defines Platfom Support Tiers
+# https://peps.python.org/pep-0011/ defines Platform Support Tiers
 TIER_1 = "tier-1"
 TIER_2 = "tier-2"
 TIER_3 = "tier-3"
@@ -329,6 +329,31 @@ def get_builders(settings):
         for name, worker_name, buildfactory in builders:
             all_builders.append((name, worker_name, buildfactory, stability, tier))
     return all_builders
+
+
+def get_builder_tier(builder: str) -> str:
+    # Strip trailing branch name
+    import re
+    builder = re.sub(r" 3\.[x\d]+$", "", builder)
+
+    for builders, tier in (
+        (STABLE_BUILDERS_TIER_1, TIER_1),
+        (STABLE_BUILDERS_TIER_2,TIER_2),
+        (STABLE_BUILDERS_TIER_3, TIER_3),
+        (STABLE_BUILDERS_NO_TIER, NO_TIER),
+        (UNSTABLE_BUILDERS_TIER_1, TIER_1),
+        (UNSTABLE_BUILDERS_TIER_2, TIER_2),
+        (UNSTABLE_BUILDERS_TIER_3, TIER_3),
+        (UNSTABLE_BUILDERS_NO_TIER, NO_TIER),
+    ):
+        for name, _, _ in builders:
+            if name == builder:
+                if tier == NO_TIER:
+                    return "no tier"
+                else:
+                    return tier
+
+    return "unknown tier"
 
 
 # Match builder name (excluding the branch name) of builders that should only
