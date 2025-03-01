@@ -17,12 +17,13 @@ from buildbot.util.giturlparse import giturlparse
 from buildbot.plugins import reporters
 from buildbot.reporters.utils import getDetailsForBuild
 
+from custom.builders import get_builder_tier
 from custom.testsuite_utils import get_logs_and_tracebacks_from_build
 
 MESSAGE = """\
 :warning: **Buildbot failure** :warning:
 
-The buildbot **{buildername}** has failed when building commit {sha}(https://github.com/python/cpython/commit/{sha}).
+The buildbot **{buildername}** ({tier}) has failed when building commit {sha}(https://github.com/python/cpython/commit/{sha}).
 
 You can take a look at the buildbot page here:
 
@@ -149,9 +150,11 @@ class DiscordReporter(reporters.HttpStatusPush):
         sha,
         logs,
     ):
+        buildername = build["builder"]["name"]
 
         message = MESSAGE.format(
-            buildername=build["builder"]["name"],
+            buildername=buildername,
+            tier=get_builder_tier(buildername),
             build_url=self._getURLForBuild(
                 build["builder"]["builderid"], build["number"]
             ),
