@@ -151,6 +151,16 @@ def get_workers(settings):
             parallel_tests=4,
         ),
         cpw(
+            name="cstratak-fedora-rawhide-s390x",
+            tags=['linux', 'unix', 'fedora', 's390x'],
+            parallel_tests=10,
+        ),
+        cpw(
+            name="cstratak-fedora-stable-s390x",
+            tags=['linux', 'unix', 'fedora', 's390x'],
+            parallel_tests=10,
+        ),
+        cpw(
             name="cstratak-rhel8-s390x",
             tags=['linux', 'unix', 'rhel', 's390x'],
             parallel_tests=10,

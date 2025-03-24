@@ -145,6 +145,13 @@ STABLE_BUILDERS_TIER_2 = [
 STABLE_BUILDERS_TIER_3 = [
 
     # Linux s390x GCC
+    ("s390x Fedora Stable", "cstratak-fedora-stable-s390x", UnixBuild),
+    ("s390x Fedora Stable Refleaks", "cstratak-fedora-stable-s390x", UnixRefleakBuild),
+    ("s390x Fedora Stable Clang", "cstratak-fedora-stable-s390x", ClangUnixBuild),
+    ("s390x Fedora Stable Clang Installed", "cstratak-fedora-stable-s390x", ClangUnixInstalledBuild),
+    ("s390x Fedora Stable LTO", "cstratak-fedora-stable-s390x", LTONonDebugUnixBuild),
+    ("s390x Fedora Stable LTO + PGO", "cstratak-fedora-stable-s390x", LTOPGONonDebugBuild),
+
     ("s390x RHEL9", "cstratak-rhel9-s390x", UnixBuild),
     ("s390x RHEL9 Refleaks", "cstratak-rhel9-s390x", UnixRefleakBuild),
     ("s390x RHEL9 LTO", "cstratak-rhel9-s390x", LTONonDebugUnixBuild),
@@ -274,6 +281,14 @@ UNSTABLE_BUILDERS_TIER_3 = [
     ("PPC64LE Fedora Rawhide Clang", "cstratak-fedora-rawhide-ppc64le", ClangUnixBuild),
     ("PPC64LE Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-ppc64le", ClangUnixInstalledBuild),
 
+    # Linux s390x GCC/Clang
+    ("s390x Fedora Rawhide", "cstratak-fedora-rawhide-s390x", UnixBuild),
+    ("s390x Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-s390x", UnixRefleakBuild),
+    ("s390x Fedora Rawhide Clang", "cstratak-fedora-rawhide-s390x", ClangUnixBuild),
+    ("s390x Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-s390x", ClangUnixInstalledBuild),
+    ("s390x Fedora Rawhide LTO", "cstratak-fedora-rawhide-s390x", LTONonDebugUnixBuild),
+    ("s390x Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-s390x", LTOPGONonDebugBuild),
+
     # FreBSD x86-64 clang
     # FreeBSD 15 is CURRENT: development branch (at 2023-10-17)
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
@@ -289,10 +304,12 @@ UNSTABLE_BUILDERS_NO_TIER = [
     ("AMD64 Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-x86_64", FedoraRawhideFreedthreadingBuild),
     ("aarch64 Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-aarch64", FedoraRawhideFreedthreadingBuild),
     ("PPC64LE Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-ppc64le", FedoraRawhideFreedthreadingBuild),
+    ("s390x Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-s390x", FedoraRawhideFreedthreadingBuild),
     # Linux x86-64 GCC Fedora Rawhide Freethreading refleak builders
     ("AMD64 Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-x86_64", UnixNoGilRefleakBuild),
     ("aarch64 Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-aarch64", UnixNoGilRefleakBuild),
     ("PPC64LE Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-ppc64le", UnixNoGilRefleakBuild),
+    ("s390x Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-s390x", UnixNoGilRefleakBuild),
 
     # AIX ppc64
     ("PPC64 AIX", "edelsohn-aix-ppc64", AIXBuild),
