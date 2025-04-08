@@ -517,6 +517,7 @@ class MacOSArmWithBrewBuild(UnixBuild):
         "--with-openssl=/opt/homebrew/opt/openssl@3",
         "CPPFLAGS=-I/opt/homebrew/include",
         "LDFLAGS=-L/opt/homebrew/lib",
+        "PKG_CONFIG_PATH=/opt/homebrew/opt/tcl-tk@8/lib/pkgconfig",
     ]
     # These tests are known to crash on M1 macs (see bpo-45289).
     testFlags = [*UnixBuild.testFlags,
@@ -530,6 +531,7 @@ class MacOSArmWithBrewNoGilBuild(UnixNoGilBuild):
         "--with-openssl=/opt/homebrew/opt/openssl@3",
         "CPPFLAGS=-I/opt/homebrew/include",
         "LDFLAGS=-L/opt/homebrew/lib",
+        "PKG_CONFIG_PATH=/opt/homebrew/opt/tcl-tk@8/lib/pkgconfig",
     ]
 
 
@@ -540,6 +542,7 @@ class MacOSArmWithBrewRefleakBuild(UnixRefleakBuild):
         "--with-openssl=/opt/homebrew/opt/openssl@3",
         "CPPFLAGS=-I/opt/homebrew/include",
         "LDFLAGS=-L/opt/homebrew/lib",
+        "PKG_CONFIG_PATH=/opt/homebrew/opt/tcl-tk@8/lib/pkgconfig",
     ]
 
 
@@ -550,6 +553,7 @@ class MacOSArmWithBrewNoGilRefleakBuild(UnixNoGilRefleakBuild):
         "--with-openssl=/opt/homebrew/opt/openssl@3",
         "CPPFLAGS=-I/opt/homebrew/include",
         "LDFLAGS=-L/opt/homebrew/lib",
+        "PKG_CONFIG_PATH=/opt/homebrew/opt/tcl-tk@8/lib/pkgconfig",
     ]
 
 
@@ -559,6 +563,7 @@ class MacOSAsanNoGilBuild(UnixAsanNoGilBuild):
         "--with-openssl=/opt/homebrew/opt/openssl@3",
         "CPPFLAGS=-I/opt/homebrew/include",
         "LDFLAGS=-L/opt/homebrew/lib",
+        "PKG_CONFIG_PATH=/opt/homebrew/opt/tcl-tk@8/lib/pkgconfig",
     ]
     asan_options = 'detect_leaks=0:allocator_may_return_null=1:handle_segv=0'
     compile_environ = {'ASAN_OPTIONS': asan_options}
