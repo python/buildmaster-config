@@ -268,7 +268,7 @@ class UnixBigmemBuild(UnixBuild):
     buildersuffix = ".bigmem"
     testFlags = [
         "-M60g", "-j4", "-uall,extralargefile",
-        "--proritize=test_bigmem,test_lzma,test_bz2,test_re,test_array"
+        "--prioritize=test_bigmem,test_lzma,test_bz2,test_re,test_array"
     ]
     test_timeout = TEST_TIMEOUT * 4
     factory_tags = ["bigmem"]
@@ -655,7 +655,7 @@ class Windows64BigmemBuild(BaseWindowsBuild):
     buildFlags = ["-p", "x64"]
     testFlags = [
         "-p", "x64", "-M33g", "-uall,extralargefile",
-        "--proritize=test_bigmem,test_lzma,test_bz2,test_array,test_hashlib,test_zlib"
+        "--prioritize=test_bigmem,test_lzma,test_bz2,test_array,test_hashlib,test_zlib"
     ]
     test_timeout = TEST_TIMEOUT * 4
     cleanFlags = ["-p", "x64"]
