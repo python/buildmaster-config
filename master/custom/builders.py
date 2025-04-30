@@ -301,7 +301,7 @@ UNSTABLE_BUILDERS_TIER_3 = [
     # FreeBSD 15 is CURRENT: development branch (at 2023-10-17)
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
 
-    ("ARM Raspbian aarch64", "stan-raspbian", UnixBuild),
+    ("ARM64 Raspbian", "stan-raspbian", UnixBuild),
 ]
 
 
