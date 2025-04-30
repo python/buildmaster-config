@@ -185,7 +185,7 @@ def get_workers(settings):
         ),
         cpw(
             name="stan-raspbian",
-            tags=['linux', 'unix', 'raspbian', 'debian', 'armv6', 'armv7l',
+            tags=['linux', 'unix', 'raspbian', 'debian', 'armv8',
                   'aarch64', 'arm'],
         ),
         cpw(
