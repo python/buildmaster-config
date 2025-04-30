@@ -247,6 +247,7 @@ class UnixAsanBuild(UnixBuild):
     # SIGSEGV is ignored on purpose.
     compile_environ = {'ASAN_OPTIONS': 'detect_leaks=0:allocator_may_return_null=1:handle_segv=0'}
     test_environ = {'ASAN_OPTIONS': 'detect_leaks=0:allocator_may_return_null=1:handle_segv=0'}
+    test_timeout = 35 * 60  # 35 minutes
 
 
 class UnixAsanDebugBuild(UnixAsanBuild):
