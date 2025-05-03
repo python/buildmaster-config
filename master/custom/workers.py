@@ -42,7 +42,7 @@ class CPythonWorker:
         owner_settings = settings.owners[owner]
         pw = worker_settings.get("password", None) or owner_settings.password
         owner_email = owner_settings.get("email", None)
-        emails = list(map(str, filter(None, owner_email)))
+        emails = [str(owner_email)] if owner_email else []
         if settings.use_local_worker:
             self.bb_worker = _worker.LocalWorker(name)
         else:
