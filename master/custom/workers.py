@@ -185,6 +185,7 @@ def get_workers(settings):
             name="stan-raspbian",
             tags=['linux', 'unix', 'raspbian', 'debian', 'armv8',
                   'aarch64', 'arm'],
+            parallel_tests=4,
         ),
         cpw(
             name="kulikjak-solaris-sparcv9",
