@@ -204,10 +204,6 @@ def get_workers(settings):
             parallel_tests=4,
         ),
         cpw(
-            name="skumaran-ubuntu-x86_64",
-            tags=['linux', 'unix', 'ubuntu', 'amd64', 'x86-64'],
-        ),
-        cpw(
             name="ware-alpine",
             tags=['linux', 'unix', 'alpine', 'docker', 'amd64', 'x86-64'],
             branches=[MAIN_BRANCH_NAME],
