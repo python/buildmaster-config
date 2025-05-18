@@ -172,6 +172,7 @@ STABLE_BUILDERS_TIER_3 = [
 
     # Linux armv7l (32-bit) GCC
     ("ARM Raspbian", "gps-raspbian", SlowNonDebugUnixBuild),
+    ("ARM64 Raspbian", "stan-raspbian", SlowNonDebugUnixBuild),
 
     # FreBSD x86-64 clang
     ("AMD64 FreeBSD", "ware-freebsd", UnixBuild),
@@ -300,8 +301,6 @@ UNSTABLE_BUILDERS_TIER_3 = [
     # FreBSD x86-64 clang
     # FreeBSD 15 is CURRENT: development branch (at 2023-10-17)
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
-
-    ("ARM64 Raspbian", "stan-raspbian", UnixBuild),
 ]
 
 
