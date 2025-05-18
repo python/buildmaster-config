@@ -186,8 +186,8 @@ def get_workers(settings):
             tags=['linux', 'unix', 'raspbian', 'debian', 'armv8',
                   'aarch64', 'arm'],
             parallel_tests=4,
-            # Tests fail with latin1 encoding
-            not_branches=['3.12']
+            # Tests fail with latin1 encoding on 3.12, probably earlier
+            not_branches=['3.12', '3.11', '3.10', '3.9']
         ),
         cpw(
             name="kulikjak-solaris-sparcv9",
