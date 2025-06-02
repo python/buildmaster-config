@@ -888,6 +888,16 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
 
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         self.addStep(
+            SetPropertyFromCommand(
+                name="Find config.site-wasm32-wasi",
+                description="Search Tools/wasm for config.site-wasm32-wasi",
+                command="find Tools/wasm -name config.site-wasm32-wasi",
+                property="config_site",
+                warnOnFailure=True,
+            )
+        )
+        self.host_configure_cmd.append(util.Interpolate("CONFIG_SITE=%(prop:config_site)"))
+        self.addStep(
             ShellCommand(
                 name="Touch srcdir Modules/Setup.local",
                 description="Hack to work around wasmtime mapdir issue",
