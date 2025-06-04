@@ -880,9 +880,6 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
         # debug builds exhaust the limited call stack on WASI
         "--without-pydebug",
     ]
-    compile_environ = {
-        "CONFIG_SITE": "../../Tools/wasm/wasi/config.site-wasm32-wasi",
-    }
     host = "wasm32-unknown-wasi"
     host_configure_cmd = ["../../Tools/wasm/wasi-env", "../../configure"]
 
