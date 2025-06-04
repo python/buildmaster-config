@@ -336,7 +336,8 @@ UNSTABLE_BUILDERS_NO_TIER = [
 def get_builders(settings):
     # Override with a default simple worker if we are using local workers
     if settings.use_local_worker:
-        return [("Test Builder", "local-worker", UnixBuild, STABLE, NO_TIER)]
+        local_buildfactory = globals().get(settings.local_worker_buildfactory, UnixBuild)
+        return [("Test Builder", "local-worker", local_buildfactory, STABLE, NO_TIER)]
 
     all_builders = []
     for builders, stability, tier in (
