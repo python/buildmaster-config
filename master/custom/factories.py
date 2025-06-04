@@ -893,6 +893,7 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
                 warnOnFailure=True,
             )
         )
+        self.compile_environ = super().compile_environ.copy()
         self.compile_environ.update(
             CONFIG_SITE=util.Interpolate("%(prop:config_site)s")
         )
