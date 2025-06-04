@@ -880,13 +880,20 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
         # debug builds exhaust the limited call stack on WASI
         "--without-pydebug",
     ]
-    compile_environ = {
-        "CONFIG_SITE": "../../Tools/wasm/config.site-wasm32-wasi",
-    }
     host = "wasm32-unknown-wasi"
     host_configure_cmd = ["../../Tools/wasm/wasi-env", "../../configure"]
 
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+        self.addStep(
+            SetPropertyFromCommand(
+                name="Find config.site-wasm32-wasi",
+                description="Search Tools/wasm for config.site-wasm32-wasi",
+                command="find Tools/wasm -name config.site-wasm32-wasi",
+                property="config_site",
+                warnOnFailure=True,
+            )
+        )
+        self.host_configure_cmd.append(util.Interpolate("CONFIG_SITE=%(prop:config_site)s"))
         self.addStep(
             ShellCommand(
                 name="Touch srcdir Modules/Setup.local",
