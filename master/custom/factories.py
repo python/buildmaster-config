@@ -896,7 +896,7 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
                 warnOnFailure=True,
             )
         )
-        self.host_configure_cmd.append(util.Interpolate("CONFIG_SITE=%(prop:config_site)"))
+        self.host_configure_cmd.append(util.Interpolate("CONFIG_SITE=%(prop:config_site)s"))
         self.addStep(
             ShellCommand(
                 name="Touch srcdir Modules/Setup.local",
