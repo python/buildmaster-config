@@ -895,7 +895,7 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
         )
         self.compile_environ = super().compile_environ.copy()
         self.compile_environ.update(
-            CONFIG_SITE=util.Interpolate("%(prop:config_site)s")
+            CONFIG_SITE=util.Interpolate("../../%(prop:config_site)s")
         )
         self.addStep(
             ShellCommand(
