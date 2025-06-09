@@ -64,3 +64,44 @@ characters), for example using KeePassX.
 * Restart the buildbot server: `make restart-master`
 
 Documentation: http://docs.buildbot.net/current/manual/configuration/workers.html#defining-workers
+
+## Testing changes locally
+
+To test a change to the buildbot code locally, a worker is needed to run jobs.
+First create a `settings.yaml` file in the repository root. The settings file controls
+how the Builbot master should connect to workers. The simplest setup runs a worker in the
+same process as the Buildbot master on the local machine. The local environment must have any
+required dependencies for that worker environment. With the settings file created run:
+
+```bash
+export PYBUILDBOT_SETTINGS_PATH=$(pwd)/settings.yaml
+```
+
+Then, update the settings file to include the following:
+
+```yaml
+# Use a local in-process worker
+use_local_worker: true
+# Use one of the buildfactories found in master/custom/factories.py.
+# Here we use the WASI cross build factory. If unspecified, the default
+# is to use the UnixBuild factory
+local_worker_buildfactory: "Wasm32WasiCrossBuild"
+```
+
+Then run
+
+```
+make update-master
+```
+
+This updates the state database and starts the buildbot master.
+You can now open http://localhost:9011/ and use the local Buildbot master web UI.
+Under Builds -> Builders there should be one or more builders for the factory
+that was configured. After clicking on the relevant builder, clicking on the "force"
+button in the upper right corner will start a new build.
+
+Finally, the master can be stopped when no longer needed by running
+
+```
+make stop-master
+```
