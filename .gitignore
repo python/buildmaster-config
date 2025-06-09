@@ -6,3 +6,4 @@ buildbot/
 lib/
 venv/
 worker/
+settings.yaml
