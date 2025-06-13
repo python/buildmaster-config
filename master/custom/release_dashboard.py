@@ -688,7 +688,7 @@ class BuilderDisconnected(Problem):
 @dataclass
 class NoProblem(Problem):
     """Dummy problem"""
-    builder: Builder | None = None
+    builder: 'Builder | None' = None
 
     name = "Releasable"
 
