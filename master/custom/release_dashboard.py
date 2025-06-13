@@ -228,18 +228,17 @@ class Builder(DashboardObject):
         elif latest_build["results"] == buildbot.process.results.WARNINGS:
             yield BuildWarning(latest_build)
         elif latest_build["results"] == buildbot.process.results.FAILURE:
-            failing_streak = 0
             first_failing_build = None
             for build in self.iter_interesting_builds():
                 if build["results"] == buildbot.process.results.FAILURE:
                     first_failing_build = build
-                    continue
                 elif build["results"] == buildbot.process.results.SUCCESS:
-                    if latest_build != first_failing_build:
-                        yield BuildFailure(latest_build, first_failing_build)
                     break
             else:
-                yield BuildFailure(latest_build)
+                # Didn't find a successful build; end of the failing streak
+                # is unknown.
+                first_failing_build = None
+            yield BuildFailure(latest_build, first_failing_build)
 
         if not self.connected_workers:
             yield BuilderDisconnected(self)
@@ -619,8 +618,9 @@ class BuildFailure(Problem):
     @cached_property
     def affected_builds(self):
         result = {"Latest build": self.latest_build}
-        if self.first_failing_build:
-            result["Breaking build"] = self.first_failing_build
+        first_failing = self.first_failing_build
+        if first_failing and first_failing != self.latest_build:
+            result["Breaking build"] = first_failing
         return result
 
 
