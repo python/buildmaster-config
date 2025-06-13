@@ -303,7 +303,10 @@ class Branch(_BranchTierBase):
         problems = []
         for builder in self._root.builders:
             if builder.branch == self:
-                problems.extend(builder.problems)
+                if builder.problems:
+                    problems.extend(builder.problems)
+                else:
+                    problems.append(NoProblem(builder))
         return problems
 
     @cached_property
@@ -682,8 +685,11 @@ class BuilderDisconnected(Problem):
         return severity, description
 
 
+@dataclass
 class NoProblem(Problem):
     """Dummy problem"""
+    builder: Builder | None = None
+
     name = "Releasable"
 
     description = "No problem detected"
