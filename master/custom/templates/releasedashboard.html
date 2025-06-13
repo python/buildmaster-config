@@ -206,7 +206,10 @@
                                         </div>
                                     {% endif %}
                                     <div class="build-dots">
-                                        {% for build in builder.builds[:70] %}
+                                        {% for build in builder.builds %}
+                                            {% if loop.index0 == (50 if builder.problems else 3) %}
+                                                ⋯ {% break %}
+                                            {% endif %}
                                             {{ build_dot(build) }}
                                         {% endfor %}
                                     </div>
