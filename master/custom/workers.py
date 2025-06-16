@@ -91,6 +91,8 @@ def get_workers(settings):
             name="cstratak-RHEL8-fips-x86_64",
             tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64', 'fips'],
             parallel_tests=6,
+            # Only 3.12+ for FIPS builder
+            not_branches=["3.9", "3.10", "3.11"],
         ),
         cpw(
             name="cstratak-CentOS9-x86_64",
@@ -101,6 +103,8 @@ def get_workers(settings):
             name="cstratak-CentOS9-fips-x86_64",
             tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64', 'fips'],
             parallel_tests=6,
+            # Only 3.12+ for FIPS builder
+            not_branches=["3.9", "3.10", "3.11"],
         ),
         cpw(
             name="cstratak-fedora-rawhide-ppc64le",
