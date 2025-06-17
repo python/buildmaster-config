@@ -116,9 +116,16 @@ class Test(BaseTest):
     }
 
     def evaluateCommand(self, cmd):
+        result = super().evaluateCommand(cmd)
         if cmd.didFail():
             self.setProperty("test_failed_to_build", True)
-        return super().evaluateCommand(cmd)
+            self.setProperty("want_xml_upload", True)
+        elif result == WARNINGS:
+            # For warnings, upload XML for main branch stable builders
+            tags = self.build.builder.config.tags
+            if 'stable' in tags and '3.x' in tags:
+                self.setProperty("want_xml_upload", True)
+        return result
 
 
 class Clean(ShellCommand):
@@ -174,12 +181,12 @@ class UploadTestResults(steps.FileUpload):
     flunkOnFailure = False
     alwaysRun = True
 
-    def _has_the_build_failed(self, build):
-        return self.getProperty("test_failed_to_build")
+    def _want_xml_upload(self, build):
+        return self.getProperty("want_xml_upload")
 
     def __init__(self, branch, filename=JUNIT_FILENAME):
         super().__init__(
-            doStepIf=self._has_the_build_failed,
+            doStepIf=self._want_xml_upload,
             workersrc=filename,
             masterdest=util.Interpolate(
                 f"/data/www/buildbot/test-results/{branch}/%(prop:buildername)s/build_%(prop:buildnumber)s.xml"
