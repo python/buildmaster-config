@@ -48,6 +48,7 @@ from custom.factories import (
     Wasm32WasiPreview1DebugBuild,
     IOSARM64SimulatorBuild,
     AndroidBuild,
+    EmscriptenBuild,
     ValgrindBuild,
 )
 
@@ -299,6 +300,9 @@ UNSTABLE_BUILDERS_TIER_3 = [
     # FreBSD x86-64 clang
     # FreeBSD 15 is CURRENT: development branch (at 2023-10-17)
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
+
+    # Emscripten
+    ("WASM Emscripten", "rkm-emscripten", EmscriptenBuild),
 ]
 
 
