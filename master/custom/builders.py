@@ -48,6 +48,7 @@ from custom.factories import (
     Wasm32WasiPreview1DebugBuild,
     IOSARM64SimulatorBuild,
     AndroidBuild,
+    EmscriptenBuild,
     ValgrindBuild,
 )
 
@@ -190,6 +191,9 @@ STABLE_BUILDERS_TIER_3 = [
     # Android
     ("aarch64 Android", "mhsmith-android-aarch64", AndroidBuild),
     ("AMD64 Android", "mhsmith-android-x86_64", AndroidBuild),
+
+    # Emscripten
+    ("WASM Emscripten", "rkm-emscripten", EmscriptenBuild),
 ]
 
 
