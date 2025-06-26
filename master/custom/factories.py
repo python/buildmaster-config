@@ -1256,6 +1256,10 @@ class AndroidBuild(BaseBuild):
         return build_triple.split("-")[0] + "-linux-android"
 
 
+##############################################################################
+############################  VALGRIND BUILDS  ###############################
+##############################################################################
+
 class ValgrindBuild(UnixBuild):
     buildersuffix = ".valgrind"
     configureFlags = [
@@ -1319,3 +1323,77 @@ class ValgrindBuild(UnixBuild):
         ))
 
         self.addStep(Clean())
+
+
+##############################################################################
+###########################  EMSCRIPTEN BUILDS  ##############################
+##############################################################################
+
+class EmscriptenBuild(BaseBuild):
+    """Emscripten build.
+
+    * The Emscripten SDK must be installed, and configured to use the SDK
+      version required by the current main PR.
+
+    """
+    buildersuffix = ".emscripten"
+    factory_tags = ["emscripten"]
+
+    def setup(self, **kwargs):
+        compile_environ = {
+            "PATH": os.pathsep.join([
+                "/home/emscripten/emsdk",
+                "/home/emscripten/emsdk/upstream/emscripten",
+                "/home/emscripten/.local/bin",
+                "/usr/local/bin",
+                "/usr/bin",
+                "/bin",
+            ]),
+            "EMSDK": "/home/emscripten/emsdk",
+        }
+
+        self.addSteps([
+            Configure(
+                name="Configure build Python",
+                command=["python3", "Tools/wasm/emscripten", "configure-build-python"],
+                env=compile_environ,
+            ),
+            Compile(
+                name="Compile build Python",
+                command=["python3", "Tools/wasm/emscripten", "make-build-python"],
+                env=compile_environ,
+            ),
+            Compile(
+                name="Compile host libFFI",
+                command=["python3", "Tools/wasm/emscripten", "make-libffi"],
+                env=compile_environ,
+            ),
+            Configure(
+                name="Configure host Python",
+                command=["python3", "Tools/wasm/emscripten", "configure-host"],
+                env=compile_environ,
+            ),
+            Compile(
+                name="Compile host Python",
+                command=["python3", "Tools/wasm/emscripten", "make-host"],
+                env=compile_environ,
+            ),
+            Test(
+                command=[
+                    "cross-build/wasm32-emscripten/build/python/python.sh",
+                    "-m", "test",
+                    "-v",
+                    "-uall",
+                    "--rerun",
+                    "--single-process",
+                    "-W",
+                ],
+                env=compile_environ,
+                timeout=step_timeout(self.test_timeout),
+            ),
+            Clean(
+                name="Clean the builds",
+                command=["python3", "Tools/wasm/emscripten", "clean"],
+                env=compile_environ,
+            )
+        ])

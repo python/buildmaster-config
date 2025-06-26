@@ -305,6 +305,12 @@ def get_workers(settings):
             parallel_builders=4,
         ),
         cpw(
+            name="rkm-emscripten",
+            tags=['emscripten'],
+            not_branches=['3.9', '3.10', '3.11', '3.12', '3.13'],
+            parallel_builders=4,
+        ),
+        cpw(
             name="mhsmith-android-aarch64",
             tags=['android'],
             not_branches=['3.9', '3.10', '3.11', '3.12'],
