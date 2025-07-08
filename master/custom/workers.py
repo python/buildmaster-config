@@ -208,6 +208,11 @@ def get_workers(settings):
             parallel_tests=4,
         ),
         cpw(
+            name="pablogsal-rasp",
+            tags=['linux', 'unix', 'raspbian', 'debian', 'arm'],
+            parallel_tests=2,
+        ),
+        cpw(
             name="skumaran-ubuntu-x86_64",
             tags=['linux', 'unix', 'ubuntu', 'amd64', 'x86-64'],
         ),
