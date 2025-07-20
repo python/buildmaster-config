@@ -1350,6 +1350,7 @@ class EmscriptenBuild(BaseBuild):
                 "/bin",
             ]),
             "EMSDK": "/home/emscripten/emsdk",
+            "PYTHON_NODE_VERSION": "24",
         }
 
         self.addSteps([
