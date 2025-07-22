@@ -1370,7 +1370,7 @@ class EmscriptenBuild(BaseBuild):
                 env=compile_environ,
             ),
             Compile(
-                name="Compile host libmpdecimal",
+                name="Compile host libmpdec",
                 command=["python3", "Tools/wasm/emscripten", "make-mpdec"],
                 env=compile_environ,
             ),
