@@ -1365,8 +1365,13 @@ class EmscriptenBuild(BaseBuild):
                 env=compile_environ,
             ),
             Compile(
-                name="Compile host libFFI",
+                name="Compile host libffi",
                 command=["python3", "Tools/wasm/emscripten", "make-libffi"],
+                env=compile_environ,
+            ),
+            Compile(
+                name="Compile host libmpdecimal",
+                command=["python3", "Tools/wasm/emscripten", "make-mpdec"],
                 env=compile_environ,
             ),
             Configure(
