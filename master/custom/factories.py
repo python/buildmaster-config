@@ -1396,7 +1396,6 @@ class EmscriptenBuild(BaseBuild):
             Test(
                 name="PyRepl in Chrome smoke test",
                 command=[
-                    "bash",
                     "run_test.sh",
                 ],
                 env=compile_environ,
