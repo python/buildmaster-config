@@ -1371,7 +1371,7 @@ class EmscriptenBuild(BaseBuild):
             ),
         ])
         if branch != '3.14':
-            # Can enable on 3.14 if/when python/cpython#161845 is merged
+            # Can enable on 3.14 if/when python/cpython#137066 is merged
             self.addStep(
                 Compile(
                     name="Compile host libmpdec",
