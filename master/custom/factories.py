@@ -1339,7 +1339,7 @@ class EmscriptenBuild(BaseBuild):
     buildersuffix = ".emscripten"
     factory_tags = ["emscripten"]
 
-    def setup(self, **kwargs):
+    def setup(self, *, branch, **kwargs):
         compile_environ = {
             "PATH": os.pathsep.join([
                 "/home/emscripten/emsdk",
@@ -1369,11 +1369,17 @@ class EmscriptenBuild(BaseBuild):
                 command=["python3", "Tools/wasm/emscripten", "make-libffi"],
                 env=compile_environ,
             ),
-            Compile(
-                name="Compile host libmpdec",
-                command=["python3", "Tools/wasm/emscripten", "make-mpdec"],
-                env=compile_environ,
-            ),
+        ])
+        if branch != '3.14':
+            # Can enable on 3.14 if/when python/cpython#161845 is merged
+            self.addStep(
+                Compile(
+                    name="Compile host libmpdec",
+                    command=["python3", "Tools/wasm/emscripten", "make-mpdec"],
+                    env=compile_environ,
+                )
+            )
+        self.addSteps([
             Configure(
                 name="Configure host Python",
                 command=["python3", "Tools/wasm/emscripten", "configure-host"],
