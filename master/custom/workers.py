@@ -307,7 +307,7 @@ def get_workers(settings):
             name="rkm-arm64-ios-simulator",
             tags=['iOS'],
             not_branches=['3.9', '3.10', '3.11', '3.12'],
-            parallel_builders=4,
+            parallel_builders=1,  # All builds use the same simulator
         ),
         cpw(
             name="rkm-emscripten",
