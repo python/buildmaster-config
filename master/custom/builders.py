@@ -92,9 +92,6 @@ STABLE_BUILDERS_TIER_1 = [
     ("AMD64 Windows11 Refleaks", "ware-win11", Windows64RefleakBuild),
     ("AMD64 Windows Server 2022 NoGIL", "itamaro-win64-srv-22-aws", Windows64NoGilBuild),
     ("AMD64 Windows PGO NoGIL", "itamaro-win64-srv-22-aws", Windows64PGONoGilBuild),
-
-    # macOS x86-64 clang
-    ("x86-64 macOS", "billenstein-macos", UnixBuild),
 ]
 
 
@@ -122,6 +119,9 @@ STABLE_BUILDERS_TIER_2 = [
     ("ARM64 macOS", "pablogsal-macos-m1", MacOSArmWithBrewBuild),
     ("ARM64 MacOS M1 NoGIL", "itamaro-macos-arm64-aws", MacOSArmWithBrewNoGilBuild),
     ("ARM64 MacOS M1 Refleaks NoGIL", "itamaro-macos-arm64-aws", MacOSArmWithBrewNoGilRefleakBuild),
+
+    # macOS x86-64 clang
+    ("x86-64 macOS", "billenstein-macos", UnixBuild),
 
     # WASI
     ("wasm32-wasi Non-Debug", "bcannon-wasi", Wasm32WasiCrossBuild),
@@ -224,11 +224,6 @@ UNSTABLE_BUILDERS_TIER_1 = [
 
     # Windows MSVC
     ("AMD64 Windows PGO", "bolen-windows10", Windows64PGOBuild),
-
-    # macOS x86-64 clang
-    # (marked unstable for a hardware failure)
-    ("x86-64 MacOS Intel NoGIL", "itamaro-macos-intel-aws", UnixNoGilBuild),
-    ("x86-64 MacOS Intel ASAN NoGIL", "itamaro-macos-intel-aws", MacOSAsanNoGilBuild),
 ]
 
 
@@ -285,6 +280,11 @@ UNSTABLE_BUILDERS_TIER_2 = [
 
     # WebAssembly
     ("wasm32 WASI 8Core", "kushaldas-wasi", Wasm32WasiCrossBuild),
+
+    # macOS x86-64 clang
+    # (marked unstable for a hardware failure)
+    ("x86-64 MacOS Intel NoGIL", "itamaro-macos-intel-aws", UnixNoGilBuild),
+    ("x86-64 MacOS Intel ASAN NoGIL", "itamaro-macos-intel-aws", MacOSAsanNoGilBuild),
 ]
 
 
