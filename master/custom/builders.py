@@ -95,8 +95,6 @@ STABLE_BUILDERS_TIER_1 = [
 
     # macOS x86-64 clang
     ("x86-64 macOS", "billenstein-macos", UnixBuild),
-    ("x86-64 MacOS Intel NoGIL", "itamaro-macos-intel-aws", UnixNoGilBuild),
-    ("x86-64 MacOS Intel ASAN NoGIL", "itamaro-macos-intel-aws", MacOSAsanNoGilBuild),
 ]
 
 
@@ -226,6 +224,11 @@ UNSTABLE_BUILDERS_TIER_1 = [
 
     # Windows MSVC
     ("AMD64 Windows PGO", "bolen-windows10", Windows64PGOBuild),
+
+    # macOS x86-64 clang
+    # (marked unstable for a hardware failure)
+    ("x86-64 MacOS Intel NoGIL", "itamaro-macos-intel-aws", UnixNoGilBuild),
+    ("x86-64 MacOS Intel ASAN NoGIL", "itamaro-macos-intel-aws", MacOSAsanNoGilBuild),
 ]
 
 
