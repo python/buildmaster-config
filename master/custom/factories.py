@@ -1380,6 +1380,7 @@ class EmscriptenBuild(BaseBuild):
                 env=compile_environ,
             ),
             Test(
+                name="Node full test suite",
                 command=[
                     "cross-build/wasm32-emscripten/build/python/python.sh",
                     "-m", "test",
@@ -1391,6 +1392,15 @@ class EmscriptenBuild(BaseBuild):
                 ],
                 env=compile_environ,
                 timeout=step_timeout(self.test_timeout),
+            ),
+            Test(
+                name="PyRepl in Chrome smoke test",
+                command=[
+                    "run_test.sh",
+                ],
+                env=compile_environ,
+                timeout=step_timeout(self.test_timeout),
+                workdir="Tools/wasm/emscripten/browser_test",
             ),
             Clean(
                 name="Clean the builds",
