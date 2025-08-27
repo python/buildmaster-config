@@ -46,6 +46,12 @@ class BaseBuild(factory.BuildFactory):
         self.setup(**kwargs)
         self.tags = self.factory_tags + extra_tags
 
+        self.test_environ = {
+            "BUILDBOT": "1", # Every time you use this option, a puppy dies!!
+            **getattr(self, "test_environ", {}),
+        }
+
+
 
 ##############################################################################
 ###############################  UNIX BUILDS  ################################
