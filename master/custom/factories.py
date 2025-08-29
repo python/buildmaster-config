@@ -1396,11 +1396,10 @@ class EmscriptenBuild(BaseBuild):
             Test(
                 name="PyRepl in Chrome smoke test",
                 command=[
-                    "./run_test.sh",
+                    "Tools/wasm/emscripten/browser_test/run_test.sh",
                 ],
                 env=compile_environ,
                 timeout=step_timeout(self.test_timeout),
-                workdir="Tools/wasm/emscripten/browser_test",
             ),
             Clean(
                 name="Clean the builds",
