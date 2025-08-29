@@ -1396,7 +1396,7 @@ class EmscriptenBuild(BaseBuild):
             Test(
                 name="PyRepl in Chrome smoke test",
                 command=[
-                    "run_test.sh",
+                    "./run_test.sh",
                 ],
                 env=compile_environ,
                 timeout=step_timeout(self.test_timeout),
