@@ -317,6 +317,8 @@ UNSTABLE_BUILDERS_TIER_3 = [
 
 # -- Unstable No Tier builders ------------------------------------------
 UNSTABLE_BUILDERS_NO_TIER = [
+    # Linux x86-64 GCC musl Freethreading
+    ("AMD64 Alpine Linux NoGIL", "ware-alpine", UnixNoGilBuild),
     # Linux GCC Fedora Rawhide Freethreading builders
     ("AMD64 Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-x86_64", FedoraRawhideFreedthreadingBuild),
     ("aarch64 Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-aarch64", FedoraRawhideFreedthreadingBuild),
