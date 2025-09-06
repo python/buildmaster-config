@@ -180,6 +180,9 @@ STABLE_BUILDERS_TIER_3 = [
 
 # -- Stable No Tier builders --------------------------------------------
 STABLE_BUILDERS_NO_TIER = [
+    # Linux x86-64 GCC musl
+    ("AMD64 Alpine Linux", "ware-alpine", UnixBuild),
+
     # Linux x86-64 GCC/Clang
     # Special builds: FIPS, ASAN, UBSAN, TraceRefs, Perf, etc.
     ("AMD64 RHEL8 FIPS Only Blake2 Builtin Hash", "cstratak-RHEL8-fips-x86_64", RHEL8NoBuiltinHashesUnixBuildExceptBlake2),
@@ -314,9 +317,6 @@ UNSTABLE_BUILDERS_TIER_3 = [
 
 # -- Unstable No Tier builders ------------------------------------------
 UNSTABLE_BUILDERS_NO_TIER = [
-    # Linux x86-64 GCC musl
-    ("AMD64 Alpine Linux", "ware-alpine", UnixBuild),
-
     # Linux GCC Fedora Rawhide Freethreading builders
     ("AMD64 Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-x86_64", FedoraRawhideFreedthreadingBuild),
     ("aarch64 Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-aarch64", FedoraRawhideFreedthreadingBuild),
