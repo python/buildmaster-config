@@ -394,7 +394,6 @@ def get_builder_tier(builder: str) -> str:
 # Match builder name (excluding the branch name) of builders that should only
 # run on the main and PR branches.
 ONLY_MAIN_BRANCH = (
-    "Alpine Linux",
     "ARM64 Windows",
     "Windows PGO",
     "AMD64 Arch Linux Perf",
