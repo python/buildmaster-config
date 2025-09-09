@@ -1245,13 +1245,9 @@ class AndroidBuild(BaseBuild):
             Test(
                 command=[
                     android_py, "test", "--managed", "maxVersion", "-v", "--",
-                    "-uall", "--single-process", "--rerun", "-W",
+                    "--slow-ci", "--single-process", "--no-randomize",
                 ],
                 timeout=step_timeout(self.test_timeout),
-            ),
-            ShellCommand(
-                name="Clean",
-                command=[android_py, "clean"],
             ),
         ])
 
