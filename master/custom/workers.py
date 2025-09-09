@@ -219,7 +219,7 @@ def get_workers(settings):
         cpw(
             name="ware-alpine",
             tags=['linux', 'unix', 'alpine', 'docker', 'amd64', 'x86-64', 'musl'],
-            not_branches=['3.9', '3.10', '3.11', '3.12', '3.13', '3.14'],
+            not_branches=['3.9', '3.10', '3.11', '3.12', '3.13'],
         ),
         cpw(
             name="ware-freebsd",
