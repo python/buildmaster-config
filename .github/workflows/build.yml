@@ -11,6 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      # These are short jobs, fail-fast would only hide information from us
       fail-fast: false
       matrix:
         python-version:
