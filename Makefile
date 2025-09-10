@@ -1,6 +1,7 @@
 PYTHON_VERSION=3.9
 SYSTEM_PYTHON=python$(PYTHON_VERSION)
 VENV_DIR=./venv
+REQUIREMENTS=requirements-$(PYTHON_VERSION).txt
 PIP=$(VENV_DIR)/bin/pip
 # make stop-server kills all processes named "python"
 PKILL_NAME="python"
@@ -18,16 +19,16 @@ venv: $(VENV_CHECK)
 clean:
 	rm -rf venv
 
-$(VENV_CHECK): requirements.txt
+$(VENV_CHECK): $(REQUIREMENTS)
 	$(SYSTEM_PYTHON) -m venv --clear venv
 	$(PIP) install -U pip
-	$(PIP) install -r requirements.txt
+	$(PIP) install -r $(REQUIREMENTS)
 
 regen-requirements:
 	$(SYSTEM_PYTHON) -m venv --clear venv
 	$(PIP) install -U pip
 	$(PIP) install -U -r requirements.in
-	$(PIP) freeze > requirements.txt
+	$(PIP) freeze > $(REQUIREMENTS)
 
 # Test targets
 

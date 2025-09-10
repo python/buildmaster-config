@@ -1,0 +1,29 @@
+name: Check config
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions: {}
+
+env:
+  FORCE_COLOR: 1
+
+jobs:
+  check-config:
+    runs-on: ubuntu-latest
+    strategy:
+      # These are short jobs, fail-fast would only hide information from us
+      fail-fast: false
+      matrix:
+        python-version:
+          - '3.9'
+          - '3.13'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Check configuration
+        run: make check PIP=pip BUILDBOT=buildbot PYTHON_VERSION=${{ matrix.python-version }}
