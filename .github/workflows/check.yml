@@ -1,4 +1,4 @@
-name: Build
+name: Check config
 
 on: [push, pull_request, workflow_dispatch]
 
@@ -8,7 +8,7 @@ env:
   FORCE_COLOR: 1
 
 jobs:
-  build:
+  check-config:
     runs-on: ubuntu-latest
     strategy:
       # These are short jobs, fail-fast would only hide information from us
