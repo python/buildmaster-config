@@ -122,6 +122,8 @@ STABLE_BUILDERS_TIER_2 = [
 
     # macOS x86-64 clang
     ("x86-64 macOS", "billenstein-macos", UnixBuild),
+    ("x86-64 MacOS Intel NoGIL", "itamaro-macos-intel-aws", UnixNoGilBuild),
+    ("x86-64 MacOS Intel ASAN NoGIL", "itamaro-macos-intel-aws", MacOSAsanNoGilBuild),
 
     # WASI
     ("wasm32-wasi Non-Debug", "bcannon-wasi", Wasm32WasiCrossBuild),
@@ -283,11 +285,6 @@ UNSTABLE_BUILDERS_TIER_2 = [
 
     # WebAssembly
     ("wasm32 WASI 8Core", "kushaldas-wasi", Wasm32WasiCrossBuild),
-
-    # macOS x86-64 clang
-    # (marked unstable for a hardware failure)
-    ("x86-64 MacOS Intel NoGIL", "itamaro-macos-intel-aws", UnixNoGilBuild),
-    ("x86-64 MacOS Intel ASAN NoGIL", "itamaro-macos-intel-aws", MacOSAsanNoGilBuild),
 ]
 
 
