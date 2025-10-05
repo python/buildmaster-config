@@ -161,6 +161,7 @@ STABLE_BUILDERS_TIER_3 = [
     # Linux armv7l (32-bit) GCC
     ("ARM Raspbian", "gps-raspbian", SlowNonDebugUnixBuild),
     ("ARM64 Raspbian", "stan-raspbian", SlowNonDebugUnixBuild),
+    ("Arm64 Raspbian", "savannah-raspbian", SlowNonDebugUnixBuild),
 
     # FreBSD x86-64 clang
     ("AMD64 FreeBSD", "ware-freebsd", UnixBuild),
