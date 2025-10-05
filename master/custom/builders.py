@@ -22,6 +22,7 @@ from custom.factories import (
     ClangUbsanFunctionLinuxBuild,
     ClangUnixInstalledBuild,
     SharedUnixBuild,
+    SlowDebugUnixBuild,
     SlowNonDebugUnixBuild,
     SlowUnixInstalledBuild,
     NonDebugUnixBuild,
@@ -161,7 +162,6 @@ STABLE_BUILDERS_TIER_3 = [
     # Linux armv7l (32-bit) GCC
     ("ARM Raspbian", "gps-raspbian", SlowNonDebugUnixBuild),
     ("ARM64 Raspbian", "stan-raspbian", SlowNonDebugUnixBuild),
-    ("ARM64 Raspbian", "savannah-raspbian", SlowNonDebugUnixBuild),
 
     # FreBSD x86-64 clang
     ("AMD64 FreeBSD", "ware-freebsd", UnixBuild),
@@ -310,6 +310,9 @@ UNSTABLE_BUILDERS_TIER_3 = [
 
     # Emscripten
     ("WASM Emscripten", "rkm-emscripten", EmscriptenBuild),
+
+    # Linux aarch64 GCC/Clang
+    ("ARM64 Raspbian Debug", "savannah-raspbian", SlowDebugUnixBuild),
 ]
 
 
