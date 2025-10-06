@@ -377,6 +377,11 @@ class SlowNonDebugUnixBuild(NonDebugUnixBuild):
     testFlags = [*NonDebugUnixBuild.testFlags, "-u-cpu"]
 
 
+class SlowDebugUnixBuild(UnixBuild):
+    test_timeout = SLOW_TIMEOUT
+    testFlags = [*UnixBuild.testFlags, "-u-cpu"]
+
+
 class SlowUnixInstalledBuild(UnixInstalledBuild):
     test_timeout = SLOW_TIMEOUT
 

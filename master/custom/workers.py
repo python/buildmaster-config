@@ -192,6 +192,12 @@ def get_workers(settings):
             not_branches=['3.12', '3.11', '3.10', '3.9']
         ),
         cpw(
+            name="savannah-raspbian",
+            tags=['linux', 'unix', 'raspbian', 'debian', 'armv8',
+                  'aarch64', 'arm'],
+            parallel_tests=4,
+        ),
+        cpw(
             name="kulikjak-solaris-sparcv9",
             tags=['solaris', 'unix', 'sparc', 'sparcv9'],
             parallel_tests=16,
