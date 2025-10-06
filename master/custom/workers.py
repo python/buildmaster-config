@@ -86,13 +86,14 @@ def get_workers(settings):
             name="cstratak-RHEL8-x86_64",
             tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
             parallel_tests=10,
+            branches=['3.9', '3.10', '3.11', '3.12'],
         ),
         cpw(
             name="cstratak-RHEL8-fips-x86_64",
             tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64', 'fips'],
             parallel_tests=6,
-            # Only 3.12+ for FIPS builder
-            not_branches=["3.9", "3.10", "3.11"],
+            # Only 3.12 for RHEL8 FIPS builder
+            branches=['3.12'],
         ),
         cpw(
             name="cstratak-CentOS9-x86_64",
@@ -120,6 +121,7 @@ def get_workers(settings):
             name="cstratak-RHEL8-ppc64le",
             tags=['linux', 'unix', 'rhel', 'ppc64le'],
             parallel_tests=10,
+            branches=['3.9', '3.10', '3.11', '3.12'],
         ),
         cpw(
             name="cstratak-CentOS9-ppc64le",
@@ -140,6 +142,7 @@ def get_workers(settings):
             name="cstratak-RHEL8-aarch64",
             tags=['linux', 'unix', 'rhel', 'arm', 'arm64', 'aarch64'],
             parallel_tests=40,
+            branches=['3.9', '3.10', '3.11', '3.12'],
         ),
         cpw(
             name="cstratak-CentOS9-aarch64",
@@ -166,6 +169,7 @@ def get_workers(settings):
             name="cstratak-rhel8-s390x",
             tags=['linux', 'unix', 'rhel', 's390x'],
             parallel_tests=10,
+            branches=['3.9', '3.10', '3.11', '3.12'],
         ),
         cpw(
             name="cstratak-rhel9-s390x",
