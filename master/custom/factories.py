@@ -273,10 +273,10 @@ class UnixBuildWithoutDocStrings(UnixBuild):
 class UnixBigmemBuild(UnixBuild):
     buildersuffix = ".bigmem"
     testFlags = [
-        "-M60g", "-j4", "-uall,extralargefile",
+        "-M60g", "-j8", "-uall,extralargefile",
         "--prioritize=test_bigmem,test_lzma,test_bz2,test_re,test_array"
     ]
-    test_timeout = TEST_TIMEOUT * 4
+    test_timeout = TEST_TIMEOUT * 5
     factory_tags = ["bigmem"]
 
 

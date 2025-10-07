@@ -152,8 +152,8 @@ def get_workers(settings):
         cpw(
             name="diegorusso-aarch64-bigmem",
             tags=['linux', 'unix', 'ubuntu', 'arm', 'arm64', 'aarch64', 'bigmem'],
-            not_branches=['3.9', '3.10', '3.11', '3.12', '3.13'],
-            parallel_tests=4,
+            not_branches=['3.9', '3.10', '3.11', '3.12', '3.13', '3.14'],
+            parallel_tests=8,
         ),
         cpw(
             name="cstratak-fedora-rawhide-s390x",
