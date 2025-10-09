@@ -86,7 +86,7 @@ def get_workers(settings):
             name="cstratak-RHEL8-x86_64",
             tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
             parallel_tests=10,
-            branches=['3.9', '3.10', '3.11', '3.12'],
+            branches=['3.10', '3.11', '3.12'],
         ),
         cpw(
             name="cstratak-RHEL8-fips-x86_64",
@@ -105,7 +105,7 @@ def get_workers(settings):
             tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64', 'fips'],
             parallel_tests=6,
             # Only 3.12+ for FIPS builder
-            not_branches=["3.9", "3.10", "3.11"],
+            not_branches=["3.10", "3.11"],
         ),
         cpw(
             name="cstratak-fedora-rawhide-ppc64le",
@@ -121,7 +121,7 @@ def get_workers(settings):
             name="cstratak-RHEL8-ppc64le",
             tags=['linux', 'unix', 'rhel', 'ppc64le'],
             parallel_tests=10,
-            branches=['3.9', '3.10', '3.11', '3.12'],
+            branches=['3.10', '3.11', '3.12'],
         ),
         cpw(
             name="cstratak-CentOS9-ppc64le",
@@ -142,7 +142,7 @@ def get_workers(settings):
             name="cstratak-RHEL8-aarch64",
             tags=['linux', 'unix', 'rhel', 'arm', 'arm64', 'aarch64'],
             parallel_tests=40,
-            branches=['3.9', '3.10', '3.11', '3.12'],
+            branches=['3.10', '3.11', '3.12'],
         ),
         cpw(
             name="cstratak-CentOS9-aarch64",
@@ -152,7 +152,7 @@ def get_workers(settings):
         cpw(
             name="diegorusso-aarch64-bigmem",
             tags=['linux', 'unix', 'ubuntu', 'arm', 'arm64', 'aarch64', 'bigmem'],
-            not_branches=['3.9', '3.10', '3.11', '3.12', '3.13', '3.14'],
+            not_branches=['3.10', '3.11', '3.12', '3.13', '3.14'],
             parallel_tests=8,
         ),
         cpw(
@@ -169,7 +169,7 @@ def get_workers(settings):
             name="cstratak-rhel8-s390x",
             tags=['linux', 'unix', 'rhel', 's390x'],
             parallel_tests=10,
-            branches=['3.9', '3.10', '3.11', '3.12'],
+            branches=['3.10', '3.11', '3.12'],
         ),
         cpw(
             name="cstratak-rhel9-s390x",
@@ -193,7 +193,7 @@ def get_workers(settings):
                   'aarch64', 'arm'],
             parallel_tests=4,
             # Tests fail with latin1 encoding on 3.12, probably earlier
-            not_branches=['3.12', '3.11', '3.10', '3.9']
+            not_branches=['3.12', '3.11', '3.10']
         ),
         cpw(
             name="savannah-raspbian",
@@ -227,7 +227,7 @@ def get_workers(settings):
         cpw(
             name="ware-alpine",
             tags=['linux', 'unix', 'alpine', 'docker', 'amd64', 'x86-64', 'musl'],
-            not_branches=['3.9', '3.10', '3.11', '3.12', '3.13'],
+            not_branches=['3.10', '3.11', '3.12', '3.13'],
         ),
         cpw(
             name="ware-freebsd",
@@ -262,77 +262,77 @@ def get_workers(settings):
         cpw(
             name="bcannon-wasi",
             tags=['wasm', 'wasi'],
-            not_branches=['3.9', '3.10'],
+            not_branches=['3.10'],
             parallel_tests=2,
             parallel_builders=2,
         ),
         cpw(
             name="ambv-bb-win11",
             tags=['windows', 'win11', 'amd64', 'x86-64', 'bigmem'],
-            not_branches=['3.9', '3.10', '3.11', '3.12', '3.13'],
+            not_branches=['3.10', '3.11', '3.12', '3.13'],
             parallel_tests=4,
         ),
         cpw(
             name="itamaro-centos-aws",
             tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
-            not_branches=['3.9', '3.10', '3.11', '3.12'],
+            not_branches=['3.10', '3.11', '3.12'],
             parallel_tests=10,
             parallel_builders=2,
         ),
         cpw(
             name="itamaro-win64-srv-22-aws",
             tags=['windows', 'win-srv-22', 'amd64', 'x86-64'],
-            not_branches=['3.9', '3.10', '3.11', '3.12'],
+            not_branches=['3.10', '3.11', '3.12'],
             parallel_tests=10,
             parallel_builders=2,
         ),
         cpw(
             name="itamaro-macos-intel-aws",
             tags=['macOS', 'unix', 'amd64', 'x86-64'],
-            not_branches=['3.9', '3.10', '3.11', '3.12'],
+            not_branches=['3.10', '3.11', '3.12'],
             parallel_tests=10,
         ),
         cpw(
             name="itamaro-macos-arm64-aws",
             tags=['macOS', 'unix', 'arm', 'arm64'],
-            not_branches=['3.9', '3.10', '3.11', '3.12'],
+            not_branches=['3.10', '3.11', '3.12'],
             parallel_tests=10,
         ),
         cpw(
             name="kushaldas-wasi",
             tags=['wasm', 'wasi'],
-            not_branches=['3.9', '3.10'],
+            not_branches=['3.10'],
             parallel_tests=4,
             parallel_builders=2,
         ),
         cpw(
             name="onder-riscv64",
             tags=['linux', 'unix', 'ubuntu', 'riscv64'],
-            not_branches=['3.9', '3.10'],
+            not_branches=['3.10'],
             parallel_tests=4,
         ),
         cpw(
             name="rkm-arm64-ios-simulator",
             tags=['iOS'],
-            not_branches=['3.9', '3.10', '3.11', '3.12'],
+            not_branches=['3.10', '3.11', '3.12'],
             parallel_builders=1,  # All builds use the same simulator
         ),
         cpw(
             name="rkm-emscripten",
             tags=['emscripten'],
-            not_branches=['3.9', '3.10', '3.11', '3.12', '3.13'],
+            not_branches=['3.10', '3.11', '3.12', '3.13'],
             parallel_builders=4,
         ),
         cpw(
             name="mhsmith-android-aarch64",
             tags=['android'],
-            not_branches=['3.9', '3.10', '3.11', '3.12'],
+            not_branches=['3.10', '3.11', '3.12'],
             parallel_builders=1,  # All builds use the same emulator and app ID.
         ),
         cpw(
             name="mhsmith-android-x86_64",
             tags=['android'],
-            not_branches=['3.9', '3.10', '3.11', '3.12'],
+            not_branches=['3.10', '3.11', '3.12'],
             parallel_builders=1,  # All builds use the same emulator and app ID.
         ),
     ]
