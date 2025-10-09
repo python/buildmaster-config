@@ -159,6 +159,8 @@ STABLE_BUILDERS_TIER_3 = [
 
     # Linux armv7l (32-bit) GCC
     ("ARM Raspbian", "gps-raspbian", SlowNonDebugUnixBuild),
+
+    # Linux armv8 (64-bit) GCC
     ("ARM64 Raspbian", "stan-raspbian", SlowNonDebugUnixBuild),
     ("ARM64 Raspbian Debug", "savannah-raspbian", SlowDebugUnixBuild),
 
