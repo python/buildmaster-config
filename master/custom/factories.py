@@ -1249,8 +1249,7 @@ class AndroidBuild(BaseBuild):
             ),
             Test(
                 command=[
-                    android_py, "test", "--managed", "maxVersion", "-v", "--",
-                    "--slow-ci", "--single-process", "--no-randomize",
+                    android_py, "test", "--managed", "maxVersion", "-v", "--slow-ci"
                 ],
                 timeout=step_timeout(self.test_timeout),
             ),
