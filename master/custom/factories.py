@@ -668,7 +668,7 @@ class Windows64BigmemBuild(BaseWindowsBuild):
         "-p", "x64", "-M33g", "-uall,extralargefile",
         "--prioritize=test_bigmem,test_lzma,test_bz2,test_array,test_hashlib,test_zlib"
     ]
-    test_timeout = TEST_TIMEOUT * 4
+    test_timeout = TEST_TIMEOUT * 5
     cleanFlags = ["-p", "x64"]
     factory_tags = ["win64", "bigmem"]
 
