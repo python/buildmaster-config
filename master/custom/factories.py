@@ -77,9 +77,9 @@ class UnixBuild(BaseBuild):
         # Adjust the timeout for this worker
         self.test_timeout *= kwargs.get("timeout_factor", 1)
 
-        # In 3.9 and 3.10, test_asyncio wasn't split out, and refleaks tests
+        # In 3.10, test_asyncio wasn't split out, and refleaks tests
         # need more time.
-        if branch in ("3.9", "3.10") and has_option("-R", self.testFlags):
+        if branch == "3.10" and has_option("-R", self.testFlags):
             self.test_timeout *= 2
 
         if self.build_out_of_tree:
@@ -157,11 +157,6 @@ class UnixTraceRefsBuild(UnixBuild):
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         self.configureFlags = ["--with-pydebug", "--with-trace-refs"]
         return super().setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
-
-
-class UnixVintageParserBuild(UnixBuild):
-    buildersuffix = ".oldparser"  # to get unique directory names on master
-    test_environ = {'PYTHONOLDPARSER': 'old'}
 
 
 class UnixRefleakBuild(UnixBuild):
@@ -308,16 +303,8 @@ class NonDebugUnixBuild(UnixBuild):
 
 class PGOUnixBuild(NonDebugUnixBuild):
     buildersuffix = ".pgo"
-    configureFlags = ["--enable-optimizations"]
+    configureFlags = ["--enable-optimizations", "--with-readline=edit"]
     factory_tags = ["pgo"]
-
-    def setup(self, parallel, branch, *args, **kwargs):
-        # Only Python >3.10 has --with-readline=edit
-        if branch != '3.9':
-            # Use libedit instead of libreadline on this buildbot for
-            # some libedit Linux compilation coverage.
-            self.configureFlags = self.configureFlags + ["--with-readline=edit"]
-        return super().setup(parallel, branch, *args, **kwargs)
 
 
 class ClangUnixBuild(UnixBuild):

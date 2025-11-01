@@ -45,14 +45,6 @@ psycopg2 also requires libpq-dev:
 Configurations from this repository are applied from the `master` branch on
 a `*/15` cron interval using the `update-master` target in `Makefile`.
 
-Python 3.9 is installed manually using ``pyenv`` (which was also installed
-manually). Commands to install Python 3.9:
-
-    pyenv update
-    pyenv install 3.9.1
-    pyenv global 3.8.1 3.9.1
-
-
 ## Add a worker
 
 The list of workers is stored in `/etc/buildbot/settings.yaml` on the server.

@@ -10,7 +10,6 @@ from custom.factories import (
     UnixAsanDebugBuild,
     UnixBigmemBuild,
     UnixTraceRefsBuild,
-    UnixVintageParserBuild,
     UnixRefleakBuild,
     UnixNoGilBuild,
     UnixNoGilRefleakBuild,
@@ -219,8 +218,6 @@ UNSTABLE_BUILDERS_TIER_1 = [
     ("AMD64 Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-x86_64", LTOPGONonDebugBuild),
 
     ("AMD64 Ubuntu", "skumaran-ubuntu-x86_64", UnixBuild),
-
-    ("AMD64 Arch Linux VintageParser", "pablogsal-arch-x86_64", UnixVintageParserBuild),
 
     ("AMD64 RHEL8 FIPS No Builtin Hashes", "cstratak-RHEL8-fips-x86_64", RHEL8NoBuiltinHashesUnixBuild),
 
