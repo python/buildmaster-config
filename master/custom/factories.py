@@ -77,6 +77,8 @@ class UnixBuild(BaseBuild):
         # Adjust the timeout for this worker
         self.test_timeout *= kwargs.get("timeout_factor", 1)
 
+        exclude_test_resources = kwargs.get("exclude_test_resources", [])
+
         # In 3.10, test_asyncio wasn't split out, and refleaks tests
         # need more time.
         if branch == "3.10" and has_option("-R", self.testFlags):
@@ -112,6 +114,19 @@ class UnixBuild(BaseBuild):
             testopts.append(parallel)
         if not has_option("-j", testopts):
             testopts.append("-j2")
+        # Add excluded test resources
+        if exclude_test_resources:
+            u_loc = False
+            for i, opt in enumerate(testopts):
+                if opt.startswith("-u"):
+                    u_loc = i
+                    break
+            if u_loc:
+                for resource in exclude_test_resources:
+                    testopts[u_loc] += f",-{resource}"
+            else:
+                testopts.append(f"-uall,{",".join(f"-{r}" for r in exclude_test_resources)}")
+
         test = [
             "make",
             "buildbottest",

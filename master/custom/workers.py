@@ -30,6 +30,7 @@ class CPythonWorker:
         not_branches=None,
         parallel_builders=None,
         parallel_tests=None,
+        exclude_test_resources=None,
     ):
         self.name = name
         self.tags = tags or set()
@@ -37,6 +38,7 @@ class CPythonWorker:
         self.not_branches = not_branches
         self.parallel_builders = parallel_builders
         self.parallel_tests = parallel_tests
+        self.exclude_test_resources = exclude_test_resources
         worker_settings = settings.workers[name]
         owner = name.split("-")[0]
         owner_settings = settings.owners[owner]
@@ -54,7 +56,10 @@ class CPythonWorker:
 def get_workers(settings):
     cpw = partial(CPythonWorker, settings)
     if settings.use_local_worker:
-        return [cpw(name="local-worker")]
+        return [cpw(
+            name="local-worker",
+            exclude_test_resources=['network'],
+        )]
     return [
         cpw(
             name="angelico-debian-amd64",
@@ -193,7 +198,9 @@ def get_workers(settings):
                   'aarch64', 'arm'],
             parallel_tests=4,
             # Tests fail with latin1 encoding on 3.12, probably earlier
-            not_branches=['3.12', '3.11', '3.10']
+            not_branches=['3.12', '3.11', '3.10'],
+            # Problematic ISP causes issues connecting to testpython.net
+            exclude_test_resources=['network'],
         ),
         cpw(
             name="savannah-raspbian",
@@ -219,6 +226,8 @@ def get_workers(settings):
             name="pablogsal-rasp",
             tags=['linux', 'unix', 'raspbian', 'debian', 'arm'],
             parallel_tests=2,
+            # Problematic ISP causes issues connecting to testpython.net
+            exclude_test_resources=['network'],
         ),
         cpw(
             name="skumaran-ubuntu-x86_64",
