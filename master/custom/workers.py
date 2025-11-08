@@ -197,7 +197,7 @@ def get_workers(settings):
             # Tests fail with latin1 encoding on 3.12, probably earlier
             not_branches=['3.12', '3.11', '3.10'],
             # Problematic ISP causes issues connecting to testpython.net
-            exclude_test_resources=['network'],
+            exclude_test_resources=['urlfetch', 'network'],
         ),
         cpw(
             name="savannah-raspbian",
@@ -224,7 +224,7 @@ def get_workers(settings):
             tags=['linux', 'unix', 'raspbian', 'debian', 'arm'],
             parallel_tests=2,
             # Problematic ISP causes issues connecting to testpython.net
-            exclude_test_resources=['network'],
+            exclude_test_resources=['urlfetch', 'network'],
         ),
         cpw(
             name="skumaran-ubuntu-x86_64",
