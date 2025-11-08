@@ -56,10 +56,7 @@ class CPythonWorker:
 def get_workers(settings):
     cpw = partial(CPythonWorker, settings)
     if settings.use_local_worker:
-        return [cpw(
-            name="local-worker",
-            exclude_test_resources=['network'],
-        )]
+        return [cpw(name="local-worker")]
     return [
         cpw(
             name="angelico-debian-amd64",
