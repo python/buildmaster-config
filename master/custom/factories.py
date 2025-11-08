@@ -116,12 +116,12 @@ class UnixBuild(BaseBuild):
             testopts.append("-j2")
         # Add excluded test resources
         if exclude_test_resources:
-            u_loc = False
+            u_loc = None
             for i, opt in enumerate(testopts):
                 if opt.startswith("-u"):
                     u_loc = i
                     break
-            if u_loc:
+            if u_loc is not None:
                 for resource in exclude_test_resources:
                     testopts[u_loc] += f",-{resource}"
             else:
