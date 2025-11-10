@@ -29,7 +29,7 @@ MAX_CHANGES = 50
 # get a cache hit.
 CACHE_DURATION = 6 * 60
 
-BRANCHES_URL = "https://raw.githubusercontent.com/python/devguide/main/include/release-cycle.json"
+BRANCHES_URL = "https://peps.python.org/api/release-cycle.json"
 
 
 def _gimme_error(func):
