@@ -380,7 +380,10 @@ class SlowNonDebugUnixBuild(NonDebugUnixBuild):
 
 
 class SlowNonDebugUnixBuild15BitDigits(SlowNonDebugUnixBuild):
-    configureFlags = [*SlowNonDebugUnixBuild.configureFlags, "--enable-big-digits=15"]
+    configureFlags = [
+        *SlowNonDebugUnixBuild.configureFlags,
+        "--enable-big-digits=15",
+    ]
 
 
 class SlowDebugUnixBuild(UnixBuild):
