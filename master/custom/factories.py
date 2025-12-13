@@ -379,6 +379,10 @@ class SlowNonDebugUnixBuild(NonDebugUnixBuild):
     testFlags = [*NonDebugUnixBuild.testFlags, "-u-cpu"]
 
 
+class SlowNonDebugUnixBuild15BitDigits(SlowNonDebugUnixBuild):
+    configureFlags = [*SlowNonDebugUnixBuild.configureFlags, "--enable-big-digits=15"]
+
+
 class SlowDebugUnixBuild(UnixBuild):
     test_timeout = SLOW_TIMEOUT
     testFlags = [*UnixBuild.testFlags, "-u-cpu"]
