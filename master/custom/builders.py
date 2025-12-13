@@ -23,6 +23,7 @@ from custom.factories import (
     SharedUnixBuild,
     SlowDebugUnixBuild,
     SlowNonDebugUnixBuild,
+    SlowNonDebugUnixBuild15BitDigits,
     SlowUnixInstalledBuild,
     NonDebugUnixBuild,
     UnixInstalledBuild,
@@ -157,7 +158,7 @@ STABLE_BUILDERS_TIER_3 = [
     ("PPC64LE Fedora Stable Clang Installed", "cstratak-fedora-stable-ppc64le", ClangUnixInstalledBuild),
 
     # Linux armv7l (32-bit) GCC
-    ("ARM Raspbian", "gps-raspbian", SlowNonDebugUnixBuild),
+    ("ARM Raspbian", "gps-raspbian", SlowNonDebugUnixBuild15BitDigits),
 
     # Linux armv8 (64-bit) GCC
     ("ARM64 Raspbian", "stan-raspbian", SlowNonDebugUnixBuild),
