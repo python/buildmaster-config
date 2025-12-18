@@ -889,7 +889,7 @@ class UnixCrossBuild(UnixBuild):
 class Wasm32WasiCrossBuild(UnixCrossBuild):
     """wasm32-wasi builder
 
-    * WASI SDK >= 16 must be installed to default path /opt/wasi-sdk
+    * WASI SDK 21 must be installed at /opt/wasi-sdk-21.0
     * wasmtime must be installed and on PATH
     """
 
@@ -924,6 +924,7 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
                 haltOnFailure=True,
             )
         )
+        self.compile_environ["WASI_SDK_PATH"] = "/opt/wasi-sdk-21.0"
         super().setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
 
 
