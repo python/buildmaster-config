@@ -222,7 +222,7 @@ def get_workers(settings):
         cpw(
             name="pablogsal-rasp",
             tags=['linux', 'unix', 'raspbian', 'debian', 'arm'],
-            parallel_tests=2,
+            parallel_tests=1,  # Reduced from 2: ASAN builds use 2-10x more memory
             # Problematic ISP causes issues connecting to testpython.net
             exclude_test_resources=['urlfetch', 'network'],
         ),
