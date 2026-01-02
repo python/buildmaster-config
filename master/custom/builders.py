@@ -194,7 +194,6 @@ STABLE_BUILDERS_NO_TIER = [
     ("AMD64 Arch Linux Asan Debug", "pablogsal-arch-x86_64", UnixAsanDebugBuild),
     ("AMD64 Arch Linux TraceRefs", "pablogsal-arch-x86_64", UnixTraceRefsBuild),
     ("AMD64 Arch Linux Perf", "pablogsal-arch-x86_64", UnixPerfBuild),
-    ("ARM Raspbian Linux Asan", "pablogsal-rasp", UnixAsanBuild),
     # UBSAN with -fno-sanitize=function, without which we currently fail (as
     #  tracked in gh-111178). The full "AMD64 Arch Linux Usan" is unstable, below
     ("AMD64 Arch Linux Usan Function", "pablogsal-arch-x86_64", ClangUbsanFunctionLinuxBuild),
