@@ -31,7 +31,7 @@ msgpack==1.1.1
 multipart==1.3.0
 packaging==25.0
 psycopg2==2.9.10
-pyasn1==0.6.1
+pyasn1==0.6.2
 pyasn1_modules==0.4.2
 pycparser==2.23
 PyJWT==2.10.1
