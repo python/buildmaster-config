@@ -341,4 +341,9 @@ def get_workers(settings):
             not_branches=['3.10', '3.11', '3.12'],
             parallel_builders=1,  # All builds use the same emulator and app ID.
         ),
+        cpw(
+            name="malvex-nixos-x86_64",
+            tags=['linux', 'unix', 'nixos', 'amd64', 'x86-64'],
+            parallel_tests=10,
+        ),
     ]
