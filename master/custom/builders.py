@@ -312,6 +312,12 @@ UNSTABLE_BUILDERS_TIER_3 = [
 
     # Emscripten
     ("WASM Emscripten", "rkm-emscripten", EmscriptenBuild),
+
+    # Linux x86-64 NixOS Unstable
+    ("AMD64 NixOS Unstable", "malvex-nixos-x86_64", UnixBuild),
+    ("AMD64 NixOS Unstable Refleaks", "malvex-nixos-x86_64", UnixRefleakBuild),
+    ("AMD64 NixOS Unstable TraceRefs", "malvex-nixos-x86_64", UnixTraceRefsBuild),
+    ("AMD64 NixOS Unstable Perf", "malvex-nixos-x86_64", UnixPerfBuild),
 ]
 
 
