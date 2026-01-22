@@ -312,12 +312,6 @@ UNSTABLE_BUILDERS_TIER_3 = [
 
     # Emscripten
     ("WASM Emscripten", "rkm-emscripten", EmscriptenBuild),
-
-    # Linux x86-64 NixOS Unstable
-    ("AMD64 NixOS Unstable", "malvex-nixos-x86_64", UnixBuild),
-    ("AMD64 NixOS Unstable Refleaks", "malvex-nixos-x86_64", UnixRefleakBuild),
-    ("AMD64 NixOS Unstable TraceRefs", "malvex-nixos-x86_64", UnixTraceRefsBuild),
-    ("AMD64 NixOS Unstable Perf", "malvex-nixos-x86_64", UnixPerfBuild),
 ]
 
 
@@ -335,6 +329,11 @@ UNSTABLE_BUILDERS_NO_TIER = [
     ("aarch64 Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-aarch64", UnixNoGilRefleakBuild),
     ("PPC64LE Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-ppc64le", UnixNoGilRefleakBuild),
     ("s390x Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-s390x", UnixNoGilRefleakBuild),
+
+    # Linux x86-64 NixOS Unstable
+    ("AMD64 NixOS Unstable", "malvex-nixos-x86_64", UnixBuild),
+    ("AMD64 NixOS Unstable Refleaks", "malvex-nixos-x86_64", UnixRefleakBuild),
+    ("AMD64 NixOS Unstable Perf", "malvex-nixos-x86_64", UnixPerfBuild),
 
     # AIX ppc64
     ("PPC64 AIX", "edelsohn-aix-ppc64", AIXBuild),
