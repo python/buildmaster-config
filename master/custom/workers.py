@@ -252,6 +252,11 @@ def get_workers(settings):
             parallel_tests=4,
         ),
         cpw(
+            name="opsec-fbsd16",
+            tags=['freebsd', 'bsd', 'unix', 'amd64', 'x86-64'],
+            parallel_tests=4,
+        ),
+        cpw(
             name="ware-debian-x86",
             tags=['linux', 'unix', 'debian', 'x86'],
             parallel_tests=6,
