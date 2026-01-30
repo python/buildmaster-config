@@ -306,9 +306,11 @@ UNSTABLE_BUILDERS_TIER_3 = [
     ("s390x Fedora Rawhide LTO", "cstratak-fedora-rawhide-s390x", LTONonDebugUnixBuild),
     ("s390x Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-s390x", LTOPGONonDebugBuild),
 
-    # FreBSD x86-64 clang
+    # FreeBSD x86-64 clang
     # FreeBSD 15 is CURRENT: development branch (at 2023-10-17)
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
+    # FreeBSD 16 is CURRENT: development branch (at 2026-01-09)
+    ("AMD64 FreeBSD16", "opsec-fbsd16", UnixBuild),
 
     # Emscripten
     ("WASM Emscripten", "rkm-emscripten", EmscriptenBuild),
