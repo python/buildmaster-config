@@ -290,24 +290,6 @@ class UnixBigmemBuild(UnixBuild):
     factory_tags = ["bigmem"]
 
 
-class AIXBuild(UnixBuild):
-    configureFlags = [
-        "--with-pydebug",
-        "--with-openssl=/opt/aixtools",
-    ]
-
-
-class AIXBuildWithXLC(UnixBuild):
-    buildersuffix = ".xlc"
-    configureFlags = [
-        "--with-pydebug",
-        "--with-openssl=/opt/aixtools",
-        "CC=xlc_r",
-        "LD=xlc_r",
-    ]
-    factory_tags = ["xlc"]
-
-
 class NonDebugUnixBuild(UnixBuild):
     buildersuffix = ".nondebug"
     # Enable assertions regardless. Some children will override this,

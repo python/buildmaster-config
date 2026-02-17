@@ -14,8 +14,6 @@ from custom.factories import (
     UnixNoGilBuild,
     UnixNoGilRefleakBuild,
     MacOSAsanNoGilBuild,
-    AIXBuild,
-    AIXBuildWithXLC,
     ClangUnixBuild,
     ClangUbsanLinuxBuild,
     ClangUbsanFunctionLinuxBuild,
