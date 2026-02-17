@@ -14,8 +14,6 @@ from custom.factories import (
     UnixNoGilBuild,
     UnixNoGilRefleakBuild,
     MacOSAsanNoGilBuild,
-    AIXBuild,
-    AIXBuildWithXLC,
     ClangUnixBuild,
     ClangUbsanLinuxBuild,
     ClangUbsanFunctionLinuxBuild,
@@ -336,10 +334,6 @@ UNSTABLE_BUILDERS_NO_TIER = [
     ("AMD64 NixOS Unstable", "malvex-nixos-x86_64", UnixBuild),
     ("AMD64 NixOS Unstable Refleaks", "malvex-nixos-x86_64", UnixRefleakBuild),
     ("AMD64 NixOS Unstable Perf", "malvex-nixos-x86_64", UnixPerfBuild),
-
-    # AIX ppc64
-    ("PPC64 AIX", "edelsohn-aix-ppc64", AIXBuild),
-    ("PPC64 AIX XLC", "edelsohn-aix-ppc64", AIXBuildWithXLC),
 
     # Solaris sparcv9
     ("SPARCv9 Oracle Solaris 11.4", "kulikjak-solaris-sparcv9", UnixBuild),
