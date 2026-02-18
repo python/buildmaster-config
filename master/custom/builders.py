@@ -210,7 +210,7 @@ UNSTABLE_BUILDERS_TIER_1 = [
     ("aarch64 Ubuntu 24.04 BigMem", "diegorusso-aarch64-bigmem", UnixBigmemBuild),
 
     # test_xpickle
-    ("aarch64 Ubuntu test_xpickle", "stan-aarch64-ubuntu", UnixXPickleBuild)
+    ("aarch64 Ubuntu test_xpickle", "stan-aarch64-ubuntu", UnixXPickleBuild),
 
     # Linux x86-64 GCC
     # Fedora Rawhide is unstable
