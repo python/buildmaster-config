@@ -188,6 +188,8 @@ def get_workers(settings):
             name="stan-aarch64-ubuntu",
             tags=['linux', 'unix', 'ubuntu', 'arm', 'arm64', 'aarch64'],
             parallel_tests=4,
+            # test_xpickle doesn't exist on these branches
+            not_branches=['3.12', '3.11', '3.10'],
         ),
         cpw(
             name="stan-raspbian",
