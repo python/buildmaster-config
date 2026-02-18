@@ -290,6 +290,12 @@ class UnixBigmemBuild(UnixBuild):
     factory_tags = ["bigmem"]
 
 
+class UnixXPickleBuild(UnixBuild):
+    buildersuffix = ".xpickle"
+    testFlags = ["-uxpickle", "test_xpickle"]
+    factory_tags = ["xpickle"]
+
+
 class NonDebugUnixBuild(UnixBuild):
     buildersuffix = ".nondebug"
     # Enable assertions regardless. Some children will override this,

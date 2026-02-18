@@ -185,6 +185,11 @@ def get_workers(settings):
             parallel_tests=4,
         ),
         cpw(
+            name="stan-aarch64-ubuntu",
+            tags=['linux', 'unix', 'ubuntu', 'arm', 'arm64', 'aarch64'],
+            parallel_tests=4,
+        ),
+        cpw(
             name="stan-raspbian",
             tags=['linux', 'unix', 'raspbian', 'debian', 'armv8',
                   'aarch64', 'arm'],

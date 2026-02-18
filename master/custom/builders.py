@@ -1,6 +1,7 @@
 from custom.factories import (
     UnixBuild,
     UnixPerfBuild,
+    UnixXPickleBuild,
     RHEL8Build,
     CentOS9Build,
     FedoraStableBuild,
@@ -207,6 +208,9 @@ UNSTABLE_BUILDERS_TIER_1 = [
 
     # Ubuntu Linux AArch64
     ("aarch64 Ubuntu 24.04 BigMem", "diegorusso-aarch64-bigmem", UnixBigmemBuild),
+
+    # test_xpickle
+    ("aarch64 Ubuntu test_xpickle", "stan-aarch64-ubuntu", UnixXPickleBuild)
 
     # Linux x86-64 GCC
     # Fedora Rawhide is unstable
