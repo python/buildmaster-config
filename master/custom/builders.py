@@ -92,6 +92,9 @@ STABLE_BUILDERS_TIER_1 = [
     ("AMD64 Windows11 Refleaks", "ware-win11", Windows64RefleakBuild),
     ("AMD64 Windows Server 2022 NoGIL", "itamaro-win64-srv-22-aws", Windows64NoGilBuild),
     ("AMD64 Windows PGO NoGIL", "itamaro-win64-srv-22-aws", Windows64PGONoGilBuild),
+
+    # test_xpickle
+    ("aarch64 Ubuntu test_xpickle", "stan-aarch64-ubuntu", UnixXPickleBuild),
 ]
 
 
@@ -205,12 +208,8 @@ STABLE_BUILDERS_NO_TIER = [
 
 # -- Unstable Tier-1 builders -------------------------------------------
 UNSTABLE_BUILDERS_TIER_1 = [
-
     # Ubuntu Linux AArch64
     ("aarch64 Ubuntu 24.04 BigMem", "diegorusso-aarch64-bigmem", UnixBigmemBuild),
-
-    # test_xpickle
-    ("aarch64 Ubuntu test_xpickle", "stan-aarch64-ubuntu", UnixXPickleBuild),
 
     # Linux x86-64 GCC
     # Fedora Rawhide is unstable
