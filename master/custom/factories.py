@@ -290,6 +290,12 @@ class UnixBigmemBuild(UnixBuild):
     factory_tags = ["bigmem"]
 
 
+class UnixTzdataBuild(UnixBuild):
+    buildersuffix = ".tzdata"
+    testFlags = ["-utzdata", "test_zoneinfo", "test_datetime"]
+    factory_tags = ["tzdata"]
+
+
 class UnixXPickleBuild(UnixBuild):
     buildersuffix = ".xpickle"
     testFlags = ["-uxpickle", "test_xpickle"]

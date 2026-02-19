@@ -211,6 +211,8 @@ UNSTABLE_BUILDERS_TIER_1 = [
 
     # test_xpickle
     ("aarch64 Ubuntu test_xpickle", "stan-aarch64-ubuntu", UnixXPickleBuild),
+    # Tests that require the 'tzdata' resource
+    ("aarch64 Ubuntu tzdata", "stan-aarch64-ubuntu", UnixTzdataBuild),
 
     # Linux x86-64 GCC
     # Fedora Rawhide is unstable
