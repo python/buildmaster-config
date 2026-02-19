@@ -2,6 +2,7 @@ from custom.factories import (
     UnixBuild,
     UnixPerfBuild,
     UnixXPickleBuild,
+    UnixTzdataBuild,
     RHEL8Build,
     CentOS9Build,
     FedoraStableBuild,
