@@ -292,8 +292,8 @@ class UnixBigmemBuild(UnixBuild):
 
 class UnixOddballsBuild(UnixBuild):
     buildersuffix = ".oddballs"
-    testFlags = ["-uxpickle", "test_xpickle",
-                 "-utzdata", "test_zoneinfo", "test_datetime"]
+    testFlags = ["-u", "xpickle,tzdata",
+                 "test_xpickle", "test_zoneinfo", "test_datetime"]
     factory_tags = ["xpickle", "tzdata"]
 
 
