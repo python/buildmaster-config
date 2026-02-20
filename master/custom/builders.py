@@ -1,7 +1,7 @@
 from custom.factories import (
     UnixBuild,
     UnixPerfBuild,
-    UnixXPickleBuild,
+    UnixOddballsBuild,
     RHEL8Build,
     CentOS9Build,
     FedoraStableBuild,
@@ -93,8 +93,8 @@ STABLE_BUILDERS_TIER_1 = [
     ("AMD64 Windows Server 2022 NoGIL", "itamaro-win64-srv-22-aws", Windows64NoGilBuild),
     ("AMD64 Windows PGO NoGIL", "itamaro-win64-srv-22-aws", Windows64PGONoGilBuild),
 
-    # test_xpickle
-    ("aarch64 Ubuntu test_xpickle", "stan-aarch64-ubuntu", UnixXPickleBuild),
+    # Tests that require the 'tzdata' and 'xpickle' resources
+    ("aarch64 Ubuntu Oddballs", "stan-aarch64-ubuntu", UnixOddballsBuild),
 ]
 
 
