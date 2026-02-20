@@ -36,7 +36,9 @@ from custom.factories import (
     Windows64BigmemBuild,
     Windows64NoGilBuild,
     Windows64PGOBuild,
+    Windows64PGOTailcallBuild,
     Windows64PGONoGilBuild,
+    Windows64PGONoGilTailcallBuild,
     Windows64RefleakBuild,
     Windows64ReleaseBuild,
     MacOSArmWithBrewBuild,
@@ -91,7 +93,9 @@ STABLE_BUILDERS_TIER_1 = [
     ("AMD64 Windows11 Non-Debug", "ware-win11", Windows64ReleaseBuild),
     ("AMD64 Windows11 Refleaks", "ware-win11", Windows64RefleakBuild),
     ("AMD64 Windows Server 2022 NoGIL", "itamaro-win64-srv-22-aws", Windows64NoGilBuild),
+    ("AMD64 Windows PGO Tailcall", "itamaro-win64-srv-22-aws", Windows64PGOTailcallBuild),
     ("AMD64 Windows PGO NoGIL", "itamaro-win64-srv-22-aws", Windows64PGONoGilBuild),
+    ("AMD64 Windows PGO NoGIL Tailcall", "itamaro-win64-srv-22-aws", Windows64PGONoGilTailcallBuild),
 ]
 
 
