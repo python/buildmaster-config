@@ -36,7 +36,9 @@ from custom.factories import (
     Windows64BigmemBuild,
     Windows64NoGilBuild,
     Windows64PGOBuild,
+    Windows64PGOTailcallBuild,
     Windows64PGONoGilBuild,
+    Windows64PGONoGilTailcallBuild,
     Windows64RefleakBuild,
     Windows64ReleaseBuild,
     MacOSArmWithBrewBuild,
@@ -234,6 +236,9 @@ UNSTABLE_BUILDERS_TIER_1 = [
 
     # Windows MSVC
     ("AMD64 Windows PGO", "bolen-windows10", Windows64PGOBuild),
+    ("AMD64 Windows PGO Tailcall", "itamaro-win64-srv-22-aws", Windows64PGOTailcallBuild),
+    ("AMD64 Windows PGO NoGIL Tailcall", "itamaro-win64-srv-22-aws", Windows64PGONoGilTailcallBuild),
+
 ]
 
 
