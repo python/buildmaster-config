@@ -114,6 +114,8 @@ class DashboardState(DashboardObject):
         for version, info in self._app.branch_info.items():
             if info['status'] == 'end-of-life':
                 continue
+            if info['branch'] == '':
+                continue
             if info['branch'] == 'main':
                 tag = '3.x'
             else:
