@@ -1,9 +1,9 @@
 # buildmaster-config
 
 [Buildbot](https://buildbot.net/) master configuration for
-[buildbot.python.org](http://buildbot.python.org/all/).
+[buildbot.python.org](https://buildbot.python.org/).
 
-[![Build Status](https://travis-ci.org/python/buildmaster-config.svg?branch=master)](https://travis-ci.org/python/buildmaster-config)
+[![Check config](https://github.com/python/buildmaster-config/actions/workflows/check.yml/badge.svg)](https://github.com/python/buildmaster-config/actions/workflows/check.yml)
 
 ## Private settings
 
@@ -30,7 +30,7 @@ Make sure that the server is running, and then remove the old virtual environmen
 ## Hosting
 
 The buildbot master is hosted on the PSF Infrastructure and is managed via
-[salt](https://github.com/python/psf-salt/blob/master/salt/buildbot/init.sls).
+[salt](https://github.com/python/psf-salt/blob/main/salt/buildbot/init.sls).
 
 psycopg2 also requires libpq-dev:
 
