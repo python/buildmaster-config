@@ -301,20 +301,28 @@ class Branch(_BranchTierBase):
     @cached_sorted_property()
     def problems(self):
         problems = []
+        for builder in self.builders:
+            if builder.problems:
+                problems.extend(builder.problems)
+            else:
+                problems.append(NoProblem(builder))
+        return problems
+
+    @cached_sorted_property()
+    def builders(self):
         for builder in self._root.builders:
             if builder.branch == self:
-                if builder.problems:
-                    problems.extend(builder.problems)
-                else:
-                    problems.append(NoProblem(builder))
-        return problems
+                yield builder
 
     @cached_property
     def featured_problem(self):
         try:
             return self.problems[0]
         except IndexError:
-            return NoProblem()
+            if self.builders:
+                return NoProblem()
+            else:
+                return NoBuilds()
 
     def get_grouped_problems(self):
         def key(problem):
@@ -527,6 +535,8 @@ class Change(DashboardObject):
 class Severity(enum.IntEnum):
     # "Headings" and concrete values are all sortable enum items
 
+    NO_INFO = enum.auto()
+
     NO_PROBLEM = enum.auto()
     no_builds_yet = enum.auto()
     disconnected_unstable_builder = enum.auto()
@@ -546,6 +556,8 @@ class Severity(enum.IntEnum):
 
     @cached_property
     def css_color_class(self):
+        if self == Severity.NO_INFO:
+            return 'none'
         if self >= Severity.BLOCKING:
             return 'danger'
         if self >= Severity.CONCERNING:
@@ -554,6 +566,8 @@ class Severity(enum.IntEnum):
 
     @cached_property
     def symbol(self):
+        if self == Severity.NO_INFO:
+            return ''
         if self >= Severity.BLOCKING:
             return '\N{HEAVY BALLOT X}'
         if self >= Severity.CONCERNING:
@@ -562,6 +576,8 @@ class Severity(enum.IntEnum):
 
     @cached_property
     def releasability(self):
+        if self == Severity.NO_INFO:
+            return 'N/A'
         if self >= Severity.BLOCKING:
             return 'Unreleasable'
         if self >= Severity.CONCERNING:
@@ -651,15 +667,6 @@ class BuildWarning(Problem):
 
 
 @dataclass
-class NoBuilds(Problem):
-    """Builder has no finished builds yet"""
-    builder: Builder
-
-    description = "Builder has no builds"
-    severity = Severity.no_builds_yet
-
-
-@dataclass
 class BuilderDisconnected(Problem):
     """Builder has no finished builds yet"""
     builder: Builder
@@ -694,6 +701,17 @@ class NoProblem(Problem):
 
     description = "No problem detected"
     severity = Severity.NO_PROBLEM
+
+
+@dataclass
+class NoBuilds(Problem):
+    """Dummy problem"""
+    builder: None = None
+
+    name = "Not built"
+
+    description = "No builds"
+    severity = Severity.NO_INFO
 
 
 class ReleaseDashboard:

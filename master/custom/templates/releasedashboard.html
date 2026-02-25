@@ -143,10 +143,14 @@
                     {{ branch.featured_problem }}
                 </div>
                 <div class="panel-footer">
-                    <div>
-                        {{ branch.status | title }} branch
-                        <code>{{ branch.branch }}</code>
-                    </div>
+                    {% if branch.branch %}
+                        <div>
+                            {{ branch.status | title }} branch
+                            <code>{{ branch.branch }}</code>
+                        </div>
+                    {% else %}
+                        <div>No branch</div>
+                    {% endif %}
                     {% if branch.pep is defined %}
                         <div>
                             Schedule:
@@ -184,7 +188,7 @@
                     <section>
                         {% for problem in problems %}
                             <section>
-                                {% if problem.builder is defined %}
+                                {% if problem.builder is defined and problem.builder %}
                                     {% set builder = problem.builder %}
                                     <h5>
                                         <a href="#/builders/{{builder.builderid}}">

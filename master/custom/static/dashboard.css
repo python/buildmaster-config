@@ -1,4 +1,6 @@
 .release_status {
+    --none-color: #888;
+
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -107,6 +109,9 @@
             .panel-danger & {
                 background-color: var(--danger-color);
             }
+            .panel-none & {
+                background-color: var(--none-color);
+            }
         }
 
         .panel-body {
@@ -163,6 +168,7 @@
         &.status-success { --status-color: var(--success-color); }
         &.status-warning { --status-color: var(--warning-color); }
         &.status-danger { --status-color: var(--danger-color); }
+        &.status-none { --status-color: var(--none-color); }
         .build-dots {
             white-space: nowrap;
             overflow: hidden;
