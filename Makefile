@@ -14,8 +14,10 @@ LOGLINES=50
 
 .PHONY: venv regen-requirements
 
+## venv              Create a venv with necessary tools
 venv: $(VENV_CHECK)
 
+## clean             Remove the venv
 clean:
 	rm -rf venv
 
@@ -24,6 +26,7 @@ $(VENV_CHECK): $(REQUIREMENTS)
 	$(PIP) install -U pip
 	$(PIP) install -r $(REQUIREMENTS)
 
+## regen-requirements Regenerate pinned requirements file
 regen-requirements:
 	$(SYSTEM_PYTHON) -m venv --clear venv
 	$(PIP) install -U pip
@@ -34,6 +37,7 @@ regen-requirements:
 
 .PHONY: check
 
+## check             Validate buildbot master configuration
 check: $(VENV_CHECK)
 	$(BUILDBOT) checkconfig master
 
@@ -41,6 +45,7 @@ check: $(VENV_CHECK)
 
 .PHONY: update-master start-master restart-master stop-master
 
+## update-master     Pull updates, upgrade, check config, and start master
 update-master: stop-master
 	@if [ `git rev-parse --symbolic-full-name HEAD` = "refs/heads/main" ]; \
 	then \
@@ -52,12 +57,15 @@ update-master: stop-master
 	$(MAKE) check
 	$(MAKE) start-master
 
+## start-master      Start the buildbot master
 start-master: TARGET=start
 start-master: run-target
 
+## restart-master    Restart the buildbot master
 restart-master: TARGET=restart
 restart-master: run-target
 
+## stop-master       Stop the buildbot master
 stop-master: TARGET=stop
 stop-master: run-target
 	# issue #384: sometimes when "buildbot stop master" sends SIGINT to
@@ -73,9 +81,15 @@ stop-master: run-target
 run-target: $(VENV_CHECK)
 	$(BUILDBOT) $(TARGET) master; tail -n$(LOGLINES) master/twistd.log
 
+## git-update-requirements Create a branch with regenerated requirements
 git-update-requirements:
 	git switch main
 	git pull
 	git switch -c reqs main
 	make regen-requirements
 	git ci -a -m "run make regen-requirements"
+
+.PHONY: help
+help : Makefile
+	@echo "Use \`make <target>' where <target> is one of"
+	@sed -n 's/^##//p' $<
