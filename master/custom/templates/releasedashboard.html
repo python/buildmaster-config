@@ -188,7 +188,7 @@
                     <section>
                         {% for problem in problems %}
                             <section>
-                                {% if problem.builder is defined and problem.builder %}
+                                {% if problem.builder %}
                                     {% set builder = problem.builder %}
                                     <h5>
                                         <a href="#/builders/{{builder.builderid}}">

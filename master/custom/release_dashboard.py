@@ -538,7 +538,6 @@ class Severity(enum.IntEnum):
     NO_INFO = enum.auto()
 
     NO_PROBLEM = enum.auto()
-    no_builds_yet = enum.auto()
     disconnected_unstable_builder = enum.auto()
     unstable_warnings = enum.auto()
     unstable_builder_failure = enum.auto()
