@@ -173,6 +173,9 @@
     <h2>Problems by Branch</h2>
 
     {% for branch in state.branches %}
+        {% if not branch.problems %}
+            {% continue %}
+        {% endif %}
         <section class="branch-status status-{{ branch.featured_problem.severity.css_color_class }}" id="branch-section-{{branch}}">
             <h3>
                 {{ branch.title }}
