@@ -183,6 +183,9 @@ STABLE_BUILDERS_TIER_3 = [
     # Android
     ("aarch64 Android", "mhsmith-android-aarch64", AndroidBuild),
     ("AMD64 Android", "mhsmith-android-x86_64", AndroidBuild),
+
+    # Emscripten
+    ("WASM Emscripten", "rkm-emscripten", EmscriptenBuild),
 ]
 
 
@@ -317,9 +320,6 @@ UNSTABLE_BUILDERS_TIER_3 = [
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
     # FreeBSD 16 is CURRENT: development branch (at 2026-01-09)
     ("AMD64 FreeBSD16", "opsec-fbsd16", UnixBuild),
-
-    # Emscripten
-    ("WASM Emscripten", "rkm-emscripten", EmscriptenBuild),
 ]
 
 
