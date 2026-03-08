@@ -93,7 +93,9 @@ STABLE_BUILDERS_TIER_1 = [
     ("AMD64 Windows11 Non-Debug", "ware-win11", Windows64ReleaseBuild),
     ("AMD64 Windows11 Refleaks", "ware-win11", Windows64RefleakBuild),
     ("AMD64 Windows Server 2022 NoGIL", "itamaro-win64-srv-22-aws", Windows64NoGilBuild),
+    ("AMD64 Windows PGO Tailcall", "itamaro-win64-srv-22-aws", Windows64PGOTailcallBuild),
     ("AMD64 Windows PGO NoGIL", "itamaro-win64-srv-22-aws", Windows64PGONoGilBuild),
+    ("AMD64 Windows PGO NoGIL Tailcall", "itamaro-win64-srv-22-aws", Windows64PGONoGilTailcallBuild),
 
     # Tests that require the 'tzdata' and 'xpickle' resources
     ("aarch64 Ubuntu Oddballs", "stan-aarch64-ubuntu", UnixOddballsBuild),
@@ -238,9 +240,6 @@ UNSTABLE_BUILDERS_TIER_1 = [
 
     # Windows MSVC
     ("AMD64 Windows PGO", "bolen-windows10", Windows64PGOBuild),
-    ("AMD64 Windows PGO Tailcall", "itamaro-win64-srv-22-aws", Windows64PGOTailcallBuild),
-    ("AMD64 Windows PGO NoGIL Tailcall", "itamaro-win64-srv-22-aws", Windows64PGONoGilTailcallBuild),
-
 ]
 
 
