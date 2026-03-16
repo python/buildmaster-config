@@ -215,6 +215,8 @@ def get_workers(settings):
         cpw(
             name="pablogsal-arch-x86_64",
             tags=['linux', 'unix', 'arch', 'amd64', 'x86-64'],
+            # Problematic ISP causes test_urllib2net random failures
+            exclude_test_resources=['urlfetch', 'network'],
         ),
         cpw(
             name="pablogsal-macos-m1",
