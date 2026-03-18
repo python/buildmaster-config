@@ -215,21 +215,21 @@ def get_workers(settings):
         cpw(
             name="pablogsal-arch-x86_64",
             tags=['linux', 'unix', 'arch', 'amd64', 'x86-64'],
-            # Problematic ISP causes test_urllib2net random failures
+            # Problematic ISP causes issues connecting to testpython.net
             exclude_test_resources=['urlfetch', 'network'],
         ),
         cpw(
             name="pablogsal-macos-m1",
             tags=['macOS', 'unix', 'arm', 'arm64'],
             parallel_tests=4,
-            # Problematic ISP causes test_urllib2net random failures
+            # Problematic ISP causes issues connecting to testpython.net
             exclude_test_resources=['urlfetch', 'network'],
         ),
         cpw(
             name="pablogsal-rasp",
             tags=['linux', 'unix', 'raspbian', 'debian', 'arm'],
             parallel_tests=1,  # Reduced from 2: ASAN builds use 2-10x more memory
-            # Problematic ISP causes test_urllib2net random failures
+            # Problematic ISP causes issues connecting to testpython.net
             exclude_test_resources=['urlfetch', 'network'],
         ),
         cpw(
