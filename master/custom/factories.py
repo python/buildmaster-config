@@ -1363,7 +1363,7 @@ class EmscriptenBuild(BaseBuild):
         self.addSteps([
             Configure(
                 name="Install emscripten (if needed)",
-                command=["python3", "Platform/emscripten", "install-emscripetn"],
+                command=["python3", "Platform/emscripten", "install-emscripten"],
                 env=compile_environ,
             ),
             Configure(
