@@ -1357,54 +1357,47 @@ class EmscriptenBuild(BaseBuild):
 
     def setup(self, **kwargs):
         compile_environ = {
-            "PATH": os.pathsep.join([
-                "/home/emscripten/emsdk",
-                "/home/emscripten/emsdk/upstream/emscripten",
-                "/home/emscripten/.local/bin",
-                "/usr/local/bin",
-                "/usr/bin",
-                "/bin",
-            ]),
-            "EMSDK": "/home/emscripten/emsdk",
-            "PYTHON_NODE_VERSION": "24",
+            "EMSDK_CACHE": "/home/emscripten/emsdk-versions",
         }
 
         self.addSteps([
             Configure(
+                name="Install emscripten (if needed)",
+                command=["python3", "Platform/emscripten", "install-emscripten"],
+                env=compile_environ,
+            ),
+            Configure(
                 name="Configure build Python",
-                command=["python3", "Tools/wasm/emscripten", "configure-build-python"],
+                command=["python3", "Platform/emscripten", "configure-build-python"],
                 env=compile_environ,
             ),
             Compile(
                 name="Compile build Python",
-                command=["python3", "Tools/wasm/emscripten", "make-build-python"],
+                command=["python3", "Platform/emscripten", "make-build-python"],
                 env=compile_environ,
             ),
             Compile(
-                name="Compile host libFFI",
-                command=["python3", "Tools/wasm/emscripten", "make-libffi"],
+                name="Compile host dependencies (if needed)",
+                command=["python3", "Platform/emscripten", "make-dependencies"],
                 env=compile_environ,
             ),
             Configure(
                 name="Configure host Python",
-                command=["python3", "Tools/wasm/emscripten", "configure-host"],
+                command=["python3", "Platform/emscripten", "configure-host"],
                 env=compile_environ,
             ),
             Compile(
                 name="Compile host Python",
-                command=["python3", "Tools/wasm/emscripten", "make-host"],
+                command=["python3", "Platform/emscripten", "make-host"],
                 env=compile_environ,
             ),
             Test(
                 name="Node full test suite",
                 command=[
-                    "cross-build/wasm32-emscripten/build/python/python.sh",
-                    "-m", "test",
-                    "-v",
-                    "-uall",
-                    "--rerun",
-                    "--single-process",
-                    "-W",
+                    "python3",
+                    "Platform/emscripten",
+                    "run",
+                    "--test",
                 ],
                 env=compile_environ,
                 timeout=step_timeout(self.test_timeout),
@@ -1412,14 +1405,14 @@ class EmscriptenBuild(BaseBuild):
             Test(
                 name="PyRepl in Chrome smoke test",
                 command=[
-                    "Tools/wasm/emscripten/browser_test/run_test.sh",
+                    "Platform/emscripten/browser_test/run_test.sh",
                 ],
                 env=compile_environ,
                 timeout=step_timeout(self.test_timeout),
             ),
             Clean(
                 name="Clean the builds",
-                command=["python3", "Tools/wasm/emscripten", "clean"],
+                command=["python3", "Platform/emscripten", "clean"],
                 env=compile_environ,
             )
         ])
