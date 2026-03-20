@@ -1363,39 +1363,39 @@ class EmscriptenBuild(BaseBuild):
         self.addSteps([
             Configure(
                 name="Install emscripten (if needed)",
-                command=["python3", "Platform/emscripten", "install-emscripten"],
+                command=["python3", "Platforms/emscripten", "install-emscripten"],
                 env=compile_environ,
             ),
             Configure(
                 name="Configure build Python",
-                command=["python3", "Platform/emscripten", "configure-build-python"],
+                command=["python3", "Platforms/emscripten", "configure-build-python"],
                 env=compile_environ,
             ),
             Compile(
                 name="Compile build Python",
-                command=["python3", "Platform/emscripten", "make-build-python"],
+                command=["python3", "Platforms/emscripten", "make-build-python"],
                 env=compile_environ,
             ),
             Compile(
                 name="Compile host dependencies (if needed)",
-                command=["python3", "Platform/emscripten", "make-dependencies"],
+                command=["python3", "Platforms/emscripten", "make-dependencies"],
                 env=compile_environ,
             ),
             Configure(
                 name="Configure host Python",
-                command=["python3", "Platform/emscripten", "configure-host"],
+                command=["python3", "Platforms/emscripten", "configure-host"],
                 env=compile_environ,
             ),
             Compile(
                 name="Compile host Python",
-                command=["python3", "Platform/emscripten", "make-host"],
+                command=["python3", "Platforms/emscripten", "make-host"],
                 env=compile_environ,
             ),
             Test(
                 name="Node full test suite",
                 command=[
                     "python3",
-                    "Platform/emscripten",
+                    "Platforms/emscripten",
                     "run",
                     "--test",
                 ],
@@ -1405,14 +1405,14 @@ class EmscriptenBuild(BaseBuild):
             Test(
                 name="PyRepl in Chrome smoke test",
                 command=[
-                    "Platform/emscripten/browser_test/run_test.sh",
+                    "Platforms/emscripten/browser_test/run_test.sh",
                 ],
                 env=compile_environ,
                 timeout=step_timeout(self.test_timeout),
             ),
             Clean(
                 name="Clean the builds",
-                command=["python3", "Platform/emscripten", "clean"],
+                command=["python3", "Platforms/emscripten", "clean"],
                 env=compile_environ,
             )
         ])
