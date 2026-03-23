@@ -128,6 +128,12 @@ class Test(BaseTest):
         return result
 
 
+class PythonInfo(ShellCommand):
+    name = "pythoninfo"
+    description = "Display build information"
+    warnOnFailure = True
+
+
 class Clean(ShellCommand):
     name = "clean"
     flunkOnFailure = False
