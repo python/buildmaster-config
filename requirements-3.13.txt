@@ -40,7 +40,7 @@ PyJWT==2.12.1
 pyOpenSSL==26.0.0
 python-dateutil==2.9.0.post0
 PyYAML==6.0.3
-requests==2.32.5
+requests==2.33.0
 sentry-sdk==2.55.0
 service-identity==24.2.0
 setuptools==82.0.1
