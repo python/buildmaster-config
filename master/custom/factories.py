@@ -1202,7 +1202,7 @@ class _IOSSimulatorBuild(UnixBuild):
             self.addSteps(
                 [
                     ShellCommand(
-                        name="Set up compatibility symlink (will fail on <= 3.13 branches)",
+                        name="Set up compatibility symlink",
                         command="[ -e Platforms/Apple ] || ln -s ../Apple Platforms/Apple",
                     ),
                     Compile(
