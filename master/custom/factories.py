@@ -1045,200 +1045,216 @@ class _IOSSimulatorBuild(UnixBuild):
 
         super().__init__(source, **kwargs)
 
-    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
-        if branch == "3.13":
-            out_of_tree_dir = "build_oot"
-            oot_dir_path = os.path.join("build", out_of_tree_dir)
-            oot_build_path = os.path.join(oot_dir_path, "build")
-            oot_host_path = os.path.join(oot_dir_path, "host")
+    def historical_setup(self, parallel, test_with_PTY=False):
+        out_of_tree_dir = "build_oot"
+        oot_dir_path = os.path.join("build", out_of_tree_dir)
+        oot_build_path = os.path.join(oot_dir_path, "build")
+        oot_host_path = os.path.join(oot_dir_path, "host")
 
-            # Create out of tree directory for "build", the platform we are
-            # currently running on
-            self.addStep(
-                ShellCommand(
-                    name="mkdir build out-of-tree directory",
-                    description="Create build out-of-tree directory",
-                    command=["mkdir", "-p", oot_build_path],
-                    warnOnFailure=True,
-                )
+        # Create out of tree directory for "build", the platform we are
+        # currently running on
+        self.addStep(
+            ShellCommand(
+                name="mkdir build out-of-tree directory",
+                description="Create build out-of-tree directory",
+                command=["mkdir", "-p", oot_build_path],
+                warnOnFailure=True,
             )
-            # Create directory for "host", the platform we want to compile *for*
-            self.addStep(
-                ShellCommand(
-                    name="mkdir host out-of-tree directory",
-                    description="Create host out-of-tree directory",
-                    command=["mkdir", "-p", oot_host_path],
-                    warnOnFailure=True,
-                )
+        )
+        # Create directory for "host", the platform we want to compile *for*
+        self.addStep(
+            ShellCommand(
+                name="mkdir host out-of-tree directory",
+                description="Create host out-of-tree directory",
+                command=["mkdir", "-p", oot_host_path],
+                warnOnFailure=True,
             )
+        )
 
-            # First, we build the "build" Python, which we need to cross compile
-            # the "host" Python
-            self.addStep(
-                Configure(
-                    name="Configure build Python",
-                    command=["../../configure"],
-                    workdir=oot_build_path,
-                )
+        # First, we build the "build" Python, which we need to cross compile
+        # the "host" Python
+        self.addStep(
+            Configure(
+                name="Configure build Python",
+                command=["../../configure"],
+                workdir=oot_build_path,
             )
-            if parallel:
-                compile = ["make", parallel]
-            else:
-                compile = ["make"]
-
-            self.addStep(
-                Compile(
-                    name="Compile build Python", command=compile, workdir=oot_build_path
-                )
-            )
-
-            # Ensure the host path is isolated from Homebrew et al, but includes
-            # the host helper binaries. Also add the configuration paths for
-            # library dependencies.
-            support_path = f"/Users/buildbot/support/iphonesimulator.{self.arch}"
-            compile_environ = dict(self.compile_environ)
-            compile_environ.update(
-                {
-                    "PATH": os.pathsep.join(
-                        [
-                            # This is intentionally a relative path. Buildbot doesn't expose
-                            # the absolute working directory where the build is running as
-                            # something that can be expanded into an environment variable.
-                            "../../iOS/Resources/bin",
-                            "/usr/bin",
-                            "/bin",
-                            "/usr/sbin",
-                            "/sbin",
-                            "/Library/Apple/usr/bin",
-                        ]
-                    ),
-                    "LIBLZMA_CFLAGS": f"-I{support_path}/xz/include",
-                    "LIBLZMA_LIBS": f"-L{support_path}/xz/lib -llzma",
-                    "BZIP2_CFLAGS": f"-I{support_path}/bzip2/include",
-                    "BZIP2_LIBS": f"-L{support_path}/bzip2/lib -lbz2",
-                    "LIBFFI_CFLAGS": f"-I{support_path}/libffi/include",
-                    "LIBFFI_LIBS": f"-L{support_path}/libffi/lib -lffi",
-                }
-            )
-
-            # Now that we have a "build" architecture Python, we can use that
-            # to build a "host" (also known as the target we are cross compiling)
-            # Take a copy so that the class-level definition isn't tainted
-            configure_cmd = list(self.host_configure_cmd)
-            configure_cmd += self.configureFlags
-            configure_cmd += self.extra_configure_flags
-            configure_cmd += [
-                f"--with-openssl={support_path}/openssl",
-                f"--build={self.arch}-apple-darwin",
-                f"--host={self.host}",
-                "--with-build-python=../build/python.exe",
-                "--enable-framework",
-            ]
-
-            self.addStep(
-                Configure(
-                    name="Configure host Python",
-                    command=configure_cmd,
-                    env=compile_environ,
-                    workdir=oot_host_path,
-                )
-            )
-
-            if parallel:
-                compile = ["make", parallel, self.makeTarget]
-                install = ["make", parallel, "install"]
-            else:
-                compile = ["make", self.makeTarget]
-                install = ["make", "install"]
-
-            self.addStep(
-                Compile(
-                    name="Compile host Python",
-                    command=compile,
-                    env=compile_environ,
-                    workdir=oot_host_path,
-                )
-            )
-            self.addStep(
-                Compile(
-                    name="Install host Python",
-                    command=install,
-                    env=compile_environ,
-                    workdir=oot_host_path,
-                )
-            )
-            self.addStep(
-                Test(
-                    command=["make", "testios"],
-                    timeout=step_timeout(self.test_timeout),
-                    usePTY=test_with_PTY,
-                    env=self.test_environ,
-                    workdir=oot_host_path,
-                )
-            )
-
-            self.addStep(
-                Clean(
-                    name="Clean build Python",
-                    workdir=oot_build_path,
-                )
-            )
-            self.addStep(
-                Clean(
-                    name="Clean host Python",
-                    workdir=oot_host_path,
-                )
-            )
+        )
+        if parallel:
+            compile = ["make", parallel]
         else:
-            # Builds of Python 3.14+ can use the XCframework build script.
-            #
-            # The script moved to the Platforms folder in 3.15; the first command
-            # symlinks to the "new" location so that the 3.15+ build instructions
-            # will work as-is. This will fail on <= 3.13 PR branches.
-            build_environ = {
-                "CACHE_DIR": "/Users/buildbot/downloads",
-            }
+            compile = ["make"]
 
-            self.addSteps(
-                [
-                    ShellCommand(
-                        name="Set up compatibility symlink",
-                        command="[ -e Platforms/Apple ] || ln -s ../Apple Platforms/Apple",
-                    ),
-                    Compile(
-                        name="Configure and compile build Python",
-                        command=["python3", "Platforms/Apple", "build", "iOS", "build"],
-                        env=build_environ,
-                    ),
-                    Compile(
-                        name="Configure and compile host Pythons",
-                        command=["python3", "Platforms/Apple", "build", "iOS", "hosts"],
-                        env=build_environ,
-                    ),
-                    Compile(
-                        name="Package XCframework",
-                        command=["python3", "Platforms/Apple", "package", "iOS"],
-                        env=build_environ,
-                    ),
-                    Test(
-                        name="Run test suite",
-                        command=[
-                            "python3",
-                            "Platforms/Apple",
-                            "test",
-                            "iOS",
-                            "--slow-ci",
-                        ],
-                        env=build_environ,
-                        timeout=step_timeout(self.test_timeout),
-                    ),
-                    Clean(
-                        name="Clean the builds",
-                        command=["python3", "Platforms/Apple", "clean", "iOS"],
-                        env=build_environ,
-                    ),
-                ]
+        self.addStep(
+            Compile(
+                name="Compile build Python", command=compile, workdir=oot_build_path
             )
+        )
+
+        # Ensure the host path is isolated from Homebrew et al, but includes
+        # the host helper binaries. Also add the configuration paths for
+        # library dependencies.
+        support_path = f"/Users/buildbot/support/iphonesimulator.{self.arch}"
+        compile_environ = dict(self.compile_environ)
+        compile_environ.update(
+            {
+                "PATH": os.pathsep.join(
+                    [
+                        # This is intentionally a relative path. Buildbot doesn't expose
+                        # the absolute working directory where the build is running as
+                        # something that can be expanded into an environment variable.
+                        "../../iOS/Resources/bin",
+                        "/usr/bin",
+                        "/bin",
+                        "/usr/sbin",
+                        "/sbin",
+                        "/Library/Apple/usr/bin",
+                    ]
+                ),
+                "LIBLZMA_CFLAGS": f"-I{support_path}/xz/include",
+                "LIBLZMA_LIBS": f"-L{support_path}/xz/lib -llzma",
+                "BZIP2_CFLAGS": f"-I{support_path}/bzip2/include",
+                "BZIP2_LIBS": f"-L{support_path}/bzip2/lib -lbz2",
+                "LIBFFI_CFLAGS": f"-I{support_path}/libffi/include",
+                "LIBFFI_LIBS": f"-L{support_path}/libffi/lib -lffi",
+            }
+        )
+
+        # Now that we have a "build" architecture Python, we can use that
+        # to build a "host" (also known as the target we are cross compiling)
+        # Take a copy so that the class-level definition isn't tainted
+        configure_cmd = list(self.host_configure_cmd)
+        configure_cmd += self.configureFlags
+        configure_cmd += self.extra_configure_flags
+        configure_cmd += [
+            f"--with-openssl={support_path}/openssl",
+            f"--build={self.arch}-apple-darwin",
+            f"--host={self.host}",
+            "--with-build-python=../build/python.exe",
+            "--enable-framework",
+        ]
+
+        self.addStep(
+            Configure(
+                name="Configure host Python",
+                command=configure_cmd,
+                env=compile_environ,
+                workdir=oot_host_path,
+            )
+        )
+
+        if parallel:
+            compile = ["make", parallel, self.makeTarget]
+            install = ["make", parallel, "install"]
+        else:
+            compile = ["make", self.makeTarget]
+            install = ["make", "install"]
+
+        self.addStep(
+            Compile(
+                name="Compile host Python",
+                command=compile,
+                env=compile_environ,
+                workdir=oot_host_path,
+            )
+        )
+        self.addStep(
+            Compile(
+                name="Install host Python",
+                command=install,
+                env=compile_environ,
+                workdir=oot_host_path,
+            )
+        )
+        self.addStep(
+            Test(
+                command=["make", "testios"],
+                timeout=step_timeout(self.test_timeout),
+                usePTY=test_with_PTY,
+                env=self.test_environ,
+                workdir=oot_host_path,
+            )
+        )
+
+        self.addStep(
+            Clean(
+                name="Clean build Python",
+                workdir=oot_build_path,
+            )
+        )
+        self.addStep(
+            Clean(
+                name="Clean host Python",
+                workdir=oot_host_path,
+            )
+        )
+
+    def current_setup(self):
+        build_environ = {
+            "CACHE_DIR": "/Users/buildbot/downloads",
+        }
+
+        self.addSteps(
+            [
+                # This symlink is needed to support Python 3.14 builds - it makes the
+                # top level Apple folder appear in the new Platforms/Apple location.
+                # It will fail on 3.13 PR branches because the top level Apple folder
+                # doesn't exist. This step can be removed when 3.14 is no longer
+                # supported.
+                ShellCommand(
+                    name="Set up compatibility symlink",
+                    command="[ -e Platforms/Apple ] || ln -s ../Apple Platforms/Apple",
+                ),
+                # Build the full iOS XCframework, including a multi-arch simulator slice.
+                Compile(
+                    name="Configure and compile build Python",
+                    command=["python3", "Platforms/Apple", "build", "iOS", "build"],
+                    env=build_environ,
+                ),
+                Compile(
+                    name="Configure and compile host Pythons",
+                    command=["python3", "Platforms/Apple", "build", "iOS", "hosts"],
+                    env=build_environ,
+                ),
+                Compile(
+                    name="Package XCframework",
+                    command=["python3", "Platforms/Apple", "package", "iOS"],
+                    env=build_environ,
+                ),
+                Test(
+                    name="Run test suite",
+                    command=[
+                        "python3",
+                        "Platforms/Apple",
+                        "test",
+                        "iOS",
+                        "--slow-ci",
+                    ],
+                    env=build_environ,
+                    timeout=step_timeout(self.test_timeout),
+                ),
+                Clean(
+                    name="Clean the builds",
+                    command=["python3", "Platforms/Apple", "clean", "iOS"],
+                    env=build_environ,
+                ),
+            ]
+        )
+
+    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+        # Builds on Python 3.13 use a direct set of calls to make. Python 3.14
+        # introduced a simpler XCframework build script; Python 3.15 moved that
+        # script to the Platforms folder.
+        #
+        # The `Platforms/Apple` location can be used for 3.14 builds with a
+        # symlink, but 3.13 builds have to used the build process.
+        #
+        # The symlink approach will fail for Python 3.13 *PR* builds, because
+        # there's no way to identify the base branch for a PR.
+        if branch == "3.13":
+            self.historical_setup(parallel, test_with_PTY=test_with_PTY)
+        else:
+            self.current_setup()
 
 
 class IOSARM64SimulatorBuild(_IOSSimulatorBuild):
