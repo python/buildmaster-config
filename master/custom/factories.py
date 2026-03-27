@@ -1045,7 +1045,7 @@ class _IOSSimulatorBuild(UnixBuild):
 
         super().__init__(source, **kwargs)
 
-    def historical_setup(self, parallel, test_with_PTY=False):
+    def py313_setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         out_of_tree_dir = "build_oot"
         oot_dir_path = os.path.join("build", out_of_tree_dir)
         oot_build_path = os.path.join(oot_dir_path, "build")
@@ -1087,7 +1087,9 @@ class _IOSSimulatorBuild(UnixBuild):
 
         self.addStep(
             Compile(
-                name="Compile build Python", command=compile, workdir=oot_build_path
+                name="Compile build Python",
+                command=compile,
+                workdir=oot_build_path,
             )
         )
 
@@ -1096,29 +1098,25 @@ class _IOSSimulatorBuild(UnixBuild):
         # library dependencies.
         support_path = f"/Users/buildbot/support/iphonesimulator.{self.arch}"
         compile_environ = dict(self.compile_environ)
-        compile_environ.update(
-            {
-                "PATH": os.pathsep.join(
-                    [
-                        # This is intentionally a relative path. Buildbot doesn't expose
-                        # the absolute working directory where the build is running as
-                        # something that can be expanded into an environment variable.
-                        "../../iOS/Resources/bin",
-                        "/usr/bin",
-                        "/bin",
-                        "/usr/sbin",
-                        "/sbin",
-                        "/Library/Apple/usr/bin",
-                    ]
-                ),
-                "LIBLZMA_CFLAGS": f"-I{support_path}/xz/include",
-                "LIBLZMA_LIBS": f"-L{support_path}/xz/lib -llzma",
-                "BZIP2_CFLAGS": f"-I{support_path}/bzip2/include",
-                "BZIP2_LIBS": f"-L{support_path}/bzip2/lib -lbz2",
-                "LIBFFI_CFLAGS": f"-I{support_path}/libffi/include",
-                "LIBFFI_LIBS": f"-L{support_path}/libffi/lib -lffi",
-            }
-        )
+        compile_environ.update({
+            "PATH": os.pathsep.join([
+                # This is intentionally a relative path. Buildbot doesn't expose
+                # the absolute working directory where the build is running as
+                # something that can be expanded into an environment variable.
+                "../../iOS/Resources/bin",
+                "/usr/bin",
+                "/bin",
+                "/usr/sbin",
+                "/sbin",
+                "/Library/Apple/usr/bin",
+            ]),
+            "LIBLZMA_CFLAGS": f"-I{support_path}/xz/include",
+            "LIBLZMA_LIBS": f"-L{support_path}/xz/lib -llzma",
+            "BZIP2_CFLAGS": f"-I{support_path}/bzip2/include",
+            "BZIP2_LIBS": f"-L{support_path}/bzip2/lib -lbz2",
+            "LIBFFI_CFLAGS": f"-I{support_path}/libffi/include",
+            "LIBFFI_LIBS": f"-L{support_path}/libffi/lib -lffi",
+        })
 
         # Now that we have a "build" architecture Python, we can use that
         # to build a "host" (also known as the target we are cross compiling)
@@ -1189,7 +1187,7 @@ class _IOSSimulatorBuild(UnixBuild):
             )
         )
 
-    def current_setup(self):
+    def current_setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         build_environ = {
             "CACHE_DIR": "/Users/buildbot/downloads",
         }
@@ -1252,9 +1250,9 @@ class _IOSSimulatorBuild(UnixBuild):
         # The symlink approach will fail for Python 3.13 *PR* builds, because
         # there's no way to identify the base branch for a PR.
         if branch == "3.13":
-            self.historical_setup(parallel, test_with_PTY=test_with_PTY)
+            self.py313_setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
         else:
-            self.current_setup()
+            self.current_setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
 
 
 class IOSARM64SimulatorBuild(_IOSSimulatorBuild):
