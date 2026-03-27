@@ -1046,7 +1046,7 @@ class _IOSSimulatorBuild(UnixBuild):
         super().__init__(source, **kwargs)
 
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
-        if branch in {"3.13", "3.14"}:
+        if branch == "3.13":
             out_of_tree_dir = "build_oot"
             oot_dir_path = os.path.join("build", out_of_tree_dir)
             oot_build_path = os.path.join(oot_dir_path, "build")
@@ -1189,35 +1189,53 @@ class _IOSSimulatorBuild(UnixBuild):
                     workdir=oot_host_path,
                 )
             )
-        else:  # Builds of Python 3.15+
+        else:
+            # Builds of Python 3.14+ can use the XCframework build script.
+            #
+            # The script moved to the Platforms folder in 3.15; the first command
+            # symlinks to the "new" location so that the 3.15+ build instructions
+            # will work as-is. This will fail on <= 3.13 PR branches.
+            build_environ = {
+                "CACHE_DIR": "/Users/buildbot/downloads",
+            }
+
             self.addSteps(
                 [
+                    ShellCommand(
+                        name="Set up compatibility symlink (will fail on <= 3.13 branches)",
+                        command="[ -e Platforms/Apple ] || ln -s ../Apple Platforms/Apple",
+                    ),
                     Compile(
                         name="Configure and compile build Python",
                         command=["python3", "Platforms/Apple", "build", "iOS", "build"],
+                        env=build_environ,
                     ),
                     Compile(
                         name="Configure and compile host Pythons",
                         command=["python3", "Platforms/Apple", "build", "iOS", "hosts"],
+                        env=build_environ,
                     ),
                     Compile(
                         name="Package XCframework",
                         command=["python3", "Platforms/Apple", "package", "iOS"],
+                        env=build_environ,
                     ),
                     Test(
                         name="Run test suite",
                         command=[
                             "python3",
                             "Platforms/Apple",
-                            "iOS",
                             "test",
+                            "iOS",
                             "--slow-ci",
                         ],
+                        env=build_environ,
                         timeout=step_timeout(self.test_timeout),
                     ),
                     Clean(
                         name="Clean the builds",
                         command=["python3", "Platforms/Apple", "clean", "iOS"],
+                        env=build_environ,
                     ),
                 ]
             )
