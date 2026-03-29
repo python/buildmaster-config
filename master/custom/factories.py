@@ -1192,52 +1192,50 @@ class _IOSSimulatorBuild(UnixBuild):
             "CACHE_DIR": "/Users/buildbot/downloads",
         }
 
-        self.addSteps(
-            [
-                # This symlink is needed to support Python 3.14 builds - it makes the
-                # top level Apple folder appear in the new Platforms/Apple location.
-                # It will fail on 3.13 PR branches because the top level Apple folder
-                # doesn't exist. This step can be removed when 3.14 is no longer
-                # supported.
-                ShellCommand(
-                    name="Set up compatibility symlink",
-                    command="[ -e Platforms/Apple ] || ln -s ../Apple Platforms/Apple",
-                ),
-                # Build the full iOS XCframework, including a multi-arch simulator slice.
-                Compile(
-                    name="Configure and compile build Python",
-                    command=["python3", "Platforms/Apple", "build", "iOS", "build"],
-                    env=build_environ,
-                ),
-                Compile(
-                    name="Configure and compile host Pythons",
-                    command=["python3", "Platforms/Apple", "build", "iOS", "hosts"],
-                    env=build_environ,
-                ),
-                Compile(
-                    name="Package XCframework",
-                    command=["python3", "Platforms/Apple", "package", "iOS"],
-                    env=build_environ,
-                ),
-                Test(
-                    name="Run test suite",
-                    command=[
-                        "python3",
-                        "Platforms/Apple",
-                        "test",
-                        "iOS",
-                        "--slow-ci",
-                    ],
-                    env=build_environ,
-                    timeout=step_timeout(self.test_timeout),
-                ),
-                Clean(
-                    name="Clean the builds",
-                    command=["python3", "Platforms/Apple", "clean", "iOS"],
-                    env=build_environ,
-                ),
-            ]
-        )
+        self.addSteps([
+            # This symlink is needed to support Python 3.14 builds - it makes the
+            # top level Apple folder appear in the new Platforms/Apple location.
+            # It will fail on 3.13 PR branches because the top level Apple folder
+            # doesn't exist. This step can be removed when 3.14 is no longer
+            # supported.
+            ShellCommand(
+                name="Set up compatibility symlink",
+                command="[ -e Platforms/Apple ] || ln -s ../Apple Platforms/Apple",
+            ),
+            # Build the full iOS XCframework, including a multi-arch simulator slice.
+            Compile(
+                name="Configure and compile build Python",
+                command=["python3", "Platforms/Apple", "build", "iOS", "build"],
+                env=build_environ,
+            ),
+            Compile(
+                name="Configure and compile host Pythons",
+                command=["python3", "Platforms/Apple", "build", "iOS", "hosts"],
+                env=build_environ,
+            ),
+            Compile(
+                name="Package XCframework",
+                command=["python3", "Platforms/Apple", "package", "iOS"],
+                env=build_environ,
+            ),
+            Test(
+                name="Run test suite",
+                command=[
+                    "python3",
+                    "Platforms/Apple",
+                    "test",
+                    "iOS",
+                    "--slow-ci",
+                ],
+                env=build_environ,
+                timeout=step_timeout(self.test_timeout),
+            ),
+            Clean(
+                name="Clean the builds",
+                command=["python3", "Platforms/Apple", "clean", "iOS"],
+                env=build_environ,
+            ),
+        ])
 
     def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         # Builds on Python 3.13 use a direct set of calls to make. Python 3.14
