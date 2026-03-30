@@ -7,3 +7,4 @@ lib/
 venv/
 worker/
 settings.yaml
+.vscode/

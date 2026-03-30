@@ -1032,6 +1032,7 @@ class _IOSSimulatorBuild(UnixBuild):
        build)
      * It invokes `make testios` as a test target
     """
+
     buildersuffix = ".iOS-simulator"
     ios_min_version = ""  # use the default from the configure file
     factory_tags = ["iOS"]
@@ -1044,7 +1045,7 @@ class _IOSSimulatorBuild(UnixBuild):
 
         super().__init__(source, **kwargs)
 
-    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+    def py313_setup(self, parallel, branch, test_with_PTY=False, **kwargs):
         out_of_tree_dir = "build_oot"
         oot_dir_path = os.path.join("build", out_of_tree_dir)
         oot_build_path = os.path.join(oot_dir_path, "build")
@@ -1076,7 +1077,7 @@ class _IOSSimulatorBuild(UnixBuild):
             Configure(
                 name="Configure build Python",
                 command=["../../configure"],
-                workdir=oot_build_path
+                workdir=oot_build_path,
             )
         )
         if parallel:
@@ -1088,7 +1089,7 @@ class _IOSSimulatorBuild(UnixBuild):
             Compile(
                 name="Compile build Python",
                 command=compile,
-                workdir=oot_build_path
+                workdir=oot_build_path,
             )
         )
 
@@ -1128,7 +1129,7 @@ class _IOSSimulatorBuild(UnixBuild):
             f"--build={self.arch}-apple-darwin",
             f"--host={self.host}",
             "--with-build-python=../build/python.exe",
-            "--enable-framework"
+            "--enable-framework",
         ]
 
         self.addStep(
@@ -1136,7 +1137,7 @@ class _IOSSimulatorBuild(UnixBuild):
                 name="Configure host Python",
                 command=configure_cmd,
                 env=compile_environ,
-                workdir=oot_host_path
+                workdir=oot_host_path,
             )
         )
 
@@ -1185,6 +1186,71 @@ class _IOSSimulatorBuild(UnixBuild):
                 workdir=oot_host_path,
             )
         )
+
+    def current_setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+        build_environ = {
+            "CACHE_DIR": "/Users/buildbot/downloads",
+        }
+
+        self.addSteps([
+            # This symlink is needed to support Python 3.14 builds - it makes the
+            # top level Apple folder appear in the new Platforms/Apple location.
+            # It will fail on 3.13 PR branches because the top level Apple folder
+            # doesn't exist. This step can be removed when 3.14 is no longer
+            # supported.
+            ShellCommand(
+                name="Set up compatibility symlink",
+                command="[ -e Platforms/Apple ] || ln -s ../Apple Platforms/Apple",
+            ),
+            # Build the full iOS XCframework, including a multi-arch simulator slice.
+            Compile(
+                name="Configure and compile build Python",
+                command=["python3", "Platforms/Apple", "build", "iOS", "build"],
+                env=build_environ,
+            ),
+            Compile(
+                name="Configure and compile host Pythons",
+                command=["python3", "Platforms/Apple", "build", "iOS", "hosts"],
+                env=build_environ,
+            ),
+            Compile(
+                name="Package XCframework",
+                command=["python3", "Platforms/Apple", "package", "iOS"],
+                env=build_environ,
+            ),
+            Test(
+                name="Run test suite",
+                command=[
+                    "python3",
+                    "Platforms/Apple",
+                    "test",
+                    "iOS",
+                    "--slow-ci",
+                ],
+                env=build_environ,
+                timeout=step_timeout(self.test_timeout),
+            ),
+            Clean(
+                name="Clean the builds",
+                command=["python3", "Platforms/Apple", "clean", "iOS"],
+                env=build_environ,
+            ),
+        ])
+
+    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+        # Builds on Python 3.13 use a direct set of calls to make. Python 3.14
+        # introduced a simpler XCframework build script; Python 3.15 moved that
+        # script to the Platforms folder.
+        #
+        # The `Platforms/Apple` location can be used for 3.14 builds with a
+        # symlink, but 3.13 builds have to used the build process.
+        #
+        # The symlink approach will fail for Python 3.13 *PR* builds, because
+        # there's no way to identify the base branch for a PR.
+        if branch == "3.13":
+            self.py313_setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
+        else:
+            self.current_setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
 
 
 class IOSARM64SimulatorBuild(_IOSSimulatorBuild):
