@@ -30,6 +30,7 @@ class CPythonWorker:
         not_branches=None,
         parallel_builders=None,
         parallel_tests=None,
+        timeout_factor=None,
         exclude_test_resources=None,
     ):
         self.name = name
@@ -38,7 +39,15 @@ class CPythonWorker:
         self.not_branches = not_branches
         self.parallel_builders = parallel_builders
         self.parallel_tests = parallel_tests
-        self.exclude_test_resources = exclude_test_resources
+
+        # Forward some args to build factories
+        _xf_args = {}
+        self.extra_factory_args = _xf_args
+        if timeout_factor is not None:
+            _xf_args['timeout_factor'] = timeout_factor
+        if exclude_test_resources is not None:
+            _xf_args['exclude_test_resources'] = exclude_test_resources
+
         worker_settings = settings.workers[name]
         owner = name.split("-")[0]
         owner_settings = settings.owners[owner]
@@ -124,6 +133,7 @@ def get_workers(settings):
             tags=['linux', 'unix', 'rhel', 'ppc64le'],
             parallel_tests=10,
             branches=['3.10', '3.11', '3.12'],
+            timeout_factor=2,  # Increase the timeout on this slow worker
         ),
         cpw(
             name="cstratak-CentOS9-ppc64le",
@@ -283,6 +293,7 @@ def get_workers(settings):
             not_branches=['3.10'],
             parallel_tests=2,
             parallel_builders=2,
+            timeout_factor=2,  # Increase the timeout on this slow worker
         ),
         cpw(
             name="ambv-bb-win11",
