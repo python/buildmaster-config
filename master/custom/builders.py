@@ -160,7 +160,6 @@ STABLE_BUILDERS_TIER_3 = [
     ("s390x RHEL8 LTO + PGO", "cstratak-rhel8-s390x", LTOPGONonDebugBuild),
 
     # Fedora Linux ppc64le Clang
-    ("PPC64LE Fedora Stable Clang", "cstratak-fedora-stable-ppc64le", ClangUnixBuild),
     ("PPC64LE Fedora Stable Clang Installed", "cstratak-fedora-stable-ppc64le", ClangUnixInstalledBuild),
 
     # Linux armv7l (32-bit) GCC
@@ -305,6 +304,10 @@ UNSTABLE_BUILDERS_TIER_3 = [
     # Fedora Rawhide is unstable
     ("PPC64LE Fedora Rawhide Clang", "cstratak-fedora-rawhide-ppc64le", ClangUnixBuild),
     ("PPC64LE Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-ppc64le", ClangUnixInstalledBuild),
+
+    # A Clang 21.x bug causes a timeout:
+    #    https://github.com/llvm/llvm-project/issues/179695
+    ("PPC64LE Fedora Stable Clang", "cstratak-fedora-stable-ppc64le", ClangUnixBuild),
 
     # Linux s390x GCC/Clang
     ("s390x Fedora Rawhide", "cstratak-fedora-rawhide-s390x", UnixBuild),
