@@ -38,6 +38,21 @@ def step_timeout(timeout):
     return timeout + 10 * 60
 
 
+def get_j_opts(worker, default=None):
+    """Get option(s) for parallel make: ["-jN"]
+
+    Rerurns an one-element list or an empty one if default is None and no
+    parallelism is specified. This avoids branches when adding the option:
+
+        command = [cmd, *get_j_opts(worker), ...]
+    """
+    if worker.parallel_tests is None:
+        if default is None:
+            return []
+        return [f"-j{default}"]
+    return [f"-j{worker.parallel_tests}"]
+
+
 class BaseBuild(factory.BuildFactory):
     factory_tags = []
     test_timeout = TEST_TIMEOUT
@@ -67,18 +82,18 @@ class UnixBuild(BaseBuild):
     configureFlags = ["--with-pydebug"]
     compile_environ = {}
     interpreterFlags = ""
-    testFlags = ["-j2"]
+    testFlags = []
     makeTarget = "all"
     test_environ = {}
     build_out_of_tree = False
 
-    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+    def setup(self, branch, worker, test_with_PTY=False, **kwargs):
         out_of_tree_dir = "build_oot"
 
         # Adjust the timeout for this worker
-        self.test_timeout *= kwargs.get("timeout_factor", 1)
+        self.test_timeout *= worker.timeout_factor
 
-        exclude_test_resources = kwargs.get("exclude_test_resources", [])
+        exclude_test_resources = worker.exclude_test_resources
 
         # In 3.10, test_asyncio wasn't split out, and refleaks tests
         # need more time.
@@ -106,15 +121,10 @@ class UnixBuild(BaseBuild):
         self.addStep(
             Configure(command=configure_cmd, **oot_kwargs)
         )
-        compile = ["make", self.makeTarget]
-        testopts = list(self.testFlags)
+        compile = ["make", *get_j_opts(worker), self.makeTarget]
+        testopts = [*self.testFlags, *get_j_opts(worker, 2)]
         if not has_option("-R", self.testFlags):
             testopts.extend(("--junit-xml", JUNIT_FILENAME))
-        if parallel:
-            compile = ["make", parallel, self.makeTarget]
-            testopts.append(parallel)
-        if not has_option("-j", testopts):
-            testopts.append("-j2")
         # Add excluded test resources
         if exclude_test_resources:
             u_loc = None
@@ -165,9 +175,9 @@ class UnixPerfBuild(UnixBuild):
 
 
 class UnixTraceRefsBuild(UnixBuild):
-    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+    def setup(self, branch, worker, test_with_PTY=False, **kwargs):
         self.configureFlags = ["--with-pydebug", "--with-trace-refs"]
-        return super().setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
+        return super().setup(branch, worker, test_with_PTY=test_with_PTY, **kwargs)
 
 
 class UnixRefleakBuild(UnixBuild):
@@ -198,12 +208,12 @@ class UnixInstalledBuild(BaseBuild):
     buildersuffix = ".installed"
     configureFlags = []
     interpreterFlags = ["-Wdefault", "-bb", "-E"]
-    defaultTestOpts = ["-rwW", "-uall", "-j2"]
+    defaultTestOpts = ["-rwW", "-uall"]
     makeTarget = "all"
     installTarget = "install"
     factory_tags = ["installed"]
 
-    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+    def setup(self, branch, worker, test_with_PTY=False, **kwargs):
         if branch == MAIN_BRANCH_NAME:
             branch = MAIN_BRANCH_VERSION
         elif branch == "custom":
@@ -216,14 +226,14 @@ class UnixInstalledBuild(BaseBuild):
             )
         )
 
-        compile = ["make", self.makeTarget]
-        install = ["make", self.installTarget]
-        testopts = list(self.defaultTestOpts)
-        testopts.append(f"--timeout={self.test_timeout}")
-        if parallel:
-            compile = ["make", parallel, self.makeTarget]
-            install = ["make", parallel, self.installTarget]
-            testopts.append(parallel)
+        j_opts = get_j_opts(worker)
+        compile = ["make", *j_opts, self.makeTarget]
+        install = ["make", *j_opts, self.installTarget]
+        testopts = [
+            *self.defaultTestOpts,
+            f"--timeout={self.test_timeout}",
+            *get_j_opts(worker, 2),
+        ]
 
         test = [installed_python,
                 *self.interpreterFlags,
@@ -274,7 +284,7 @@ class UnixBuildWithoutDocStrings(UnixBuild):
 class UnixBigmemBuild(UnixBuild):
     buildersuffix = ".bigmem"
     testFlags = [
-        "-M60g", "-j8", "-uall,extralargefile",
+        "-M60g", "-uall,extralargefile",
         "--prioritize=test_bigmem,test_lzma,test_bz2,test_re,test_array"
     ]
     test_timeout = TEST_TIMEOUT * 5
@@ -596,18 +606,24 @@ class BaseWindowsBuild(BaseBuild):
     clean_command = [r"Tools\buildbot\clean.bat"]
     python_command = [r"python.bat"]
     buildFlags = ["-p", "Win32"]
-    testFlags = ["-p", "Win32", "-j2"]
+    testFlags = ["-p", "Win32"]
     cleanFlags = []
     factory_tags = ["win32"]
 
-    def setup(self, parallel, branch, **kwargs):
+    def setup(self, branch, worker, **kwargs):
         build_command = self.build_command + self.buildFlags
-        test_command = [*self.test_command, *self.testFlags]
+        test_command = [
+            *self.test_command,
+            *self.testFlags,
+            *get_j_opts(worker, 2),
+        ]
         if not has_option("-R", self.testFlags):
             test_command.extend((r"--junit-xml", JUNIT_FILENAME))
-        clean_command = self.clean_command + self.cleanFlags
-        if parallel:
-            test_command.append(parallel)
+        clean_command = [
+            *self.clean_command,
+            *self.cleanFlags,
+            *get_j_opts(worker),
+        ]
         self.addStep(Compile(command=build_command))
         self.addStep(PythonInfo(
             command=self.python_command + ["-m", "test.pythoninfo"],
@@ -628,19 +644,19 @@ class WindowsBuild(BaseWindowsBuild):
 
 class WindowsRefleakBuild(BaseWindowsBuild):
     buildersuffix = ".x32.refleak"
-    testFlags = ["-j2", "-R", "3:3", "-u-cpu"]
+    testFlags = ["-R", "3:3", "-u-cpu"]
     test_timeout = REFLEAK_TIMEOUT
     factory_tags = ["win32", "refleak"]
 
 
 class SlowWindowsBuild(WindowsBuild):
     test_timeout = TEST_TIMEOUT * 2
-    testFlags = ["-j2", "-u-cpu", "-u-largefile"]
+    testFlags = ["-u-cpu", "-u-largefile"]
 
 
 class Windows64Build(BaseWindowsBuild):
     buildFlags = ["-p", "x64"]
-    testFlags = ["-p", "x64", "-j2"]
+    testFlags = ["-p", "x64"]
     cleanFlags = ["-p", "x64"]
     factory_tags = ["win64"]
 
@@ -707,7 +723,7 @@ class Windows64PGONoGilTailcallBuild(Windows64PGONoGilBuild):
 
 class WindowsARM64Build(BaseWindowsBuild):
     buildFlags = ["-p", "ARM64"]
-    testFlags = ["-p", "ARM64", "-j2"]
+    testFlags = ["-p", "ARM64"]
     cleanFlags = ["-p", "ARM64"]
     factory_tags = ["win-arm64"]
 
@@ -731,7 +747,7 @@ class UnixCrossBuild(UnixBuild):
     host_make_cmd = ["make"]
     can_execute_python = True
 
-    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+    def setup(self, branch, worker, test_with_PTY=False, **kwargs):
         assert self.host is not None, "Must set self.host on cross builds"
 
         out_of_tree_dir = "build_oot"
@@ -778,10 +794,7 @@ class UnixCrossBuild(UnixBuild):
                 workdir=oot_build_path
             )
         )
-        if parallel:
-            compile = ["make", parallel]
-        else:
-            compile = ["make"]
+        compile = ["make", *get_j_opts(worker)]
 
         self.addStep(
             Compile(
@@ -809,13 +822,9 @@ class UnixCrossBuild(UnixBuild):
             )
         )
 
-        testopts = list(self.testFlags)
+        testopts = [*self.testFlags, *get_j_opts(worker, 2)]
         if not has_option("-R", self.testFlags):
             testopts.extend((" --junit-xml", JUNIT_FILENAME))
-        if parallel:
-            testopts.append(parallel)
-        if not has_option("-j", self.testFlags):
-            testopts.append("-j2")
 
         test = [
             "make",
@@ -825,10 +834,7 @@ class UnixCrossBuild(UnixBuild):
             f"TESTTIMEOUT={self.test_timeout}",
         ]
 
-        if parallel:
-            compile = self.host_make_cmd + [parallel, self.makeTarget]
-        else:
-            compile = self.host_make_cmd + [self.makeTarget]
+        compile = [*self.host_make_cmd, *get_j_opts(worker), *self.makeTarget]
         self.addStep(
             Compile(
                 name="Compile host Python",
@@ -884,7 +890,7 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
     host = "wasm32-unknown-wasi"
     host_configure_cmd = ["../../Tools/wasm/wasi-env", "../../configure"]
 
-    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+    def setup(self, branch, worker, test_with_PTY=False, **kwargs):
         self.addStep(
             SetPropertyFromCommand(
                 name="Find config.site-wasm32-wasi",
@@ -907,7 +913,7 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
             )
         )
         self.compile_environ["WASI_SDK_PATH"] = "/opt/wasi-sdk-21.0"
-        super().setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
+        super().setup(branch, worker, test_with_PTY=test_with_PTY, **kwargs)
 
 
 class _Wasm32WasiPreview1Build(UnixBuild):
@@ -922,7 +928,7 @@ class _Wasm32WasiPreview1Build(UnixBuild):
         self.buildersuffix += self.append_suffix
         super().__init__(source, extra_tags=extra_tags, **kwargs)
 
-    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+    def setup(self, branch, worker, test_with_PTY=False, **kwargs):
         wasi_py = "Tools/wasm/wasi.py"
         host_triple = "wasm32-wasip1"
         host_path = f"build/cross-build/{host_triple}"
@@ -965,13 +971,9 @@ class _Wasm32WasiPreview1Build(UnixBuild):
         ))
 
         # Copied from UnixBuild.
-        testopts = list(self.testFlags)
+        testopts = [*self.testFlags, *get_j_opts(worker, 2)]
         if not has_option("-R", self.testFlags):
             testopts.extend(("--junit-xml", JUNIT_FILENAME))
-        if parallel:
-            testopts.append(parallel)
-        if not has_option("-j", testopts):
-            testopts.append("-j2")
         test = [
             "make",
             "buildbottest",
@@ -1045,11 +1047,13 @@ class _IOSSimulatorBuild(UnixBuild):
 
         super().__init__(source, **kwargs)
 
-    def py313_setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+    def py313_setup(self, branch, worker, test_with_PTY=False, **kwargs):
         out_of_tree_dir = "build_oot"
         oot_dir_path = os.path.join("build", out_of_tree_dir)
         oot_build_path = os.path.join(oot_dir_path, "build")
         oot_host_path = os.path.join(oot_dir_path, "host")
+
+        j_opts = get_j_opts(worker)
 
         # Create out of tree directory for "build", the platform we are
         # currently running on
@@ -1080,10 +1084,7 @@ class _IOSSimulatorBuild(UnixBuild):
                 workdir=oot_build_path,
             )
         )
-        if parallel:
-            compile = ["make", parallel]
-        else:
-            compile = ["make"]
+        compile = ["make", *j_opts]
 
         self.addStep(
             Compile(
@@ -1141,12 +1142,8 @@ class _IOSSimulatorBuild(UnixBuild):
             )
         )
 
-        if parallel:
-            compile = ["make", parallel, self.makeTarget]
-            install = ["make", parallel, "install"]
-        else:
-            compile = ["make", self.makeTarget]
-            install = ["make", "install"]
+        compile = ["make", *j_opts, self.makeTarget]
+        install = ["make", *j_opts, "install"]
 
         self.addStep(
             Compile(
@@ -1187,7 +1184,7 @@ class _IOSSimulatorBuild(UnixBuild):
             )
         )
 
-    def current_setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+    def current_setup(self, branch, worker, test_with_PTY=False, **kwargs):
         build_environ = {
             "CACHE_DIR": "/Users/buildbot/downloads",
         }
@@ -1237,7 +1234,7 @@ class _IOSSimulatorBuild(UnixBuild):
             ),
         ])
 
-    def setup(self, parallel, branch, test_with_PTY=False, **kwargs):
+    def setup(self, branch, *args, **kwargs):
         # Builds on Python 3.13 use a direct set of calls to make. Python 3.14
         # introduced a simpler XCframework build script; Python 3.15 moved that
         # script to the Platforms folder.
@@ -1248,9 +1245,9 @@ class _IOSSimulatorBuild(UnixBuild):
         # The symlink approach will fail for Python 3.13 *PR* builds, because
         # there's no way to identify the base branch for a PR.
         if branch == "3.13":
-            self.py313_setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
+            self.py313_setup(branch, *args, **kwargs)
         else:
-            self.current_setup(parallel, branch, test_with_PTY=test_with_PTY, **kwargs)
+            self.current_setup(branch, *args, **kwargs)
 
 
 class IOSARM64SimulatorBuild(_IOSSimulatorBuild):
@@ -1336,16 +1333,14 @@ class ValgrindBuild(UnixBuild):
     factory_tags = ["valgrind"]
     test_timeout = TEST_TIMEOUT * 5
 
-    def setup(self, parallel, branch, **kwargs):
+    def setup(self, branch, worker, **kwargs):
         self.addStep(
             Configure(
                 command=["./configure", "--prefix", "$(PWD)/target"] + self.configureFlags
             )
         )
 
-        compile = ["make", self.makeTarget]
-        if parallel:
-            compile = ["make", parallel, self.makeTarget]
+        compile = ["make", *get_j_opts(worker), self.makeTarget]
 
         self.addStep(Compile(command=compile, env=self.compile_environ))
 
