@@ -834,7 +834,7 @@ class UnixCrossBuild(UnixBuild):
             f"TESTTIMEOUT={self.test_timeout}",
         ]
 
-        compile = [*self.host_make_cmd, *get_j_opts(worker), *self.makeTarget]
+        compile = [*self.host_make_cmd, *get_j_opts(worker), self.makeTarget]
         self.addStep(
             Compile(
                 name="Compile host Python",
