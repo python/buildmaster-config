@@ -1185,10 +1185,7 @@ class _IOSSimulatorBuild(UnixBuild):
         )
 
     def current_setup(self, branch, worker, test_with_PTY=False, **kwargs):
-        build_environ = {
-            "CACHE_DIR": "/Users/buildbot/downloads",
-        }
-
+        apple_py = ["python3", "Platforms/Apple"]
         self.addSteps([
             # This symlink is needed to support Python 3.14 builds - it makes the
             # top level Apple folder appear in the new Platforms/Apple location.
@@ -1202,18 +1199,15 @@ class _IOSSimulatorBuild(UnixBuild):
             # Build the full iOS XCframework, including a multi-arch simulator slice.
             Compile(
                 name="Configure and compile build Python",
-                command=["python3", "Platforms/Apple", "build", "iOS", "build"],
-                env=build_environ,
+                command=apple_py + ["build", "iOS", "build"],
             ),
             Compile(
                 name="Configure and compile host Pythons",
-                command=["python3", "Platforms/Apple", "build", "iOS", "hosts"],
-                env=build_environ,
+                command=apple_py + ["build", "iOS", "hosts"],
             ),
             Compile(
                 name="Package XCframework",
-                command=["python3", "Platforms/Apple", "package", "iOS"],
-                env=build_environ,
+                command=apple_py + ["package", "iOS"],
             ),
             Test(
                 name="Run test suite",
@@ -1224,13 +1218,11 @@ class _IOSSimulatorBuild(UnixBuild):
                     "iOS",
                     "--slow-ci",
                 ],
-                env=build_environ,
                 timeout=step_timeout(self.test_timeout),
             ),
             Clean(
                 name="Clean the builds",
-                command=["python3", "Platforms/Apple", "clean", "iOS"],
-                env=build_environ,
+                command=apple_py + ["clean", "iOS"],
             ),
         ])
 
