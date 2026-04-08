@@ -1195,8 +1195,9 @@ class _IOSSimulatorBuild(UnixBuild):
             ShellCommand(
                 name="Set up compatibility symlink",
                 command=(
-                    "[ -e Platforms/Apple ] "
-                    "|| ln -s ../Apple Platforms/Apple"
+                    "if [ ! -e Platforms/Apple ]; then"
+                    " ln -s ../Apple Platforms/Apple; "
+                    "fi"
                 ),
             ),
             # Build the full iOS XCframework, including a multi-arch simulator slice.
@@ -1277,10 +1278,11 @@ class AndroidBuild(BaseBuild):
             ShellCommand(
                 name="Set up compatibility symlink",
                 command=(
-                    "[ -e Platforms/Android ] "
-                    "|| mkdir -p Platforms "
-                    "&& ln -s ../Android Platforms/Android "
-                    "&& ln -s ../Android/android.py Platforms/Android/__main__.py"
+                    "if [ ! -e Platforms/Android ]; then"
+                    " mkdir -p Platforms;"
+                    " ln -s ../Android Platforms/Android;"
+                    " ln -s ../Android/android.py Platforms/Android/__main__.py; "
+                    "fi"
                 ),
             ),
             SetPropertyFromCommand(
