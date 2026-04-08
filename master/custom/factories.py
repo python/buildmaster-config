@@ -1280,7 +1280,7 @@ class AndroidBuild(BaseBuild):
                     "[ -e Platforms/Android ] "
                     "|| mkdir -p Platforms "
                     "&& ln -s ../Android Platforms/Android "
-                    "&& ln -si ../Android/android.py Platforms/Android/__main__.py"
+                    "&& ln -s ../Android/android.py Platforms/Android/__main__.py"
                 ),
             ),
             SetPropertyFromCommand(
