@@ -1273,8 +1273,20 @@ class AndroidBuild(BaseBuild):
     """
 
     def setup(self, **kwargs):
-        android_py = "Android/android.py"
+        android_py = ["python3", "Platforms/Android"]
         self.addSteps([
+            # This symlink is needed to support pre Python 3.15 builds - it makes the
+            # top level Andrdoid folder appear in the new Platforms/Android location,
+            # and links `__main__.py` to the older `android.py` script. This step can
+            # be removed when 3.14 is no longer supported.
+            ShellCommand(
+                name="Set up compatibility symlink",
+                command=(
+                    "[ -e Platforms/Android ]"
+                    "|| ln -s ../Android Platforms/Android"
+                    "&& ln -si ../Android/android.py Platforms/Android/__main__.py"
+                ),
+            ),
             SetPropertyFromCommand(
                 name="Get build triple",
                 command=["./config.guess"],
@@ -1283,24 +1295,22 @@ class AndroidBuild(BaseBuild):
             ),
             Configure(
                 name="Configure build Python",
-                command=[android_py, "configure-build"],
+                command=android_py + ["configure-build"],
             ),
             Compile(
                 name="Compile build Python",
-                command=[android_py, "make-build"],
+                command=android_py + ["make-build"],
             ),
             Configure(
                 name="Configure host Python",
-                command=[android_py, "configure-host", self.host_triple],
+                command=android_py + ["configure-host", self.host_triple],
             ),
             Compile(
                 name="Compile host Python",
-                command=[android_py, "make-host", self.host_triple],
+                command=android_py + ["make-host", self.host_triple],
             ),
             Test(
-                command=[
-                    android_py, "test", "--managed", "maxVersion", "-v", "--slow-ci"
-                ],
+                command=android_py + ["test", "--managed", "maxVersion", "-v", "--slow-ci"],
                 timeout=step_timeout(self.test_timeout),
             ),
         ])
