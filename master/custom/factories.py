@@ -1194,7 +1194,10 @@ class _IOSSimulatorBuild(UnixBuild):
             # supported.
             ShellCommand(
                 name="Set up compatibility symlink",
-                command="[ -e Platforms/Apple ] || ln -s ../Apple Platforms/Apple",
+                command=(
+                    "[ -e Platforms/Apple ] "
+                    "|| ln -s ../Apple Platforms/Apple"
+                ),
             ),
             # Build the full iOS XCframework, including a multi-arch simulator slice.
             Compile(
@@ -1268,14 +1271,15 @@ class AndroidBuild(BaseBuild):
         android_py = ["python3", "Platforms/Android"]
         self.addSteps([
             # This symlink is needed to support pre Python 3.15 builds - it makes the
-            # top level Andrdoid folder appear in the new Platforms/Android location,
+            # top level Android folder appear in the new Platforms/Android location,
             # and links `__main__.py` to the older `android.py` script. This step can
             # be removed when 3.14 is no longer supported.
             ShellCommand(
                 name="Set up compatibility symlink",
                 command=(
-                    "[ -e Platforms/Android ]"
-                    "|| ln -s ../Android Platforms/Android"
+                    "[ -e Platforms/Android ] "
+                    "|| mkdir -p Platforms "
+                    "&& ln -s ../Android Platforms/Android "
                     "&& ln -si ../Android/android.py Platforms/Android/__main__.py"
                 ),
             ),
