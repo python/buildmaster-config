@@ -1185,10 +1185,7 @@ class _IOSSimulatorBuild(UnixBuild):
         )
 
     def current_setup(self, branch, worker, test_with_PTY=False, **kwargs):
-        build_environ = {
-            "CACHE_DIR": "/Users/buildbot/downloads",
-        }
-
+        apple_py = ["python3", "Platforms/Apple"]
         self.addSteps([
             # This symlink is needed to support Python 3.14 builds - it makes the
             # top level Apple folder appear in the new Platforms/Apple location.
@@ -1197,23 +1194,24 @@ class _IOSSimulatorBuild(UnixBuild):
             # supported.
             ShellCommand(
                 name="Set up compatibility symlink",
-                command="[ -e Platforms/Apple ] || ln -s ../Apple Platforms/Apple",
+                command=(
+                    "if [ ! -e Platforms/Apple ]; then"
+                    " ln -s ../Apple Platforms/Apple; "
+                    "fi"
+                ),
             ),
             # Build the full iOS XCframework, including a multi-arch simulator slice.
             Compile(
                 name="Configure and compile build Python",
-                command=["python3", "Platforms/Apple", "build", "iOS", "build"],
-                env=build_environ,
+                command=apple_py + ["build", "iOS", "build"],
             ),
             Compile(
                 name="Configure and compile host Pythons",
-                command=["python3", "Platforms/Apple", "build", "iOS", "hosts"],
-                env=build_environ,
+                command=apple_py + ["build", "iOS", "hosts"],
             ),
             Compile(
                 name="Package XCframework",
-                command=["python3", "Platforms/Apple", "package", "iOS"],
-                env=build_environ,
+                command=apple_py + ["package", "iOS"],
             ),
             Test(
                 name="Run test suite",
@@ -1224,13 +1222,11 @@ class _IOSSimulatorBuild(UnixBuild):
                     "iOS",
                     "--slow-ci",
                 ],
-                env=build_environ,
                 timeout=step_timeout(self.test_timeout),
             ),
             Clean(
                 name="Clean the builds",
-                command=["python3", "Platforms/Apple", "clean", "iOS"],
-                env=build_environ,
+                command=apple_py + ["clean", "iOS"],
             ),
         ])
 
@@ -1273,8 +1269,22 @@ class AndroidBuild(BaseBuild):
     """
 
     def setup(self, **kwargs):
-        android_py = "Android/android.py"
+        android_py = ["python3", "Platforms/Android"]
         self.addSteps([
+            # This symlink is needed to support pre Python 3.15 builds - it makes the
+            # top level Android folder appear in the new Platforms/Android location,
+            # and links `__main__.py` to the older `android.py` script. This step can
+            # be removed when 3.14 is no longer supported.
+            ShellCommand(
+                name="Set up compatibility symlink",
+                command=(
+                    "if [ ! -e Platforms/Android ]; then"
+                    " mkdir -p Platforms;"
+                    " ln -s ../Android Platforms/Android;"
+                    " ln -s ./android.py Platforms/Android/__main__.py; "
+                    "fi"
+                ),
+            ),
             SetPropertyFromCommand(
                 name="Get build triple",
                 command=["./config.guess"],
@@ -1283,24 +1293,22 @@ class AndroidBuild(BaseBuild):
             ),
             Configure(
                 name="Configure build Python",
-                command=[android_py, "configure-build"],
+                command=android_py + ["configure-build"],
             ),
             Compile(
                 name="Compile build Python",
-                command=[android_py, "make-build"],
+                command=android_py + ["make-build"],
             ),
             Configure(
                 name="Configure host Python",
-                command=[android_py, "configure-host", self.host_triple],
+                command=android_py + ["configure-host", self.host_triple],
             ),
             Compile(
                 name="Compile host Python",
-                command=[android_py, "make-host", self.host_triple],
+                command=android_py + ["make-host", self.host_triple],
             ),
             Test(
-                command=[
-                    android_py, "test", "--managed", "maxVersion", "-v", "--slow-ci"
-                ],
+                command=android_py + ["test", "--managed", "maxVersion", "-v", "--slow-ci"],
                 timeout=step_timeout(self.test_timeout),
             ),
         ])
