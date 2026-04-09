@@ -1281,7 +1281,7 @@ class AndroidBuild(BaseBuild):
                     "if [ ! -e Platforms/Android ]; then"
                     " mkdir -p Platforms;"
                     " ln -s ../Android Platforms/Android;"
-                    " ln -s ../Android/android.py Platforms/Android/__main__.py; "
+                    " ln -s ./android.py Platforms/Android/__main__.py; "
                     "fi"
                 ),
             ),
