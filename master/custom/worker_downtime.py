@@ -29,6 +29,7 @@ def no_builds_between(start, end, *, day_of_week=None, tz=None):
         return True
     return canStartBuild
 
+
 def is_within_time_range(now, start, end):
     if start <= end:
         return start <= now <= end
