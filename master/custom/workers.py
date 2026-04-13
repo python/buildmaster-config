@@ -5,6 +5,8 @@
 from functools import partial
 from zoneinfo import ZoneInfo
 
+import calendar
+
 from buildbot.plugins import worker as _worker
 
 from custom.factories import MAIN_BRANCH_NAME
@@ -63,7 +65,9 @@ class CPythonWorker:
 # Builds scheduled between 8am - 10am PT on Wednesdays will be delayed to
 # 10am PT.
 itamaro_downtime = no_builds_between(
-    "8:00", "10:00", day_of_week=2, tz=ZoneInfo("America/Los_Angeles")
+    "8:00", "10:00",
+    day_of_week=calendar.WEDNESDAY,
+    tz=ZoneInfo("America/Los_Angeles"),
 )
 
 def get_workers(settings):
