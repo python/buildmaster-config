@@ -3,10 +3,13 @@
 # vim:set ts=8 sw=4 sts=4 et:
 
 from functools import partial
+from zoneinfo import ZoneInfo
+import calendar
 
 from buildbot.plugins import worker as _worker
 
 from custom.factories import MAIN_BRANCH_NAME
+from custom.worker_downtime import no_builds_between
 
 
 # By default, the buildmaster sends a simple, non-blocking message to each
@@ -32,6 +35,7 @@ class CPythonWorker:
         parallel_tests=None,
         timeout_factor=1,
         exclude_test_resources=None,
+        downtime=None
     ):
         self.name = name
         self.tags = tags or set()
@@ -41,6 +45,7 @@ class CPythonWorker:
         self.parallel_tests = parallel_tests
         self.timeout_factor = timeout_factor
         self.exclude_test_resources = exclude_test_resources or []
+        self.downtime = downtime
 
         worker_settings = settings.workers[name]
         owner = name.split("-")[0]
@@ -55,6 +60,14 @@ class CPythonWorker:
                                             notify_on_missing=emails,
                                             keepalive_interval=KEEPALIVE)
 
+# Some of Itamar's workers are reprovisioned every Wednesday at 9am PT.
+# Builds scheduled between 8am - 10am PT on Wednesdays will be delayed to
+# 10am PT.
+itamaro_downtime = no_builds_between(
+    "8:00", "10:00",
+    day_of_week=calendar.WEDNESDAY,
+    tz=ZoneInfo("America/Los_Angeles"),
+)
 
 def get_workers(settings):
     cpw = partial(CPythonWorker, settings)
@@ -160,6 +173,10 @@ def get_workers(settings):
             tags=['linux', 'unix', 'ubuntu', 'arm', 'arm64', 'aarch64', 'bigmem'],
             not_branches=['3.10', '3.11', '3.12', '3.13', '3.14'],
             parallel_tests=8,
+            # This worker runs pyperformance at 12am UTC.
+            # If a build is scheduled between 10pm UTC and 2am UTC,
+            # it will be delayed to 2am UTC.
+            downtime=no_builds_between("22:00", "2:00")
         ),
         cpw(
             name="cstratak-fedora-rawhide-s390x",
@@ -294,6 +311,12 @@ def get_workers(settings):
             tags=['windows', 'win11', 'amd64', 'x86-64', 'bigmem'],
             not_branches=['3.10', '3.11', '3.12', '3.13', '3.14'],
             parallel_tests=4,
+            # This worker restarts every day at 9am UTC to work around issues
+            # stemming from failing bigmem tests trashing disk space and
+            # fragmenting RAM.
+            # Builds scheduled between 07:20am - 9:20am UTC will be delayed
+            # to 9:20am UTC.
+            downtime=no_builds_between("7:20", "9:20")
         ),
         cpw(
             name="itamaro-centos-aws",
@@ -301,6 +324,7 @@ def get_workers(settings):
             not_branches=['3.10', '3.11', '3.12'],
             parallel_tests=10,
             parallel_builders=2,
+            downtime=itamaro_downtime,
         ),
         cpw(
             name="itamaro-win64-srv-22-aws",
@@ -308,6 +332,7 @@ def get_workers(settings):
             not_branches=['3.10', '3.11', '3.12'],
             parallel_tests=10,
             parallel_builders=2,
+            downtime=itamaro_downtime,
         ),
         cpw(
             name="itamaro-macos-intel-aws",
