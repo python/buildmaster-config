@@ -4,7 +4,6 @@
 
 from functools import partial
 from zoneinfo import ZoneInfo
-
 import calendar
 
 from buildbot.plugins import worker as _worker
