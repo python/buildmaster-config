@@ -277,9 +277,9 @@ def get_workers(settings):
             parallel_tests=2,
         ),
         cpw(
-            name="linaro-win-arm64",
-            tags=['windows', 'arm64'],
-            parallel_tests=4,
+            name="ware-win11-arm64",
+            tags=['windows', 'win11', 'arm64'],
+            parallel_tests=2,
         ),
         cpw(
             name="bcannon-wasi",
