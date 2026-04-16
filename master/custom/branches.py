@@ -24,7 +24,7 @@ def generate_branches():
     yield BranchInfo(
         'main',
         version_tuple=(3, 15),
-        git_ref='main',
+        git_branch='main',
         is_main=True,
         builddir_name='main',
         builder_tag='main',
@@ -38,7 +38,7 @@ def generate_branches():
     yield BranchInfo(
         'PR',
         version_tuple=None,
-        git_ref=None,
+        git_branch=None,
         is_pr=True,
         builddir_name='pull_request',
         builder_tag='PullRequest',
@@ -53,7 +53,7 @@ def _maintenance_branch(major, minor, **kwargs):
         name=version_str,
         builder_tag=version_str,
         version_tuple=version_tuple,
-        git_ref=version_str,
+        git_branch=version_str,
         builddir_name=version_str,
         sort_key=-minor,
     )
@@ -82,7 +82,7 @@ def _maintenance_branch(major, minor, **kwargs):
 class BranchInfo:
     name: str
     version_tuple: tuple[int, int] | None
-    git_ref: str | None
+    git_branch: str | None
     builddir_name: str
     builder_tag: str
 
