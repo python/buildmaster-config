@@ -173,10 +173,13 @@ def get_workers(settings):
             tags=['linux', 'unix', 'ubuntu', 'arm', 'arm64', 'aarch64', 'bigmem'],
             not_branches=['3.10', '3.11', '3.12', '3.13', '3.14'],
             parallel_tests=8,
-            # This worker runs pyperformance at 12am UTC.
-            # If a build is scheduled between 10pm UTC and 2am UTC,
-            # it will be delayed to 2am UTC.
-            downtime=no_builds_between("22:00", "2:00")
+            # This worker runs pyperformance for speed.python.org at 12am UTC.
+            # The pyperformance run lasts less than 2h.
+            # From 2am to 8am the node runs GH benchmarks for https://www.doesjitgobrrr.com
+            # The node is connected here: https://github.com/diegorusso/pyperf-bench
+            # If a build is scheduled between 10pm UTC and 8am UTC,
+            # it will be delayed to 8am UTC.
+            downtime=no_builds_between("22:00", "8:00")
         ),
         cpw(
             name="cstratak-fedora-rawhide-s390x",
