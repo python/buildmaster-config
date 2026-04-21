@@ -8,7 +8,6 @@ import calendar
 
 from buildbot.plugins import worker as _worker
 
-from custom.factories import MAIN_BRANCH_NAME
 from custom.worker_downtime import no_builds_between
 
 

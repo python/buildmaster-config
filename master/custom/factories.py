@@ -9,8 +9,7 @@ from buildbot.steps.shell import (
 
 from buildbot.plugins import util
 
-from . import (MAIN_BRANCH_VERSION, MAIN_BRANCH_NAME,
-               JUNIT_FILENAME)
+from . import JUNIT_FILENAME
 from .steps import (
     Test,
     Clean,
@@ -56,6 +55,8 @@ def get_j_opts(worker, default=None):
 class BaseBuild(factory.BuildFactory):
     factory_tags = []
     test_timeout = TEST_TIMEOUT
+    buildersuffix = ""
+    tags = ()
 
     def __init__(self, source, *, extra_tags=[], **kwargs):
         super().__init__([source])
@@ -97,7 +98,7 @@ class UnixBuild(BaseBuild):
 
         # In 3.10, test_asyncio wasn't split out, and refleaks tests
         # need more time.
-        if branch == "3.10" and has_option("-R", self.testFlags):
+        if branch.monolithic_test_asyncio and has_option("-R", self.testFlags):
             self.test_timeout *= 2
 
         if self.build_out_of_tree:
@@ -161,7 +162,7 @@ class UnixBuild(BaseBuild):
             env=self.test_environ,
             **oot_kwargs
         ))
-        if branch not in ("3",) and not has_option("-R", self.testFlags):
+        if not branch.is_pr and not has_option("-R", self.testFlags):
             filename = JUNIT_FILENAME
             if self.build_out_of_tree:
                 filename = os.path.join(out_of_tree_dir, filename)
@@ -214,11 +215,12 @@ class UnixInstalledBuild(BaseBuild):
     factory_tags = ["installed"]
 
     def setup(self, branch, worker, test_with_PTY=False, **kwargs):
-        if branch == MAIN_BRANCH_NAME:
-            branch = MAIN_BRANCH_VERSION
-        elif branch == "custom":
-            branch = "3"
-        installed_python = f"./target/bin/python{branch}"
+        if branch.version_tuple:
+            major, minor = branch.version_tuple
+            executable_name = f'python{major}.{minor}'
+        else:
+            executable_name = f'python3'
+        installed_python = f"./target/bin/{executable_name}"
         self.addStep(
             Configure(
                 command=["./configure", "--prefix", "$(PWD)/target"]
@@ -633,7 +635,7 @@ class BaseWindowsBuild(BaseBuild):
             command=test_command,
             timeout=step_timeout(self.test_timeout),
         ))
-        if branch not in ("3",) and not has_option("-R", self.testFlags):
+        if not branch.is_pr and not has_option("-R", self.testFlags):
             self.addStep(UploadTestResults(branch))
         self.addStep(Clean(command=clean_command))
 
@@ -856,7 +858,7 @@ class UnixCrossBuild(UnixBuild):
                 env=self.test_environ,
                 workdir=oot_host_path,
             ))
-            if branch not in ("3",) and not has_option("-R", self.testFlags):
+            if not branch.is_pr and not has_option("-R", self.testFlags):
                 filename = os.path.join(oot_host_path, JUNIT_FILENAME)
                 self.addStep(UploadTestResults(branch, filename=filename))
         self.addStep(
@@ -990,7 +992,7 @@ class _Wasm32WasiPreview1Build(UnixBuild):
                 workdir=host_path,
             )
         )
-        if branch not in ("3",) and not has_option("-R", self.testFlags):
+        if not branch.is_pr and not has_option("-R", self.testFlags):
             filename = os.path.join(host_path, JUNIT_FILENAME)
             self.addStep(UploadTestResults(branch, filename=filename))
 
@@ -1240,7 +1242,7 @@ class _IOSSimulatorBuild(UnixBuild):
         #
         # The symlink approach will fail for Python 3.13 *PR* builds, because
         # there's no way to identify the base branch for a PR.
-        if branch == "3.13":
+        if branch.name == "3.13":
             self.py313_setup(branch, *args, **kwargs)
         else:
             self.current_setup(branch, *args, **kwargs)
