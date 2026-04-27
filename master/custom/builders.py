@@ -33,7 +33,6 @@ from custom.factories import (
     CentOS9NoBuiltinHashesUnixBuild,
     CentOS9NoBuiltinHashesUnixBuildExceptBlake2,
     Windows64Build,
-    Windows64BigmemBuild,
     Windows64NoGilBuild,
     Windows64PGOBuild,
     Windows64PGOTailcallBuild,
@@ -89,7 +88,6 @@ STABLE_BUILDERS_TIER_1 = [
 
     # Windows x86-64 MSVC
     ("AMD64 Windows10", "bolen-windows10", Windows64Build),
-    ("AMD64 Windows11 Bigmem", "ambv-bb-win11", Windows64BigmemBuild),
     ("AMD64 Windows11 Non-Debug", "ware-win11", Windows64ReleaseBuild),
     ("AMD64 Windows11 Refleaks", "ware-win11", Windows64RefleakBuild),
     ("AMD64 Windows Server 2022 NoGIL", "itamaro-win64-srv-22-aws", Windows64NoGilBuild),
