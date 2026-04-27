@@ -309,18 +309,6 @@ def get_workers(settings):
             timeout_factor=2,  # Increase the timeout on this slow worker
         ),
         cpw(
-            name="ambv-bb-win11",
-            tags=['windows', 'win11', 'amd64', 'x86-64', 'bigmem'],
-            not_branches=['3.10', '3.11', '3.12', '3.13', '3.14'],
-            parallel_tests=4,
-            # This worker restarts every day at 9am UTC to work around issues
-            # stemming from failing bigmem tests trashing disk space and
-            # fragmenting RAM.
-            # Builds scheduled between 07:20am - 9:20am UTC will be delayed
-            # to 9:20am UTC.
-            downtime=no_builds_between("7:20", "9:20")
-        ),
-        cpw(
             name="itamaro-centos-aws",
             tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
             not_branches=['3.10', '3.11', '3.12'],
