@@ -116,7 +116,6 @@ class BranchInfo:
 
 
 BRANCHES = list(generate_branches())
-PR_BRANCH = BRANCHES[-1]
 
 # Verify that we've defined these in sort order
 assert BRANCHES == sorted(BRANCHES)
