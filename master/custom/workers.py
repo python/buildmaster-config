@@ -298,7 +298,8 @@ def get_workers(settings):
         cpw(
             name="ware-win11-arm64",
             tags=['windows', 'win11', 'arm64'],
-            parallel_tests=2,
+            parallel_tests=8,
+            not_branches=['3.10', '3.11', '3.12'],
         ),
         cpw(
             name="bcannon-wasi",
