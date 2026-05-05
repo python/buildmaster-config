@@ -85,7 +85,7 @@ class UnixBuild(BaseBuild):
     interpreterFlags = ""
     testFlags = []
     makeTarget = "all"
-    test_environ = {}
+    test_environ = {"FORCE_COLOR": 1}
     build_out_of_tree = False
 
     def setup(self, branch, worker, test_with_PTY=False, **kwargs):
