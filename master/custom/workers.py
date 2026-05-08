@@ -170,7 +170,7 @@ def get_workers(settings):
         cpw(
             name="diegorusso-aarch64-bigmem",
             tags=['linux', 'unix', 'ubuntu', 'arm', 'arm64', 'aarch64', 'bigmem'],
-            not_branches=['3.10', '3.11', '3.12', '3.13', '3.14'],
+            branches=['3.x'],
             parallel_tests=8,
             # This worker runs pyperformance for speed.python.org at 12am UTC.
             # The pyperformance run lasts less than 2h.
