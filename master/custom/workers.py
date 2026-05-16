@@ -170,7 +170,7 @@ def get_workers(settings):
         cpw(
             name="diegorusso-aarch64-bigmem",
             tags=['linux', 'unix', 'ubuntu', 'arm', 'arm64', 'aarch64', 'bigmem'],
-            not_branches=['3.10', '3.11', '3.12', '3.13', '3.14'],
+            branches=['3.x'],
             parallel_tests=8,
             # This worker runs pyperformance for speed.python.org at 12am UTC.
             # The pyperformance run lasts less than 2h.
@@ -298,7 +298,8 @@ def get_workers(settings):
         cpw(
             name="ware-win11-arm64",
             tags=['windows', 'win11', 'arm64'],
-            parallel_tests=2,
+            parallel_tests=8,
+            not_branches=['3.10', '3.11', '3.12'],
         ),
         cpw(
             name="bcannon-wasi",
@@ -307,18 +308,6 @@ def get_workers(settings):
             parallel_tests=2,
             parallel_builders=2,
             timeout_factor=2,  # Increase the timeout on this slow worker
-        ),
-        cpw(
-            name="ambv-bb-win11",
-            tags=['windows', 'win11', 'amd64', 'x86-64', 'bigmem'],
-            not_branches=['3.10', '3.11', '3.12', '3.13', '3.14'],
-            parallel_tests=4,
-            # This worker restarts every day at 9am UTC to work around issues
-            # stemming from failing bigmem tests trashing disk space and
-            # fragmenting RAM.
-            # Builds scheduled between 07:20am - 9:20am UTC will be delayed
-            # to 9:20am UTC.
-            downtime=no_builds_between("7:20", "9:20")
         ),
         cpw(
             name="itamaro-centos-aws",

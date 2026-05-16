@@ -30,7 +30,7 @@ $(VENV_CHECK): $(REQUIREMENTS)
 regen-requirements:
 	$(SYSTEM_PYTHON) -m venv --clear venv
 	$(PIP) install -U pip
-	$(PIP) install -U -r requirements.in
+	$(PIP) install -U --uploaded-prior-to=P5D -r requirements.in
 	$(PIP) freeze > $(REQUIREMENTS)
 
 # Test targets

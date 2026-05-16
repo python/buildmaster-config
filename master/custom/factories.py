@@ -295,6 +295,10 @@ class UnixBigmemBuild(UnixBuild):
 
 class UnixOddballsBuild(UnixBuild):
     buildersuffix = ".oddballs"
+    configureFlags = [
+        "--enable-pystats",
+        "--with-pydebug",
+    ]
     testFlags = ["-u", "xpickle,tzdata",
                  "test_xpickle", "test_zoneinfo", "test_datetime"]
     factory_tags = ["xpickle", "tzdata"]

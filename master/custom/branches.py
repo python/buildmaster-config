@@ -22,14 +22,15 @@ from typing import Any
 
 def generate_branches():
     yield BranchInfo(
-        'main',
-        version_tuple=(3, 15),
+        '3.x',
+        version_tuple=(3, 16),
         git_branch='main',
         is_main=True,
-        builddir_name='main',
-        builder_tag='main',
+        builddir_name='3.x',
+        builder_tag='3.x',
         sort_key=-9999,
     )
+    yield _maintenance_branch(3, 15)
     yield _maintenance_branch(3, 14)
     yield _maintenance_branch(3, 13)
     yield _maintenance_branch(3, 12)
