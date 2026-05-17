@@ -266,11 +266,6 @@ def get_workers(settings):
             parallel_tests=6,
         ),
         cpw(
-            name="ware-freebsd",
-            tags=['freebsd', 'bsd', 'unix', 'amd64', 'x86-64'],
-            parallel_tests=6,
-        ),
-        cpw(
             name="opsec-fbsd14",
             tags=['freebsd', 'bsd', 'unix', 'amd64', 'x86-64'],
             parallel_tests=4,

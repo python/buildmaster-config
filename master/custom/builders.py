@@ -168,7 +168,6 @@ STABLE_BUILDERS_TIER_3 = [
     ("ARM64 Raspbian Debug", "savannah-raspbian", SlowDebugUnixBuild),
 
     # FreBSD x86-64 clang
-    ("AMD64 FreeBSD", "ware-freebsd", UnixBuild),
     ("AMD64 FreeBSD Refleaks", "opsec-fbsd14", UnixRefleakBuild),
     ("AMD64 FreeBSD14", "opsec-fbsd14", UnixBuild),
 
