@@ -1,3 +1,4 @@
+import contextlib
 import datetime
 import os
 import time
@@ -737,10 +738,8 @@ class ReleaseDashboard:
                 if time.monotonic() <= deadline:
                     return result
 
-                try:
-                    self._refresh_branch_info()
-                except urllib.error.HTTPError:
-                    pass
+            with contextlib.suppress(urllib.error.HTTPError):
+                self._refresh_branch_info()
 
             result = self.get_release_status()
             deadline = time.monotonic() + CACHE_DURATION
