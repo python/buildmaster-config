@@ -796,6 +796,21 @@ class WindowsARM64ReleaseBuild(WindowsARM64Build):
     # keep default cleanFlags, both configurations get cleaned
     factory_tags = ["win-arm64", "nondebug"]
 
+
+class WindowsARM64PGOBuild(WindowsARM64Build):
+    buildersuffix = ".pgo"
+    buildFlags = [*WindowsARM64Build.buildFlags, "--pgo"]
+    testFlags = [*WindowsARM64Build.testFlags, "+d"]
+    factory_tags = [*WindowsARM64Build.factory_tags, "nondebug", "pgo"]
+
+
+class WindowsARM64RefleakBuild(WindowsARM64Build):
+    buildersuffix = ".refleak"
+    testFlags = [*WindowsARM64Build.testFlags, *WindowsRefleakBuild.testFlags]
+    test_timeout = REFLEAK_TIMEOUT
+    factory_tags = [*WindowsARM64Build.factory_tags, "refleak"]
+
+
 ##############################################################################
 ##############################  WASI BUILDS  #################################
 ##############################################################################
