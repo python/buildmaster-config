@@ -458,6 +458,11 @@ class CentOS9Build(RHEL8Build):
     pass
 
 
+class CentOS10Build(CentOS9Build):
+    # Build on 64-bit CentOS Stream 10.
+    pass
+
+
 class FedoraStableBuild(RHEL8Build):
     # Build Python on 64-bit Fedora Stable.
     #

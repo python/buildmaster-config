@@ -168,6 +168,11 @@ def get_workers(settings):
             parallel_tests=40,
         ),
         cpw(
+            name="cstratak-CentOS10-aarch64",
+            tags=['linux', 'unix', 'rhel', 'arm', 'arm64', 'aarch64'],
+            parallel_tests=32,
+        ),
+        cpw(
             name="diegorusso-aarch64-bigmem",
             tags=['linux', 'unix', 'ubuntu', 'arm', 'arm64', 'aarch64', 'bigmem'],
             branches=['3.x'],
