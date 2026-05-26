@@ -312,7 +312,7 @@ def get_workers(settings):
         cpw(
             name="itamaro-centos-aws",
             tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
-            not_branches=['3.10', '3.11', '3.12'],
+            not_branches=['3.10', '3.11', '3.12', '3.13'],
             parallel_tests=10,
             parallel_builders=2,
             downtime=itamaro_downtime,
@@ -320,21 +320,25 @@ def get_workers(settings):
         cpw(
             name="itamaro-win64-srv-22-aws",
             tags=['windows', 'win-srv-22', 'amd64', 'x86-64'],
-            not_branches=['3.10', '3.11', '3.12'],
-            parallel_tests=10,
-            parallel_builders=2,
+            not_branches=['3.10', '3.11', '3.12', '3.13'],
+            parallel_tests=20,
+            # Parallel MSBuild builds are "unusual", and more likely to hit obscure bugs
+            # (such as file locking issues across builds)
+            # Explicit limit parallel builders to 1 to avoid such issues
+            # https://github.com/python/cpython/issues/148255#issuecomment-4534972557
+            parallel_builders=1,
             downtime=itamaro_downtime,
         ),
         cpw(
             name="itamaro-macos-intel-aws",
             tags=['macOS', 'unix', 'amd64', 'x86-64'],
-            not_branches=['3.10', '3.11', '3.12'],
+            not_branches=['3.10', '3.11', '3.12', '3.13'],
             parallel_tests=10,
         ),
         cpw(
             name="itamaro-macos-arm64-aws",
             tags=['macOS', 'unix', 'arm', 'arm64'],
-            not_branches=['3.10', '3.11', '3.12'],
+            not_branches=['3.10', '3.11', '3.12', '3.13'],
             parallel_tests=10,
         ),
         cpw(
