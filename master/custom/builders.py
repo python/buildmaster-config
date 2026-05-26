@@ -144,6 +144,7 @@ STABLE_BUILDERS_TIER_2 = [
     ("aarch64 RHEL8 LTO + PGO", "cstratak-RHEL8-aarch64", LTOPGONonDebugBuild),
 
     # CentOS Stream 9 Linux aarch64 GCC
+    ("aarch64 CentOS9", "cstratak-CentOS9-aarch64", CentOS9Build),
     ("aarch64 CentOS9 Refleaks", "cstratak-CentOS9-aarch64", UnixRefleakBuild),
     ("aarch64 CentOS9 LTO", "cstratak-CentOS9-aarch64", LTONonDebugUnixBuild),
     ("aarch64 CentOS9 LTO + PGO", "cstratak-CentOS9-aarch64", LTOPGONonDebugBuild),
