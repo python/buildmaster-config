@@ -4,6 +4,7 @@ from custom.factories import (
     UnixOddballsBuild,
     RHEL8Build,
     CentOS9Build,
+    CentOS10Build,
     FedoraStableBuild,
     FedoraRawhideBuild,
     FedoraRawhideFreedthreadingBuild,
@@ -285,6 +286,14 @@ UNSTABLE_BUILDERS_TIER_2 = [
     ("aarch64 CentOS9 Refleaks", "cstratak-CentOS9-aarch64", UnixRefleakBuild),
     ("aarch64 CentOS9 LTO", "cstratak-CentOS9-aarch64", LTONonDebugUnixBuild),
     ("aarch64 CentOS9 LTO + PGO", "cstratak-CentOS9-aarch64", LTOPGONonDebugBuild),
+
+    # CentOS Stream 10 Linux aarch64 GCC/Clang
+    ("aarch64 CentOS10", "cstratak-CentOS10-aarch64", CentOS10Build),
+    ("aarch64 CentOS10 Refleaks", "cstratak-CentOS10-aarch64", UnixRefleakBuild),
+    ("aarch64 CentOS10 Clang", "cstratak-CentOS10-aarch64", ClangUnixBuild),
+    ("aarch64 CentOS10 Clang Installed", "cstratak-CentOS10-aarch64", ClangUnixInstalledBuild),
+    ("aarch64 CentOS10 LTO", "cstratak-CentOS10-aarch64", LTONonDebugUnixBuild),
+    ("aarch64 CentOS10 LTO + PGO", "cstratak-CentOS10-aarch64", LTOPGONonDebugBuild),
 
     # WebAssembly
     ("wasm32 WASI 8Core", "kushaldas-wasi", Wasm32WasiCrossBuild),
