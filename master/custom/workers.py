@@ -322,6 +322,10 @@ def get_workers(settings):
             tags=['windows', 'win-srv-22', 'amd64', 'x86-64'],
             not_branches=['3.10', '3.11', '3.12', '3.13'],
             parallel_tests=20,
+            # Parallel MSBuild builds are "unusual", and more likely to hit obscure bugs
+            # (such as file locking issues across builds)
+            # Explicit limit parallel builders to 1 to avoid such issues
+            # https://github.com/python/cpython/issues/148255#issuecomment-4534972557
             parallel_builders=1,
             downtime=itamaro_downtime,
         ),
