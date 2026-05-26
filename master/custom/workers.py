@@ -149,23 +149,23 @@ def get_workers(settings):
         cpw(
             name="cstratak-fedora-rawhide-aarch64",
             tags=['linux', 'unix', 'fedora', 'arm', 'arm64', 'aarch64'],
-            parallel_tests=40,
+            parallel_tests=32,
         ),
         cpw(
             name="cstratak-fedora-stable-aarch64",
             tags=['linux', 'unix', 'fedora', 'arm', 'arm64', 'aarch64'],
-            parallel_tests=40,
+            parallel_tests=32,
         ),
         cpw(
             name="cstratak-RHEL8-aarch64",
             tags=['linux', 'unix', 'rhel', 'arm', 'arm64', 'aarch64'],
-            parallel_tests=40,
+            parallel_tests=32,
             branches=['3.10', '3.11', '3.12'],
         ),
         cpw(
             name="cstratak-CentOS9-aarch64",
             tags=['linux', 'unix', 'rhel', 'arm', 'arm64', 'aarch64'],
-            parallel_tests=40,
+            parallel_tests=32,
         ),
         cpw(
             name="cstratak-CentOS10-aarch64",
