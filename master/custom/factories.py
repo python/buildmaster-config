@@ -437,8 +437,7 @@ class RHEL8Build(UnixBuild):
         "--with-lto",
         # Not all workers have dtrace installed
         # "--with-dtrace",
-        # Not all workers have Valgrind headers installed
-        # "--with-valgrind",
+        "--with-valgrind",
     ]
 
     # Building Python out of tree: similar to what the specfile does, but
