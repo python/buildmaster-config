@@ -261,10 +261,6 @@ def get_workers(settings):
             exclude_test_resources=['urlfetch', 'network'],
         ),
         cpw(
-            name="skumaran-ubuntu-x86_64",
-            tags=['linux', 'unix', 'ubuntu', 'amd64', 'x86-64'],
-        ),
-        cpw(
             name="ware-alpine",
             tags=['linux', 'unix', 'alpine', 'docker', 'amd64', 'x86-64', 'musl'],
             not_branches=['3.10', '3.11', '3.12', '3.13'],
