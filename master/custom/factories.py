@@ -428,17 +428,14 @@ class RHEL8Build(UnixBuild):
         "--enable-shared",
         "--with-computed-gotos=yes",
         "--with-dbmliborder=gdbm:ndbm:bdb",
-        # FIXME: enable these flags
-        # "--with-system-expat",
-        # "--with-system-ffi",
         "--enable-loadable-sqlite-extensions",
         "--with-ssl-default-suites=openssl",
         "--without-static-libpython",
         "--with-lto",
         # Not all workers have dtrace installed
         # "--with-dtrace",
-        # Not all workers have Valgrind headers installed
-        # "--with-valgrind",
+        "--with-valgrind",
+        "--with-system-libmpdec",
     ]
 
     # Building Python out of tree: similar to what the specfile does, but
@@ -460,7 +457,9 @@ class CentOS9Build(RHEL8Build):
 
 class CentOS10Build(CentOS9Build):
     # Build on 64-bit CentOS Stream 10.
-    pass
+    configureFlags = CentOS9Build.configureFlags + [
+        "--with-system-expat",
+    ]
 
 
 class FedoraStableBuild(RHEL8Build):
@@ -471,8 +470,7 @@ class FedoraStableBuild(RHEL8Build):
     # https://src.fedoraproject.org/rpms/python3.11/blob/rawhide/f/python3.11.spec
     configureFlags = RHEL8Build.configureFlags + [
         # Options specific to Fedora
-        # FIXME: enable this flag
-        # "--with-system-libmpdec",
+        "--with-system-expat",
         # Don't make a buildbot fail when pip/setuptools is updated in Python,
         # whereas the buildbot uses older versions.
         # "--with-wheel-pkg-dir=/usr/share/python-wheels/",
