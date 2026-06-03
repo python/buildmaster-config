@@ -435,6 +435,7 @@ class RHEL8Build(UnixBuild):
         # Not all workers have dtrace installed
         # "--with-dtrace",
         "--with-valgrind",
+        "--with-system-libmpdec",
     ]
 
     # Building Python out of tree: similar to what the specfile does, but
@@ -470,8 +471,6 @@ class FedoraStableBuild(RHEL8Build):
     configureFlags = RHEL8Build.configureFlags + [
         # Options specific to Fedora
         "--with-system-expat",
-        # FIXME: enable this flag
-        # "--with-system-libmpdec",
         # Don't make a buildbot fail when pip/setuptools is updated in Python,
         # whereas the buildbot uses older versions.
         # "--with-wheel-pkg-dir=/usr/share/python-wheels/",
