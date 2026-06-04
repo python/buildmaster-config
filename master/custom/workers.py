@@ -30,7 +30,7 @@ class CPythonWorker:
         tags=None,
         branches=None,
         not_branches=None,
-        parallel_builders=None,
+        parallel_builders=1,
         parallel_tests=None,
         timeout_factor=1,
         exclude_test_resources=None,
@@ -40,7 +40,6 @@ class CPythonWorker:
         self.tags = tags or set()
         self.branches = branches
         self.not_branches = not_branches
-        self.parallel_builders = parallel_builders
         self.parallel_tests = parallel_tests
         self.timeout_factor = timeout_factor
         self.exclude_test_resources = exclude_test_resources or []
@@ -60,7 +59,7 @@ class CPythonWorker:
                 str(pw),
                 notify_on_missing=emails,
                 keepalive_interval=KEEPALIVE,
-                max_builds=parallel_builders or 1,
+                max_builds=parallel_builders,
             )
 
 # Some of Itamar's workers are reprovisioned every Wednesday at 9am PT.
