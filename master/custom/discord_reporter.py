@@ -17,7 +17,7 @@ from buildbot.util.giturlparse import giturlparse
 from buildbot.plugins import reporters
 from buildbot.reporters.utils import getDetailsForBuild
 
-from custom.builders import get_builder_tier
+from custom.builders import get_tier_from_tags
 from custom.testsuite_utils import get_logs_and_tracebacks_from_build
 
 MESSAGE = """\
@@ -150,13 +150,13 @@ class DiscordReporter(reporters.HttpStatusPush):
         sha,
         logs,
     ):
-        buildername = build["builder"]["name"]
+        builder = build["builder"]
 
         message = MESSAGE.format(
-            buildername=buildername,
-            tier=get_builder_tier(buildername),
+            buildername=builder["name"],
+            tier=get_tier_from_tags(builder["tags"]),
             build_url=self._getURLForBuild(
-                build["builder"]["builderid"], build["number"]
+                builder["builderid"], build["number"]
             ),
             sha=sha,
             failed_test_text=logs.format_failing_tests(),

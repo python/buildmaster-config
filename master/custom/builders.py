@@ -1,7 +1,12 @@
+import os
+import sys
+from dataclasses import dataclass
+from functools import cached_property
+
+from custom import factories
 from custom.factories import (
     UnixBuild,
     UnixPerfBuild,
-    UnixOddballsBuild,
     RHEL8Build,
     CentOS9Build,
     CentOS10Build,
@@ -68,13 +73,74 @@ UNSTABLE = "unstable"
 TIER_1 = "tier-1"
 TIER_2 = "tier-2"
 TIER_3 = "tier-3"
-NO_TIER = None
+
+NO_TIER = "tierless"
+
+
+@dataclass
+class BuilderDef:
+    """Definition for a builder.
+
+    master.cfg turns this definition into several builders (one per branch).
+    """
+    name: str
+    factory: factories.BaseBuild
+    tags: frozenset[str]
+    worker_name: str
+
+    def __init__(self, name, factory, *, tags, worker_name):
+        self.name = name
+        self.factory = factory
+        self.worker_name = worker_name
+        self.tags = frozenset(tags)
+
+    @cached_property
+    def tier(self):
+        return get_tier_from_tags(self.tags)
+
+    @cached_property
+    def stability(self):
+        if STABLE in self.tags:
+            return STABLE
+        return UNSTABLE
+
+def get_tier_from_tags(tags):
+    # Get the first (highest) of the tier flags
+    tags = sorted(tags & {TIER_1, TIER_2, TIER_3})
+    if tags:
+        return tags[0]
+    return NO_TIER
+
+
+# -- Dataclass-based builders -------------------------------------------
+
+# For now, most builders are defined in "generate_builderefs" calls below,
+# grouped by stability and tier.
+# Feel free to convert them to a `BuilderDef` call and move them here when
+# updating them (e.g. changing stability)
+
+BUILDER_DEFS = [
+
+    # Tests that require the 'tzdata' and 'xpickle' resources
+    BuilderDef(
+        "aarch64 Ubuntu Oddballs",
+        factories.UnixOddballsBuild,
+        tags={STABLE, TIER_1},
+        worker_name="stan-aarch64-ubuntu",
+    ),
+]
+
+def generate_builderefs(tags, tuples):
+    tags = frozenset(tags)
+    for name, worker_name, factory in tuples:
+        yield BuilderDef(name, factory, tags=tags, worker_name=worker_name)
 
 
 # -- Stable Tier-1 builder ----------------------------------------------
-STABLE_BUILDERS_TIER_1 = [
+BUILDER_DEFS.extend(generate_builderefs({STABLE, TIER_1}, [
     # Linux x86-64 GCC
     ("AMD64 Debian root", "angelico-debian-amd64", UnixBuild),
+
     ("AMD64 Ubuntu Shared", "bolen-ubuntu", SharedUnixBuild),
     ("AMD64 Fedora Stable", "cstratak-fedora-stable-x86_64", FedoraStableBuild),
     ("AMD64 Fedora Stable Refleaks", "cstratak-fedora-stable-x86_64", UnixRefleakBuild),
@@ -99,14 +165,11 @@ STABLE_BUILDERS_TIER_1 = [
     ("AMD64 Windows PGO Tailcall", "itamaro-win64-srv-22-aws", Windows64PGOTailcallBuild),
     ("AMD64 Windows PGO NoGIL", "itamaro-win64-srv-22-aws", Windows64PGONoGilBuild),
     ("AMD64 Windows PGO NoGIL Tailcall", "itamaro-win64-srv-22-aws", Windows64PGONoGilTailcallBuild),
-
-    # Tests that require the 'tzdata' and 'xpickle' resources
-    ("aarch64 Ubuntu Oddballs", "stan-aarch64-ubuntu", UnixOddballsBuild),
-]
+]))
 
 
 # -- Stable Tier-2 builder ----------------------------------------------
-STABLE_BUILDERS_TIER_2 = [
+BUILDER_DEFS.extend(generate_builderefs({STABLE, TIER_2}, [
     # Fedora Linux x86-64 Clang
     ("AMD64 Fedora Stable Clang", "cstratak-fedora-stable-x86_64", ClangUnixBuild),
     ("AMD64 Fedora Stable Clang Installed", "cstratak-fedora-stable-x86_64", ClangUnixInstalledBuild),
@@ -162,11 +225,11 @@ STABLE_BUILDERS_TIER_2 = [
     # WASI
     ("wasm32-wasi Non-Debug", "bcannon-wasi", Wasm32WasiCrossBuild),
     ("wasm32-wasi", "bcannon-wasi", Wasm32WasiPreview1DebugBuild),
-]
+]))
 
 
 # -- Stable Tier-3 builder ----------------------------------------------
-STABLE_BUILDERS_TIER_3 = [
+BUILDER_DEFS.extend(generate_builderefs({STABLE, TIER_3}, [
 
     # Fedora Linux s390x GCC/Clang
     ("s390x Fedora Stable", "cstratak-fedora-stable-s390x", UnixBuild),
@@ -212,11 +275,11 @@ STABLE_BUILDERS_TIER_3 = [
 
     # Emscripten
     ("WASM Emscripten", "rkm-emscripten", EmscriptenBuild),
-]
+]))
 
 
 # -- Stable No Tier builders --------------------------------------------
-STABLE_BUILDERS_NO_TIER = [
+BUILDER_DEFS.extend(generate_builderefs({STABLE}, [
     # Linux x86-64 GCC musl
     ("AMD64 Alpine Linux", "ware-alpine", UnixBuild),
 
@@ -234,11 +297,11 @@ STABLE_BUILDERS_NO_TIER = [
     # Linux x86 (32-bit) GCC
     ("x86 Debian Non-Debug with X", "ware-debian-x86", NonDebugUnixBuild),
     ("x86 Debian Installed with X", "ware-debian-x86", UnixInstalledBuild),
-]
+]))
 
 
 # -- Unstable Tier-1 builders -------------------------------------------
-UNSTABLE_BUILDERS_TIER_1 = [
+BUILDER_DEFS.extend(generate_builderefs({UNSTABLE, TIER_1}, [
     # Ubuntu Linux AArch64
     ("aarch64 Ubuntu 24.04 BigMem", "diegorusso-aarch64-bigmem", UnixBigmemBuild),
 
@@ -260,11 +323,11 @@ UNSTABLE_BUILDERS_TIER_1 = [
 
     # Windows MSVC
     ("AMD64 Windows PGO", "bolen-windows10", Windows64PGOBuild),
-]
+]))
 
 
 # -- Unstable Tier-2 builders -------------------------------------------
-UNSTABLE_BUILDERS_TIER_2 = [
+BUILDER_DEFS.extend(generate_builderefs({UNSTABLE, TIER_2}, [
     # Linux x86-64 Clang
     # Fedora Rawhide is unstable
     # UBSan is a special build
@@ -297,11 +360,11 @@ UNSTABLE_BUILDERS_TIER_2 = [
 
     # WebAssembly
     ("wasm32 WASI 8Core", "kushaldas-wasi", Wasm32WasiCrossBuild),
-]
+]))
 
 
 # -- Unstable Tier-3 builders -------------------------------------------
-UNSTABLE_BUILDERS_TIER_3 = [
+BUILDER_DEFS.extend(generate_builderefs({UNSTABLE, TIER_3}, [
     # Linux ppc64le Clang
     # Fedora Rawhide is unstable
     ("PPC64LE Fedora Rawhide Clang", "cstratak-fedora-rawhide-ppc64le", ClangUnixBuild),
@@ -325,11 +388,11 @@ UNSTABLE_BUILDERS_TIER_3 = [
     ("ARM64 Windows", "ware-win11-arm64", WindowsARM64Build),
     ("ARM64 Windows Non-Debug", "ware-win11-arm64", WindowsARM64ReleaseBuild),
 
-]
+]))
 
 
 # -- Unstable No Tier builders ------------------------------------------
-UNSTABLE_BUILDERS_NO_TIER = [
+BUILDER_DEFS.extend(generate_builderefs({UNSTABLE}, [
     # Linux x86-64 GCC musl Freethreading
     ("AMD64 Alpine Linux NoGIL", "ware-alpine", UnixNoGilBuild),
     # Linux GCC Fedora Rawhide Freethreading builders
@@ -356,59 +419,23 @@ UNSTABLE_BUILDERS_NO_TIER = [
 
     # Arch Usan (see stable "AMD64 Arch Linux Usan Function" above)
     ("AMD64 Arch Linux Usan", "pablogsal-arch-x86_64", ClangUbsanLinuxBuild),
-]
+]))
 
 
-def get_builders(settings, workers):
-    workers_by_name = {w.name: w for w in workers}
-
-    # Override with a default simple worker if we are using local workers
+def get_builder_defs(settings):
+    # Override with a simple default if we are using local workers
     if settings.use_local_worker:
-        local_worker = workers_by_name["local-worker"]
-        local_buildfactory = globals().get(settings.local_worker_buildfactory, UnixBuild)
-        return [("Test Builder", local_worker, local_buildfactory, STABLE, NO_TIER)]
+        local_buildfactory = getattr(
+            factories, settings.local_worker_buildfactory, UnixBuild
+        )
+        return [BuilderDef(
+            "Test Builder",
+            local_buildfactory,
+            tags={STABLE},
+            worker_name="local-worker",
+        )]
 
-    all_builders = []
-    for builders, stability, tier in (
-        (STABLE_BUILDERS_TIER_1, STABLE, TIER_1),
-        (STABLE_BUILDERS_TIER_2, STABLE, TIER_2),
-        (STABLE_BUILDERS_TIER_3, STABLE, TIER_3),
-        (STABLE_BUILDERS_NO_TIER, STABLE, NO_TIER),
-
-        (UNSTABLE_BUILDERS_TIER_1, UNSTABLE, TIER_1),
-        (UNSTABLE_BUILDERS_TIER_2, UNSTABLE, TIER_2),
-        (UNSTABLE_BUILDERS_TIER_3, UNSTABLE, TIER_3),
-        (UNSTABLE_BUILDERS_NO_TIER, UNSTABLE, NO_TIER),
-    ):
-        for name, worker_name, buildfactory in builders:
-            worker = workers_by_name[worker_name]
-            all_builders.append((name, worker, buildfactory, stability, tier))
-    return all_builders
-
-
-def get_builder_tier(builder: str) -> str:
-    # Strip trailing branch name
-    import re
-    builder = re.sub(r" 3\.[x\d]+$", "", builder)
-
-    for builders, tier in (
-        (STABLE_BUILDERS_TIER_1, TIER_1),
-        (STABLE_BUILDERS_TIER_2,TIER_2),
-        (STABLE_BUILDERS_TIER_3, TIER_3),
-        (STABLE_BUILDERS_NO_TIER, NO_TIER),
-        (UNSTABLE_BUILDERS_TIER_1, TIER_1),
-        (UNSTABLE_BUILDERS_TIER_2, TIER_2),
-        (UNSTABLE_BUILDERS_TIER_3, TIER_3),
-        (UNSTABLE_BUILDERS_NO_TIER, NO_TIER),
-    ):
-        for name, _, _ in builders:
-            if name == builder:
-                if tier == NO_TIER:
-                    return "no tier"
-                else:
-                    return tier
-
-    return "unknown tier"
+    return BUILDER_DEFS
 
 
 # Match builder name (excluding the branch name) of builders that should only
@@ -418,3 +445,28 @@ ONLY_MAIN_BRANCH = (
     "AMD64 Arch Linux Perf",
     "AMD64 Arch Linux Valgrind",
 )
+
+
+if __name__ == "__main__":
+    # Print a list to the terminal
+    import itertools
+
+    colorize = bool(sys.stdout.isatty() and not os.environ.get('NO_COLOR'))
+    NAME = '\x1b[36m' * colorize
+    END = '\x1b[m' * colorize
+
+    def key(builder_def):
+        return builder_def.stability, builder_def.tier
+
+    defs = sorted(BUILDER_DEFS, key=key)
+
+    for (stability, tier), defs in itertools.groupby(defs, key):
+        print()
+        title = f'{stability.title()}, {tier}'
+        print(title)
+        print('-' * len(title))
+        print()
+        for d in defs:
+            print(f'{NAME}{d.name}{END}')
+            print(f'  {d.factory.__name__} on {d.worker_name}')
+            print(f'  [{' '.join(sorted(d.tags))}]')

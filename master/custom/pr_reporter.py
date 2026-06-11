@@ -18,7 +18,7 @@ from buildbot.util.giturlparse import giturlparse
 from buildbot.plugins import reporters
 from buildbot.reporters.utils import getDetailsForBuild
 
-from custom.builders import get_builder_tier
+from custom.builders import get_tier_from_tags
 from custom.testsuite_utils import get_logs_and_tracebacks_from_build
 
 PR_MESSAGE = """\
@@ -213,13 +213,14 @@ buildid), logLevel=logging.INFO)
         tracebacks=None,
         logs=None,
     ):
-        buildername = build["builder"]["name"]
+        builder = build["builder"]
+        buildername = builder["name"]
 
         message = PR_MESSAGE.format(
             buildername=buildername,
-            tier=get_builder_tier(buildername),
+            tier=get_tier_from_tags(builder["tags"]),
             build_url=self._getURLForBuild(
-                build["builder"]["builderid"], build["number"]
+                builder["builderid"], build["number"]
             ),
             sha=sha,
             tracebacks="```python-traceback\n{}\n```".format("\n\n".join(tracebacks)),
