@@ -74,6 +74,7 @@ TIER_1 = "tier-1"
 TIER_2 = "tier-2"
 TIER_3 = "tier-3"
 
+# linguistic hack: this sorts after 'tier-#' alphabetically
 NO_TIER = "tierless"
 
 
