@@ -36,7 +36,7 @@ py-ubjson==0.16.1
 pyasn1==0.6.3
 pyasn1_modules==0.4.2
 pycparser==3.0
-PyJWT==2.12.1
+PyJWT==2.13.0
 pyOpenSSL==26.2.0
 python-dateutil==2.9.0.post0
 PyYAML==6.0.3
