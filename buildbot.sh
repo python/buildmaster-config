@@ -1,2 +1,2 @@
 #!/bin/sh
-exec /srv/buildbot/venv/bin/buildbot $@
+exec $(dirname $0)/venv/bin/buildbot $@

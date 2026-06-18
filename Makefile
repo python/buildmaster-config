@@ -87,7 +87,7 @@ git-update-requirements:
 	git pull
 	git switch -c reqs main
 	make regen-requirements
-	git ci -a -m "Run make regen-requirements"
+	git commit -a -m "Run make regen-requirements"
 
 .PHONY: help
 help : Makefile
