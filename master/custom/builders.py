@@ -115,7 +115,7 @@ def get_tier_from_tags(tags):
 
 # -- Dataclass-based builders -------------------------------------------
 
-# For now, most builders are defined in "generate_builderefs" calls below,
+# For now, most builders are defined in "generate_builderdefs" calls below,
 # grouped by stability and tier.
 # Feel free to convert them to a `BuilderDef` call and move them here when
 # updating them (e.g. changing stability)
@@ -131,14 +131,14 @@ BUILDER_DEFS = [
     ),
 ]
 
-def generate_builderefs(tags, tuples):
+def generate_builderdefs(tags, tuples):
     tags = frozenset(tags)
     for name, worker_name, factory in tuples:
         yield BuilderDef(name, factory, tags=tags, worker_name=worker_name)
 
 
 # -- Stable Tier-1 builder ----------------------------------------------
-BUILDER_DEFS.extend(generate_builderefs({STABLE, TIER_1}, [
+BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_1}, [
     # Linux x86-64 GCC
     ("AMD64 Debian root", "angelico-debian-amd64", UnixBuild),
 
@@ -170,7 +170,7 @@ BUILDER_DEFS.extend(generate_builderefs({STABLE, TIER_1}, [
 
 
 # -- Stable Tier-2 builder ----------------------------------------------
-BUILDER_DEFS.extend(generate_builderefs({STABLE, TIER_2}, [
+BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_2}, [
     # Fedora Linux x86-64 Clang
     ("AMD64 Fedora Stable Clang", "cstratak-fedora-stable-x86_64", ClangUnixBuild),
     ("AMD64 Fedora Stable Clang Installed", "cstratak-fedora-stable-x86_64", ClangUnixInstalledBuild),
@@ -230,7 +230,7 @@ BUILDER_DEFS.extend(generate_builderefs({STABLE, TIER_2}, [
 
 
 # -- Stable Tier-3 builder ----------------------------------------------
-BUILDER_DEFS.extend(generate_builderefs({STABLE, TIER_3}, [
+BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_3}, [
 
     # Fedora Linux s390x GCC/Clang
     ("s390x Fedora Stable", "cstratak-fedora-stable-s390x", UnixBuild),
@@ -280,7 +280,7 @@ BUILDER_DEFS.extend(generate_builderefs({STABLE, TIER_3}, [
 
 
 # -- Stable No Tier builders --------------------------------------------
-BUILDER_DEFS.extend(generate_builderefs({STABLE}, [
+BUILDER_DEFS.extend(generate_builderdefs({STABLE}, [
     # Linux x86-64 GCC musl
     ("AMD64 Alpine Linux", "ware-alpine", UnixBuild),
 
@@ -302,7 +302,7 @@ BUILDER_DEFS.extend(generate_builderefs({STABLE}, [
 
 
 # -- Unstable Tier-1 builders -------------------------------------------
-BUILDER_DEFS.extend(generate_builderefs({UNSTABLE, TIER_1}, [
+BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_1}, [
     # Ubuntu Linux AArch64
     ("aarch64 Ubuntu 24.04 BigMem", "diegorusso-aarch64-bigmem", UnixBigmemBuild),
 
@@ -328,7 +328,7 @@ BUILDER_DEFS.extend(generate_builderefs({UNSTABLE, TIER_1}, [
 
 
 # -- Unstable Tier-2 builders -------------------------------------------
-BUILDER_DEFS.extend(generate_builderefs({UNSTABLE, TIER_2}, [
+BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_2}, [
     # Linux x86-64 Clang
     # Fedora Rawhide is unstable
     # UBSan is a special build
@@ -365,7 +365,7 @@ BUILDER_DEFS.extend(generate_builderefs({UNSTABLE, TIER_2}, [
 
 
 # -- Unstable Tier-3 builders -------------------------------------------
-BUILDER_DEFS.extend(generate_builderefs({UNSTABLE, TIER_3}, [
+BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_3}, [
     # Linux ppc64le Clang
     # Fedora Rawhide is unstable
     ("PPC64LE Fedora Rawhide Clang", "cstratak-fedora-rawhide-ppc64le", ClangUnixBuild),
@@ -393,7 +393,7 @@ BUILDER_DEFS.extend(generate_builderefs({UNSTABLE, TIER_3}, [
 
 
 # -- Unstable No Tier builders ------------------------------------------
-BUILDER_DEFS.extend(generate_builderefs({UNSTABLE}, [
+BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE}, [
     # Linux x86-64 GCC musl Freethreading
     ("AMD64 Alpine Linux NoGIL", "ware-alpine", UnixNoGilBuild),
     # Linux GCC Fedora Rawhide Freethreading builders
