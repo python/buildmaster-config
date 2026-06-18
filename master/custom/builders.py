@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from functools import cached_property
 
 from custom import factories
+from custom.branches import BRANCHES, MAIN_BRANCH, PR_BRANCH
 from custom.factories import (
     UnixBuild,
     UnixPerfBuild,
@@ -89,11 +90,18 @@ class BuilderDef:
     tags: frozenset[str]
     worker_name: str
 
-    def __init__(self, name, factory, *, tags, worker_name):
+    def __init__(
+        self, name, factory,
+        *,
+        tags,
+        worker_name,
+        branches=BRANCHES,
+    ):
         self.name = name
         self.factory = factory
         self.worker_name = worker_name
         self.tags = frozenset(tags)
+        self.branches = branches
 
     @cached_property
     def tier(self):
@@ -131,10 +139,19 @@ BUILDER_DEFS = [
     ),
 ]
 
-def generate_builderdefs(tags, tuples):
+def generate_builderdefs(tags, entries):
     tags = frozenset(tags)
-    for name, worker_name, factory in tuples:
-        yield BuilderDef(name, factory, tags=tags, worker_name=worker_name)
+    for entry in entries:
+        if isinstance(entry, BuilderDef):
+            if not (entry.tags <= tags):
+                raise ValueError(
+                    f'{entry} is in the wrong generate_builderdefs call; '
+                    + 'move it to the main BUILDER_DEFS list above',
+                )
+            yield entry
+        else:
+            name, worker_name, factory = entry
+            yield BuilderDef(name, factory, tags=tags, worker_name=worker_name)
 
 
 # -- Stable Tier-1 builder ----------------------------------------------
@@ -163,9 +180,27 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_1}, [
     ("AMD64 Windows11 Non-Debug", "ware-win11", Windows64ReleaseBuild),
     ("AMD64 Windows11 Refleaks", "ware-win11", Windows64RefleakBuild),
     ("AMD64 Windows Server 2022 NoGIL", "itamaro-win64-srv-22-aws", Windows64NoGilBuild),
-    ("AMD64 Windows PGO Tailcall", "itamaro-win64-srv-22-aws", Windows64PGOTailcallBuild),
-    ("AMD64 Windows PGO NoGIL", "itamaro-win64-srv-22-aws", Windows64PGONoGilBuild),
-    ("AMD64 Windows PGO NoGIL Tailcall", "itamaro-win64-srv-22-aws", Windows64PGONoGilTailcallBuild),
+    BuilderDef(
+        "AMD64 Windows PGO Tailcall",
+        Windows64PGOTailcallBuild,
+        tags={STABLE, TIER_1},
+        worker_name="itamaro-win64-srv-22-aws",
+        branches={MAIN_BRANCH, PR_BRANCH},
+    ),
+    BuilderDef(
+        "AMD64 Windows PGO NoGIL",
+        Windows64PGONoGilBuild,
+        tags={STABLE, TIER_1},
+        worker_name="itamaro-win64-srv-22-aws",
+        branches={MAIN_BRANCH, PR_BRANCH},
+    ),
+    BuilderDef(
+        "AMD64 Windows PGO NoGIL Tailcall",
+        Windows64PGONoGilTailcallBuild,
+        tags={STABLE, TIER_1},
+        worker_name="itamaro-win64-srv-22-aws",
+        branches={MAIN_BRANCH, PR_BRANCH},
+    ),
 ]))
 
 
@@ -290,7 +325,13 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE}, [
     ("AMD64 Arch Linux Asan", "pablogsal-arch-x86_64", UnixAsanBuild),
     ("AMD64 Arch Linux Asan Debug", "pablogsal-arch-x86_64", UnixAsanDebugBuild),
     ("AMD64 Arch Linux TraceRefs", "pablogsal-arch-x86_64", UnixTraceRefsBuild),
-    ("AMD64 Arch Linux Perf", "pablogsal-arch-x86_64", UnixPerfBuild),
+    BuilderDef(
+        "AMD64 Arch Linux Perf",
+        UnixPerfBuild,
+        tags={STABLE},
+        worker_name="pablogsal-arch-x86_64",
+        branches={MAIN_BRANCH, PR_BRANCH},
+    ),
     # UBSAN with -fno-sanitize=function, without which we currently fail (as
     #  tracked in gh-111178). The full "AMD64 Arch Linux Usan" is unstable, below
     ("AMD64 Arch Linux Usan Function", "pablogsal-arch-x86_64", ClangUbsanFunctionLinuxBuild),
@@ -319,11 +360,22 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_1}, [
 
     ("AMD64 CentOS9 FIPS Only Blake2 Builtin Hash", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuildExceptBlake2),
     ("AMD64 CentOS9 FIPS No Builtin Hashes", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuild),
-
-    ("AMD64 Arch Linux Valgrind", "pablogsal-arch-x86_64", ValgrindBuild),
+    BuilderDef(
+        "AMD64 Arch Linux Valgrind",
+        ValgrindBuild,
+        tags={UNSTABLE, TIER_1},
+        worker_name="pablogsal-arch-x86_64",
+        branches={MAIN_BRANCH, PR_BRANCH},
+    ),
 
     # Windows MSVC
-    ("AMD64 Windows PGO", "bolen-windows10", Windows64PGOBuild),
+    BuilderDef(
+        "AMD64 Windows PGO",
+        Windows64PGOBuild,
+        tags={UNSTABLE, TIER_1},
+        worker_name="bolen-windows10",
+        branches={MAIN_BRANCH, PR_BRANCH},
+    ),
 ]))
 
 
@@ -439,15 +491,6 @@ def get_builder_defs(settings):
     return BUILDER_DEFS
 
 
-# Match builder name (excluding the branch name) of builders that should only
-# run on the main and PR branches.
-ONLY_MAIN_BRANCH = (
-    "Windows PGO",
-    "AMD64 Arch Linux Perf",
-    "AMD64 Arch Linux Valgrind",
-)
-
-
 if __name__ == "__main__":
     # Print a list to the terminal
     import itertools
@@ -471,3 +514,6 @@ if __name__ == "__main__":
             print(f'{NAME}{d.name}{END}')
             print(f'  {d.factory.__name__} on {d.worker_name}')
             print(f'  [{' '.join(sorted(d.tags))}]')
+            if d.branches != BRANCHES:
+                branchnames = ', '.join(b.name for b in sorted(d.branches))
+                print(f'  branches: {branchnames}')
