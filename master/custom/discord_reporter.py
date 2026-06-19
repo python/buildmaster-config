@@ -23,15 +23,9 @@ from custom.testsuite_utils import get_logs_and_tracebacks_from_build
 MESSAGE = """\
 :warning: **Buildbot failure** :warning:
 
-The buildbot **{buildername}** ({tier}) has failed when building commit {sha}(https://github.com/python/cpython/commit/{sha}).
+The buildbot **{buildername}** ({tier}) has failed when building commit [{sha:.12}](https://github.com/python/cpython/commit/{sha}).
 
-You can take a look at the buildbot page here:
-
-{build_url}
-
-```
-{failed_test_text}
-```
+[Jump to the build page.]({build_url})
 """
 
 
@@ -159,8 +153,11 @@ class DiscordReporter(reporters.HttpStatusPush):
                 builder["builderid"], build["number"]
             ),
             sha=sha,
-            failed_test_text=logs.format_failing_tests(),
         )
+
+        failed_test_text = logs.format_failing_tests()
+        if failed_test_text and failed_test_text.strip():
+            message += "\n```\n{}\n```\n".format(failed_test_text)
 
         payload = {"content": message, "embeds": []}
 
