@@ -1425,24 +1425,32 @@ class EmscriptenBuild(BaseBuild):
                 command=["python3", "Platforms/emscripten", "make-build-python"],
                 env=compile_environ,
             ),
+            PythonInfo(
+                name="Display build info of the build Python",
+                command=[
+                    "python3", "Platforms/emscripten", "pythoninfo-build",
+                ],
+                env=compile_environ,
+            ),
             Compile(
                 name="Compile host dependencies (if needed)",
                 command=["python3", "Platforms/emscripten", "make-dependencies"],
                 env=compile_environ,
             ),
             Configure(
-                name="Configure host Python",
+                name="Configure host/Emscripten Python",
                 command=["python3", "Platforms/emscripten", "configure-host"],
                 env=compile_environ,
             ),
             Compile(
-                name="Compile host Python",
+                name="Compile host/Emscripten Python",
                 command=["python3", "Platforms/emscripten", "make-host"],
                 env=compile_environ,
             ),
             PythonInfo(
+                name="Display build info of the host/Emscripten Python",
                 command=[
-                    "python3", "Platforms/emscripten", "run", "--pythoninfo",
+                    "python3", "Platforms/emscripten", "pythoninfo-host",
                 ],
                 env=compile_environ,
             ),
