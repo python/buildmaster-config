@@ -958,6 +958,12 @@ class _Wasm32WasiPreview1Build(UnixBuild):
                 command=["python3", wasi_py, "make-build-python"],
             )
         )
+        self.addStep(
+            PythonInfo(
+                name="Display build info of the build Python",
+                command=["python3", wasi_py, "pythoninfo-build"],
+            )
+        )
 
         # Host/WASI Python
         self.addStep(
@@ -974,10 +980,12 @@ class _Wasm32WasiPreview1Build(UnixBuild):
             )
         )
 
-        self.addStep(PythonInfo(
-            command=["make", "pythoninfo"],
-            workdir=host_path,
-        ))
+        self.addStep(
+            PythonInfo(
+                name="Display build info of the host/WASI Python",
+                command=["python3", wasi_py, "pythoninfo-host"],
+            )
+        )
 
         # Copied from UnixBuild.
         testopts = [*self.testFlags, *get_j_opts(worker, 2)]
@@ -1012,7 +1020,7 @@ class _Wasm32WasiPreview1Build(UnixBuild):
 
 
 # Preventing this from running on versions older than 3.13 is managed in
-# master.cfg.
+# workers.py.
 class Wasm32WasiPreview1DebugBuild(_Wasm32WasiPreview1Build):
     append_suffix = ".debug"
     pydebug = True
