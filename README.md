@@ -47,15 +47,35 @@ a `*/15` cron interval using the `update-master` target in `Makefile`.
 
 ## Add a worker
 
-The list of workers is stored in `/etc/buildbot/settings.yaml` on the server.
-A worker password should be made of 14 characters (a-z, A-Z, 0-9 and special
-characters), for example using KeePassX.
+To add a worker, people follow the [Devguide](https://devguide.python.org/testing/new-buildbot-worker/)
+which directs them to an issue template to fill out.
+Make sure you have all the info the template asks for.
 
-* Generate a password
-* Add the password in `/etc/buildbot/settings.yaml`
-* Restart the buildbot server: `make restart-master`
+If the owner did not request a new password (that is, they're reusing one
+from an existing worker):
 
-Documentation: http://docs.buildbot.net/current/manual/configuration/workers.html#defining-workers
+* Make a PR (or ask the new owner to make a PR) that adds the worker to
+  `master/custom/workers.py`, with the owner username as first component
+* Check `/etc/buildbot/settings.yaml` on the server: the email and GitHub
+  username should match
+* Merge the PR
+* Watch the logs; wait for Salt to pull the PR and restart the server.
+* Close the issue. You're done.
+
+When adding a new owner, or a new worker password for an existing owner,
+do the following first:
+
+* Generate a password using e.g.:
+
+      import secrets
+      secrets.token_urlsafe(14)
+
+* Check the username doesn't already exist in `/etc/buildbot/settings.yaml`
+* Add an owner entry to `/etc/buildbot/settings.yaml`
+* Check the config using `make check` (on the server)
+* E-mail the password to the new owner.
+* As above: add the worker to `master/custom/workers.py`; merge; restart.
+
 
 ## Testing changes locally
 
