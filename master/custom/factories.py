@@ -1316,12 +1316,16 @@ class AndroidBuild(BaseBuild):
                 name="Compile build Python",
                 command=android_py + ["make-build"],
             ),
+            PythonInfo(
+                name="Display build info of the build Python",
+                command=android_py + ["pythoninfo-build"],
+            ),
             Configure(
-                name="Configure host Python",
+                name="Configure host/Android Python",
                 command=android_py + ["configure-host", self.host_triple],
             ),
             Compile(
-                name="Compile host Python",
+                name="Compile host/Android Python",
                 command=android_py + ["make-host", self.host_triple],
             ),
             Test(
