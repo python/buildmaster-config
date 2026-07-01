@@ -55,10 +55,10 @@ If the owner did not request a new password (that is, they're reusing one
 from an existing worker):
 
 * Make a PR (or ask the new owner to make a PR) that adds the worker to
-  `master/custom/workers.py`, with the owner username as first component
+  `master/custom/workers.py`, with the owner username as first component.
 * Check `/etc/buildbot/settings.yaml` on the server: the email and GitHub
-  username should match
-* Merge the PR
+  username should match.
+* Merge the PR.
 * Watch the logs; wait for Salt to pull the PR and restart the server.
 * Close the issue. You're done.
 
@@ -70,9 +70,9 @@ do the following first:
       import secrets
       secrets.token_urlsafe(14)
 
-* Check the username doesn't already exist in `/etc/buildbot/settings.yaml`
-* Add an owner entry to `/etc/buildbot/settings.yaml`
-* Check the config using `make check` (on the server)
+* Check the username doesn't already exist in `/etc/buildbot/settings.yaml`.
+* Add an owner entry to `/etc/buildbot/settings.yaml`.
+* Check the config using `make check` (on the server).
 * E-mail the password to the new owner.
 * As above: add the worker to `master/custom/workers.py`; merge; restart.
 
