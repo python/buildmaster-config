@@ -5,6 +5,13 @@
 
 [![Check config](https://github.com/python/buildmaster-config/actions/workflows/check.yml/badge.svg)](https://github.com/python/buildmaster-config/actions/workflows/check.yml)
 
+> [!NOTE]
+> This README has instructions for Buildbot administrators.
+> User guides are in the Devguide:
+> - [Working with buildbots](https://devguide.python.org/testing/buildbots/)
+> - [New buildbot workers](https://devguide.python.org/testing/new-buildbot-worker/)
+
+
 ## Private settings
 
 The production server uses /etc/buildbot/settings.yaml configuration file which
