@@ -434,8 +434,6 @@ class RHEL8Build(UnixBuild):
         "--with-ssl-default-suites=openssl",
         "--without-static-libpython",
         "--with-lto",
-        # Not all workers have dtrace installed
-        # "--with-dtrace",
         "--with-valgrind",
         "--with-system-libmpdec",
     ]
