@@ -75,7 +75,7 @@ do the following first:
 * Generate a password using e.g.:
 
       import secrets
-      secrets.token_urlsafe(14)
+      print(secrets.token_urlsafe(14))
 
 * Check the username doesn't already exist in `/etc/buildbot/settings.yaml`.
 * Add an owner entry to `/etc/buildbot/settings.yaml`.
