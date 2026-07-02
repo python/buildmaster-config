@@ -163,11 +163,17 @@ def get_workers(settings):
         cpw(
             name="cstratak-fedora-rawhide-x86_64",
             tags=['linux', 'unix', 'fedora', 'amd64', 'x86-64'],
+            branch_flags=[
+                BranchWorkerFlags(configure=["--with-dtrace"], min_branch=(3, 15)),
+            ],
             parallel_tests=10,
         ),
         cpw(
             name="cstratak-fedora-stable-x86_64",
             tags=['linux', 'unix', 'fedora', 'amd64', 'x86-64'],
+            branch_flags=[
+                BranchWorkerFlags(configure=["--with-dtrace"], min_branch=(3, 15)),
+            ],
             parallel_tests=10,
         ),
         cpw(
@@ -186,11 +192,17 @@ def get_workers(settings):
         cpw(
             name="cstratak-CentOS9-x86_64",
             tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
+            branch_flags=[
+                BranchWorkerFlags(configure=["--with-dtrace"], min_branch=(3, 15)),
+            ],
             parallel_tests=6,
         ),
         cpw(
             name="cstratak-CentOS9-fips-x86_64",
             tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64', 'fips'],
+            branch_flags=[
+                BranchWorkerFlags(configure=["--with-dtrace"], min_branch=(3, 15)),
+            ],
             parallel_tests=6,
             # Only 3.12+ for FIPS builder
             not_branches=["3.10", "3.11"],
@@ -198,12 +210,18 @@ def get_workers(settings):
         cpw(
             name="cstratak-fedora-rawhide-ppc64le",
             tags=['linux', 'unix', 'fedora', 'ppc64le'],
+            branch_flags=[
+                BranchWorkerFlags(configure=["--with-dtrace"], min_branch=(3, 15)),
+            ],
             parallel_tests=10,
             timeout_factor=2,  # Increase the timeout on this slow worker
         ),
         cpw(
             name="cstratak-fedora-stable-ppc64le",
             tags=['linux', 'unix', 'fedora', 'ppc64le'],
+            branch_flags=[
+                BranchWorkerFlags(configure=["--with-dtrace"], min_branch=(3, 15)),
+            ],
             parallel_tests=10,
             timeout_factor=2,  # Increase the timeout on this slow worker
         ),
@@ -217,17 +235,26 @@ def get_workers(settings):
         cpw(
             name="cstratak-CentOS9-ppc64le",
             tags=['linux', 'unix', 'rhel', 'ppc64le'],
+            branch_flags=[
+                BranchWorkerFlags(configure=["--with-dtrace"], min_branch=(3, 15)),
+            ],
             parallel_tests=10,
             timeout_factor=2,  # Increase the timeout on this slow worker
         ),
         cpw(
             name="cstratak-fedora-rawhide-aarch64",
             tags=['linux', 'unix', 'fedora', 'arm', 'arm64', 'aarch64'],
+            branch_flags=[
+                BranchWorkerFlags(configure=["--with-dtrace"], min_branch=(3, 15)),
+            ],
             parallel_tests=32,
         ),
         cpw(
             name="cstratak-fedora-stable-aarch64",
             tags=['linux', 'unix', 'fedora', 'arm', 'arm64', 'aarch64'],
+            branch_flags=[
+                BranchWorkerFlags(configure=["--with-dtrace"], min_branch=(3, 15)),
+            ],
             parallel_tests=32,
         ),
         cpw(
@@ -239,11 +266,17 @@ def get_workers(settings):
         cpw(
             name="cstratak-CentOS9-aarch64",
             tags=['linux', 'unix', 'rhel', 'arm', 'arm64', 'aarch64'],
+            branch_flags=[
+                BranchWorkerFlags(configure=["--with-dtrace"], min_branch=(3, 15)),
+            ],
             parallel_tests=32,
         ),
         cpw(
             name="cstratak-CentOS10-aarch64",
             tags=['linux', 'unix', 'rhel', 'arm', 'arm64', 'aarch64'],
+            branch_flags=[
+                BranchWorkerFlags(configure=["--with-dtrace"], min_branch=(3, 15)),
+            ],
             parallel_tests=32,
         ),
         cpw(
@@ -262,11 +295,17 @@ def get_workers(settings):
         cpw(
             name="cstratak-fedora-rawhide-s390x",
             tags=['linux', 'unix', 'fedora', 's390x'],
+            branch_flags=[
+                BranchWorkerFlags(configure=["--with-dtrace"], min_branch=(3, 15)),
+            ],
             parallel_tests=10,
         ),
         cpw(
             name="cstratak-fedora-stable-s390x",
             tags=['linux', 'unix', 'fedora', 's390x'],
+            branch_flags=[
+                BranchWorkerFlags(configure=["--with-dtrace"], min_branch=(3, 15)),
+            ],
             parallel_tests=10,
         ),
         cpw(
@@ -278,6 +317,9 @@ def get_workers(settings):
         cpw(
             name="cstratak-rhel9-s390x",
             tags=['linux', 'unix', 'rhel', 's390x'],
+            branch_flags=[
+                BranchWorkerFlags(configure=["--with-dtrace"], min_branch=(3, 15)),
+            ],
             parallel_tests=10,
         ),
         cpw(
