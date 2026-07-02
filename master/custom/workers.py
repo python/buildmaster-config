@@ -10,6 +10,10 @@ from buildbot.plugins import worker as _worker
 
 from custom.worker_downtime import no_builds_between
 
+# List of workers.
+# See also: Buildbot worker documentation, http://docs.buildbot.net/current/manual/configuration/workers.html#defining-workers
+
+
 
 # By default, the buildmaster sends a simple, non-blocking message to each
 # worker every hour. These keepalives ensure that traffic is flowing over the
