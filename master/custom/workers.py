@@ -68,6 +68,14 @@ class CPythonWorker:
                 max_builds=parallel_builders,
             )
 
+    def get_configure_flags(self, branch):
+        if "dtrace" in self.tags and (
+            branch.is_pr or branch.version_tuple >= (3, 15)
+        ):
+            return ["--with-dtrace"]
+        return []
+
+
 # Some of Itamar's workers are reprovisioned every Wednesday at 9am PT.
 # Builds scheduled between 8am - 10am PT on Wednesdays will be delayed to
 # 10am PT.
