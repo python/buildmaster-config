@@ -119,6 +119,7 @@ class UnixBuild(BaseBuild):
             oot_kwargs = {}
         configure_cmd = [configure_cmd, "--prefix", "$(PWD)/target"]
         configure_cmd += self.configureFlags
+        configure_cmd += worker.get_configure_flags(branch)
         self.addStep(
             Configure(command=configure_cmd, **oot_kwargs)
         )
@@ -225,6 +226,7 @@ class UnixInstalledBuild(BaseBuild):
             Configure(
                 command=["./configure", "--prefix", "$(PWD)/target"]
                 + self.configureFlags
+                + worker.get_configure_flags(branch)
             )
         )
 
@@ -819,6 +821,7 @@ class UnixCrossBuild(UnixBuild):
         configure_cmd = list(self.host_configure_cmd)
         configure_cmd += ["--prefix", "$(PWD)/target/host"]
         configure_cmd += self.configureFlags + self.extra_configure_flags
+        configure_cmd += worker.get_configure_flags(branch)
         configure_cmd += [util.Interpolate("--build=%(prop:build_triple)s")]
         configure_cmd += [f"--host={self.host}"]
         configure_cmd += ["--with-build-python=../build/python"]
@@ -1142,6 +1145,7 @@ class _IOSSimulatorBuild(UnixBuild):
         configure_cmd = list(self.host_configure_cmd)
         configure_cmd += self.configureFlags
         configure_cmd += self.extra_configure_flags
+        configure_cmd += worker.get_configure_flags(branch)
         configure_cmd += [
             f"--with-openssl={support_path}/openssl",
             f"--build={self.arch}-apple-darwin",
@@ -1365,7 +1369,11 @@ class ValgrindBuild(UnixBuild):
     def setup(self, branch, worker, **kwargs):
         self.addStep(
             Configure(
-                command=["./configure", "--prefix", "$(PWD)/target"] + self.configureFlags
+                command=(
+                    ["./configure", "--prefix", "$(PWD)/target"]
+                    + self.configureFlags
+                    + worker.get_configure_flags(branch)
+                )
             )
         )
 

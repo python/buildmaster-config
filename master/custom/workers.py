@@ -26,6 +26,44 @@ from custom.worker_downtime import no_builds_between
 KEEPALIVE = 60
 
 
+class BranchConfigureFlags:
+    def __init__(
+        self,
+        flags,
+        *,
+        branches=None,
+        min_branch=None,
+        max_branch=None,
+    ):
+        if isinstance(flags, str):
+            self.flags = (flags,)
+        else:
+            self.flags = tuple(flags)
+        if isinstance(branches, str):
+            self.branches = (branches,)
+        elif branches is not None:
+            self.branches = tuple(branches)
+        else:
+            self.branches = None
+        self.min_branch = min_branch
+        self.max_branch = max_branch
+
+    def applies_to(self, branch):
+        if self.branches is not None and branch.name not in self.branches:
+            return False
+
+        if self.min_branch is None and self.max_branch is None:
+            return True
+
+        if branch.version_tuple is None:
+            return False
+        if self.min_branch is not None and branch.version_tuple < self.min_branch:
+            return False
+        if self.max_branch is not None and branch.version_tuple > self.max_branch:
+            return False
+        return True
+
+
 class CPythonWorker:
     def __init__(
         self,
@@ -34,6 +72,7 @@ class CPythonWorker:
         tags=None,
         branches=None,
         not_branches=None,
+        configure_flags=(),
         parallel_builders=1,
         parallel_tests=None,
         timeout_factor=1,
@@ -45,6 +84,7 @@ class CPythonWorker:
         self.tags = tags or set()
         self.branches = branches
         self.not_branches = not_branches
+        self.configure_flags = tuple(configure_flags)
         self.parallel_tests = parallel_tests
         self.timeout_factor = timeout_factor
         self.exclude_test_resources = exclude_test_resources or []
@@ -67,6 +107,14 @@ class CPythonWorker:
                 keepalive_interval=KEEPALIVE,
                 max_builds=parallel_builders,
             )
+
+    def get_configure_flags(self, branch):
+        configure_flags = []
+        for configure_flag in self.configure_flags:
+            if configure_flag.applies_to(branch):
+                configure_flags.extend(configure_flag.flags)
+        return configure_flags
+
 
 # Some of Itamar's workers are reprovisioned every Wednesday at 9am PT.
 # Builds scheduled between 8am - 10am PT on Wednesdays will be delayed to
