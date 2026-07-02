@@ -38,7 +38,8 @@ class CPythonWorker:
         parallel_tests=None,
         timeout_factor=1,
         exclude_test_resources=None,
-        downtime=None
+        downtime=None,
+        git_options=None,
     ):
         self.name = name
         self.tags = tags or set()
@@ -48,6 +49,7 @@ class CPythonWorker:
         self.timeout_factor = timeout_factor
         self.exclude_test_resources = exclude_test_resources or []
         self.downtime = downtime
+        self.git_options = git_options or {}
 
         worker_settings = settings.workers[name]
         owner = name.split("-")[0]
@@ -310,6 +312,14 @@ def get_workers(settings):
             tags=['windows', 'win11', 'arm64'],
             parallel_tests=8,
             not_branches=['3.10', '3.11', '3.12'],
+            git_options=dict(
+                # Do a full shallow clone for every build
+                mode="full",
+                method="clobber",
+                shallow=True,
+                # Disable the default, if set
+                filters=None,
+            ),
         ),
         cpw(
             name="bcannon-wasi",
