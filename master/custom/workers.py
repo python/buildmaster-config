@@ -22,6 +22,64 @@ from custom.worker_downtime import no_builds_between
 KEEPALIVE = 60
 
 
+class BranchWorkerFlags:
+    def __init__(
+        self,
+        *,
+        branches=None,
+        min_branch=None,
+        max_branch=None,
+        configure=(),
+        build=(),
+        test=(),
+        clean=(),
+    ):
+        if isinstance(branches, str):
+            self.branches = (branches,)
+        elif branches is not None:
+            self.branches = tuple(branches)
+        else:
+            self.branches = None
+        self.min_branch = min_branch
+        self.max_branch = max_branch
+        self.configure = self._as_tuple(configure)
+        self.build = self._as_tuple(build)
+        self.test = self._as_tuple(test)
+        self.clean = self._as_tuple(clean)
+
+    @staticmethod
+    def _as_tuple(flags):
+        if isinstance(flags, str):
+            return (flags,)
+        return tuple(flags)
+
+    def applies_to(self, branch):
+        if self.branches is not None and branch.name not in self.branches:
+            return False
+
+        if self.min_branch is None and self.max_branch is None:
+            return True
+
+        if branch.version_tuple is None:
+            return False
+        if self.min_branch is not None and branch.version_tuple < self.min_branch:
+            return False
+        if self.max_branch is not None and branch.version_tuple > self.max_branch:
+            return False
+        return True
+
+    def get(self, kind):
+        if kind == "configure":
+            return self.configure
+        if kind == "build":
+            return self.build
+        if kind == "test":
+            return self.test
+        if kind == "clean":
+            return self.clean
+        raise ValueError(f"Unknown branch worker flag kind: {kind}")
+
+
 class CPythonWorker:
     def __init__(
         self,
@@ -30,6 +88,7 @@ class CPythonWorker:
         tags=None,
         branches=None,
         not_branches=None,
+        branch_flags=(),
         parallel_builders=1,
         parallel_tests=None,
         timeout_factor=1,
@@ -40,6 +99,7 @@ class CPythonWorker:
         self.tags = tags or set()
         self.branches = branches
         self.not_branches = not_branches
+        self.branch_flags = tuple(branch_flags)
         self.parallel_tests = parallel_tests
         self.timeout_factor = timeout_factor
         self.exclude_test_resources = exclude_test_resources or []
@@ -61,6 +121,14 @@ class CPythonWorker:
                 keepalive_interval=KEEPALIVE,
                 max_builds=parallel_builders,
             )
+
+    def get_flags(self, branch, kind):
+        flags = []
+        for rule in self.branch_flags:
+            if rule.applies_to(branch):
+                flags.extend(rule.get(kind))
+        return flags
+
 
 # Some of Itamar's workers are reprovisioned every Wednesday at 9am PT.
 # Builds scheduled between 8am - 10am PT on Wednesdays will be delayed to

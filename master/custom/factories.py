@@ -119,6 +119,7 @@ class UnixBuild(BaseBuild):
             oot_kwargs = {}
         configure_cmd = [configure_cmd, "--prefix", "$(PWD)/target"]
         configure_cmd += self.configureFlags
+        configure_cmd += worker.get_flags(branch, "configure")
         self.addStep(
             Configure(command=configure_cmd, **oot_kwargs)
         )
@@ -225,6 +226,7 @@ class UnixInstalledBuild(BaseBuild):
             Configure(
                 command=["./configure", "--prefix", "$(PWD)/target"]
                 + self.configureFlags
+                + worker.get_flags(branch, "configure")
             )
         )
 
@@ -620,10 +622,15 @@ class BaseWindowsBuild(BaseBuild):
     factory_tags = ["win32"]
 
     def setup(self, branch, worker, **kwargs):
-        build_command = self.build_command + self.buildFlags
+        build_command = (
+            self.build_command
+            + self.buildFlags
+            + worker.get_flags(branch, "build")
+        )
         test_command = [
             *self.test_command,
             *self.testFlags,
+            *worker.get_flags(branch, "test"),
             *get_j_opts(worker, 2),
         ]
         if not has_option("-R", self.testFlags):
@@ -631,6 +638,7 @@ class BaseWindowsBuild(BaseBuild):
         clean_command = [
             *self.clean_command,
             *self.cleanFlags,
+            *worker.get_flags(branch, "clean"),
             *get_j_opts(worker),
         ]
         self.addStep(Compile(command=build_command))
@@ -819,6 +827,7 @@ class UnixCrossBuild(UnixBuild):
         configure_cmd = list(self.host_configure_cmd)
         configure_cmd += ["--prefix", "$(PWD)/target/host"]
         configure_cmd += self.configureFlags + self.extra_configure_flags
+        configure_cmd += worker.get_flags(branch, "configure")
         configure_cmd += [util.Interpolate("--build=%(prop:build_triple)s")]
         configure_cmd += [f"--host={self.host}"]
         configure_cmd += ["--with-build-python=../build/python"]
@@ -1142,6 +1151,7 @@ class _IOSSimulatorBuild(UnixBuild):
         configure_cmd = list(self.host_configure_cmd)
         configure_cmd += self.configureFlags
         configure_cmd += self.extra_configure_flags
+        configure_cmd += worker.get_flags(branch, "configure")
         configure_cmd += [
             f"--with-openssl={support_path}/openssl",
             f"--build={self.arch}-apple-darwin",
@@ -1365,7 +1375,11 @@ class ValgrindBuild(UnixBuild):
     def setup(self, branch, worker, **kwargs):
         self.addStep(
             Configure(
-                command=["./configure", "--prefix", "$(PWD)/target"] + self.configureFlags
+                command=(
+                    ["./configure", "--prefix", "$(PWD)/target"]
+                    + self.configureFlags
+                    + worker.get_flags(branch, "configure")
+                )
             )
         )
 
