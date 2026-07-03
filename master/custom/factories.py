@@ -941,7 +941,7 @@ class _Wasm32WasiPreview1Build(UnixBuild):
             extra_tags.append("nondebug")
         self.buildersuffix += self.append_suffix
         if self.pydebug:
-            # The debug the WASI buildbot is meant for 3.11 and 3.12 only.
+            # The debug WASI buildbot is meant for 3.11 and 3.12 only.
             # Don't use it on PRs; it's tier 3 only and getting it to
             # work on PRs against `main` is too much work.
             self.branches = {BRANCHES[3, 11], BRANCHES[3, 12]}
