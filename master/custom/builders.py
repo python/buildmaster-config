@@ -298,6 +298,9 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE}, [
     # Linux x86 (32-bit) GCC
     ("x86 Debian Non-Debug with X", "ware-debian-x86", NonDebugUnixBuild),
     ("x86 Debian Installed with X", "ware-debian-x86", UnixInstalledBuild),
+
+    # riscv64 GCC
+    ("riscv64 Ubuntu", "onder-riscv64", SlowUnixInstalledBuild),
 ]))
 
 
@@ -414,9 +417,6 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE}, [
 
     # Solaris sparcv9
     ("SPARCv9 Oracle Solaris 11.4", "kulikjak-solaris-sparcv9", UnixBuild),
-
-    # riscv64 GCC
-    ("riscv64 Ubuntu23", "onder-riscv64", SlowUnixInstalledBuild),
 
     # Arch Usan (see stable "AMD64 Arch Linux Usan Function" above)
     ("AMD64 Arch Linux Usan", "pablogsal-arch-x86_64", ClangUbsanLinuxBuild),
