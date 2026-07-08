@@ -219,6 +219,11 @@ def get_workers(settings):
             parallel_tests=10,
         ),
         cpw(
+            name="cstratak-c10s-s390x",
+            tags=['linux', 'unix', 'rhel', 's390x'],
+            parallel_tests=10,
+        ),
+        cpw(
             name="gps-raspbian",
             tags=['linux', 'unix', 'raspbian', 'debian', 'armv6', 'armv7l',
                   'aarch32', 'arm'],
