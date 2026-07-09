@@ -431,7 +431,7 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE}, [
 
     # RISC-V 64-bit GCC
     ("RISC-V 64-bit Ubuntu", "rise-riscv64-4", SlowDebugUnixBuild)
-    ("RISC-V 64-bit Ubuntu NoGIL", "rise-riscv64-4", SlowUnixNoGilBuild)
+    ("RISC-V 64-bit Ubuntu NoGIL", "rise-riscv64-3", SlowUnixNoGilBuild)
 ]))
 
 
