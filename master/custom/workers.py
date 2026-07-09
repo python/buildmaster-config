@@ -225,6 +225,12 @@ def get_workers(settings):
             parallel_tests=4,
         ),
         cpw(
+            name="rise-riscv64-4",
+            tags=['linux', 'unix', 'ubuntu', 'riscv64'],
+            not_branches=['3.10'],
+            parallel_tests=4,
+        ),
+        cpw(
             name="stan-aarch64-ubuntu",
             tags=['linux', 'unix', 'ubuntu', 'arm', 'arm64', 'aarch64'],
             parallel_tests=4,
