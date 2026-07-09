@@ -27,6 +27,7 @@ from custom.factories import (
     ClangUnixInstalledBuild,
     SharedUnixBuild,
     SlowDebugUnixBuild,
+    SlowUnixNoGilBuild,
     SlowNonDebugUnixBuild,
     SlowNonDebugUnixBuild15BitDigits,
     SlowUnixInstalledBuild,
