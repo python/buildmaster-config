@@ -431,8 +431,8 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE}, [
     ("AMD64 Arch Linux Usan", "pablogsal-arch-x86_64", ClangUbsanLinuxBuild),
 
     # RISC-V 64-bit GCC
-    ("RISC-V 64-bit Ubuntu", "rise-riscv64-4", SlowDebugUnixBuild)
-    ("RISC-V 64-bit Ubuntu NoGIL", "rise-riscv64-3", SlowUnixNoGilBuild)
+    ("RISC-V 64-bit Ubuntu", "rise-riscv64-4", SlowDebugUnixBuild),
+    ("RISC-V 64-bit Ubuntu NoGIL", "rise-riscv64-3", SlowUnixNoGilBuild),
 ]))
 
 
