@@ -428,6 +428,9 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE}, [
 
     # Arch Usan (see stable "AMD64 Arch Linux Usan Function" above)
     ("AMD64 Arch Linux Usan", "pablogsal-arch-x86_64", ClangUbsanLinuxBuild),
+
+    # RISC-V 64-bit GCC
+    ("RISC-V 64-bit Ubuntu", "rise-riscv64-4", SlowDebugUnixBuild)
 ]))
 
 
