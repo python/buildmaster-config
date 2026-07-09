@@ -230,6 +230,12 @@ def get_workers(settings):
             parallel_tests=4,
         ),
         cpw(
+            name="rise-riscv64-3",
+            tags=['linux', 'unix', 'ubuntu', 'riscv64'],
+            not_branches=['3.10'],
+            parallel_tests=4,
+        ),
+        cpw(
             name="rise-riscv64-4",
             tags=['linux', 'unix', 'ubuntu', 'riscv64'],
             not_branches=['3.10'],
