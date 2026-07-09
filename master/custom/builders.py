@@ -382,6 +382,14 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_3}, [
     ("s390x Fedora Rawhide LTO", "cstratak-fedora-rawhide-s390x", LTONonDebugUnixBuild),
     ("s390x Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-s390x", LTOPGONonDebugBuild),
 
+    # CentOS Stream 10 Linux s390x GCC/Clang
+    ("s390x CentOS10", "cstratak-c10s-s390x", CentOS10Build),
+    ("s390x CentOS10 Refleaks", "cstratak-c10s-s390x", UnixRefleakBuild),
+    ("s390x CentOS10 Clang", "cstratak-c10s-s390x", ClangUnixBuild),
+    ("s390x CentOS10 Clang Installed", "cstratak-c10s-s390x", ClangUnixInstalledBuild),
+    ("s390x CentOS10 LTO", "cstratak-c10s-s390x", LTONonDebugUnixBuild),
+    ("s390x CentOS10 LTO + PGO", "cstratak-c10s-s390x", LTOPGONonDebugBuild),
+
     # FreeBSD x86-64 clang
     # FreeBSD 15 is CURRENT: development branch (at 2023-10-17)
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
