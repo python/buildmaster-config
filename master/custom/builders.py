@@ -284,6 +284,8 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_3}, [
 BUILDER_DEFS.extend(generate_builderdefs({STABLE}, [
     # Linux x86-64 GCC musl
     ("AMD64 Alpine Linux", "ware-alpine", UnixBuild),
+    # Linux x86-64 GCC musl Freethreading
+    ("AMD64 Alpine Linux NoGIL", "ware-alpine", UnixNoGilBuild),
 
     # Linux x86-64 GCC/Clang
     # Special builds: FIPS, ASAN, UBSAN, TraceRefs, Perf, etc.
@@ -406,8 +408,6 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_3}, [
 
 # -- Unstable No Tier builders ------------------------------------------
 BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE}, [
-    # Linux x86-64 GCC musl Freethreading
-    ("AMD64 Alpine Linux NoGIL", "ware-alpine", UnixNoGilBuild),
     # Linux GCC Fedora Rawhide Freethreading builders
     ("AMD64 Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-x86_64", FedoraRawhideFreedthreadingBuild),
     ("aarch64 Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-aarch64", FedoraRawhideFreedthreadingBuild),
