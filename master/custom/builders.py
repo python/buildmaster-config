@@ -31,6 +31,7 @@ from custom.factories import (
     SlowNonDebugUnixBuild,
     SlowNonDebugUnixBuild15BitDigits,
     SlowUnixInstalledBuild,
+    SlowClangUnixBuild,
     NonDebugUnixBuild,
     UnixInstalledBuild,
     LTONonDebugUnixBuild,
@@ -433,6 +434,7 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE}, [
     # RISC-V 64-bit GCC
     ("RISC-V 64-bit Ubuntu", "rise-riscv64-4", SlowDebugUnixBuild),
     ("RISC-V 64-bit Ubuntu NoGIL", "rise-riscv64-3", SlowUnixNoGilBuild),
+    ("RISC-V 64-bit Ubuntu Clang", "rise-riscv64-2", SlowClangUnixBuild),
 ]))
 
 
