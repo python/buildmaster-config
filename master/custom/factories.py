@@ -396,6 +396,11 @@ class SlowUnixInstalledBuild(UnixInstalledBuild):
     test_timeout = SLOW_TIMEOUT
 
 
+class SlowClangUnixBuild(ClangUnixBuild):
+    test_timeout = SLOW_TIMEOUT
+    testFlags = [*UnixBuild.testFlags, "-u-cpu"]
+
+
 class LTONonDebugUnixBuild(NonDebugUnixBuild):
     buildersuffix = ".lto"
     configureFlags = [
