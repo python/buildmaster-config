@@ -9,6 +9,7 @@ import calendar
 from buildbot.plugins import worker as _worker
 
 from custom.worker_downtime import no_builds_between
+from custom.branches import BRANCHES, MAIN_BRANCH, PR_BRANCH
 
 # List of workers.
 # See also: Buildbot worker documentation, http://docs.buildbot.net/current/manual/configuration/workers.html#defining-workers
@@ -32,8 +33,7 @@ class CPythonWorker:
         settings,
         name,
         tags=None,
-        branches=None,
-        not_branches=None,
+        branches=BRANCHES,
         parallel_builders=1,
         parallel_tests=None,
         timeout_factor=1,
@@ -44,12 +44,15 @@ class CPythonWorker:
         self.name = name
         self.tags = tags or set()
         self.branches = branches
-        self.not_branches = not_branches
         self.parallel_tests = parallel_tests
         self.timeout_factor = timeout_factor
         self.exclude_test_resources = exclude_test_resources or []
         self.downtime = downtime
         self.git_options = git_options or {}
+
+        for branch in branches:
+            if isinstance(branch, str):
+                raise TypeError('use BRANCHES for branch filtering')
 
         worker_settings = settings.workers[name]
         owner = name.split("-")[0]
@@ -112,14 +115,14 @@ def get_workers(settings):
             name="cstratak-RHEL8-x86_64",
             tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
             parallel_tests=10,
-            branches=['3.10', '3.11', '3.12'],
+            branches=BRANCHES.only_until(3, 12),
         ),
         cpw(
             name="cstratak-RHEL8-fips-x86_64",
             tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64', 'fips'],
             parallel_tests=6,
             # Only 3.12 for RHEL8 FIPS builder
-            branches=['3.12'],
+            branches={BRANCHES[3, 12]},
         ),
         cpw(
             name="cstratak-CentOS9-x86_64",
@@ -131,7 +134,7 @@ def get_workers(settings):
             tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64', 'fips'],
             parallel_tests=6,
             # Only 3.12+ for FIPS builder
-            not_branches=["3.10", "3.11"],
+            branches=BRANCHES.only_since(3, 12),
         ),
         cpw(
             name="cstratak-fedora-rawhide-ppc64le",
@@ -149,7 +152,7 @@ def get_workers(settings):
             name="cstratak-RHEL8-ppc64le",
             tags=['linux', 'unix', 'rhel', 'ppc64le'],
             parallel_tests=10,
-            branches=['3.10', '3.11', '3.12'],
+            branches=BRANCHES.only_until(3, 12),
             timeout_factor=2,  # Increase the timeout on this slow worker
         ),
         cpw(
@@ -172,7 +175,7 @@ def get_workers(settings):
             name="cstratak-RHEL8-aarch64",
             tags=['linux', 'unix', 'rhel', 'arm', 'arm64', 'aarch64'],
             parallel_tests=32,
-            branches=['3.10', '3.11', '3.12'],
+            branches=BRANCHES.only_until(3, 12),
         ),
         cpw(
             name="cstratak-CentOS9-aarch64",
@@ -187,7 +190,7 @@ def get_workers(settings):
         cpw(
             name="diegorusso-aarch64-bigmem",
             tags=['linux', 'unix', 'ubuntu', 'arm', 'arm64', 'aarch64', 'bigmem'],
-            branches=['3.x'],
+            branches={MAIN_BRANCH, PR_BRANCH},
             parallel_tests=8,
             # This worker runs pyperformance for speed.python.org at 12am UTC.
             # The pyperformance run lasts less than 2h.
@@ -211,7 +214,7 @@ def get_workers(settings):
             name="cstratak-rhel8-s390x",
             tags=['linux', 'unix', 'rhel', 's390x'],
             parallel_tests=10,
-            branches=['3.10', '3.11', '3.12'],
+            branches=BRANCHES.only_until(3, 12),
         ),
         cpw(
             name="cstratak-rhel9-s390x",
@@ -251,8 +254,8 @@ def get_workers(settings):
             name="stan-aarch64-ubuntu",
             tags=['linux', 'unix', 'ubuntu', 'arm', 'arm64', 'aarch64'],
             parallel_tests=4,
-            # test_xpickle doesn't exist on these branches
-            not_branches=['3.12', '3.11', '3.10'],
+            # test_xpickle was added in 3.13
+            branches=BRANCHES.only_since(3, 13),
         ),
         cpw(
             name="stan-raspbian",
@@ -260,7 +263,7 @@ def get_workers(settings):
                   'aarch64', 'arm'],
             parallel_tests=4,
             # Tests fail with latin1 encoding on 3.12, probably earlier
-            not_branches=['3.12', '3.11', '3.10'],
+            branches=BRANCHES.only_since(3, 13),
             # Problematic ISP causes issues connecting to testpython.net
             exclude_test_resources=['urlfetch', 'network'],
         ),
@@ -302,7 +305,7 @@ def get_workers(settings):
         cpw(
             name="ware-alpine",
             tags=['linux', 'unix', 'alpine', 'docker', 'amd64', 'x86-64', 'musl'],
-            not_branches=['3.10', '3.11', '3.12', '3.13'],
+            branches=BRANCHES.only_since(3, 14),
             parallel_tests=6,
         ),
         cpw(
@@ -334,7 +337,7 @@ def get_workers(settings):
             name="ware-win11-arm64",
             tags=['windows', 'win11', 'arm64'],
             parallel_tests=8,
-            not_branches=['3.10', '3.11', '3.12'],
+            branches=BRANCHES.only_since(3, 13),
             git_options=dict(
                 # Do a full shallow clone for every build
                 mode="full",
@@ -347,7 +350,7 @@ def get_workers(settings):
         cpw(
             name="bcannon-wasi",
             tags=['wasm', 'wasi'],
-            not_branches=['3.10'],
+            branches=BRANCHES.only_since(3, 11),
             parallel_tests=2,
             parallel_builders=2,
             timeout_factor=2,  # Increase the timeout on this slow worker
@@ -355,7 +358,7 @@ def get_workers(settings):
         cpw(
             name="itamaro-centos-aws",
             tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64'],
-            not_branches=['3.10', '3.11', '3.12', '3.13'],
+            branches=BRANCHES.only_since(3, 14),
             parallel_tests=10,
             parallel_builders=2,
             downtime=itamaro_downtime,
@@ -363,7 +366,7 @@ def get_workers(settings):
         cpw(
             name="itamaro-win64-srv-22-aws",
             tags=['windows', 'win-srv-22', 'amd64', 'x86-64'],
-            not_branches=['3.10', '3.11', '3.12', '3.13'],
+            branches=BRANCHES.only_since(3, 14),
             parallel_tests=20,
             # Parallel MSBuild builds are "unusual", and more likely to hit obscure bugs
             # (such as file locking issues across builds)
@@ -375,50 +378,50 @@ def get_workers(settings):
         cpw(
             name="itamaro-macos-intel-aws",
             tags=['macOS', 'unix', 'amd64', 'x86-64'],
-            not_branches=['3.10', '3.11', '3.12', '3.13'],
+            branches=BRANCHES.only_since(3, 14),
             parallel_tests=10,
         ),
         cpw(
             name="itamaro-macos-arm64-aws",
             tags=['macOS', 'unix', 'arm', 'arm64'],
-            not_branches=['3.10', '3.11', '3.12', '3.13'],
+            branches=BRANCHES.only_since(3, 14),
             parallel_tests=10,
         ),
         cpw(
             name="kushaldas-wasi",
             tags=['wasm', 'wasi'],
-            not_branches=['3.10'],
+            branches=BRANCHES.only_since(3, 11),
             parallel_tests=4,
             parallel_builders=2,
         ),
         cpw(
             name="onder-riscv64",
             tags=['linux', 'unix', 'ubuntu', 'riscv64'],
-            not_branches=['3.10'],
+            branches=BRANCHES.only_since(3, 11),
             parallel_tests=4,
         ),
         cpw(
             name="rkm-arm64-ios-simulator",
             tags=['iOS'],
-            not_branches=['3.10', '3.11', '3.12'],
+            branches=BRANCHES.only_since(3, 13),
             parallel_builders=1,  # All builds use the same simulator
         ),
         cpw(
             name="rkm-emscripten",
             tags=['emscripten'],
-            not_branches=['3.10', '3.11', '3.12', '3.13'],
+            branches=BRANCHES.only_since(3, 14),
             parallel_builders=4,
         ),
         cpw(
             name="mhsmith-android-aarch64",
             tags=['android'],
-            not_branches=['3.10', '3.11', '3.12'],
+            branches=BRANCHES.only_since(3, 13),
             parallel_builders=1,  # All builds use the same emulator and app ID.
         ),
         cpw(
             name="mhsmith-android-x86_64",
             tags=['android'],
-            not_branches=['3.10', '3.11', '3.12'],
+            branches=BRANCHES.only_since(3, 13),
             parallel_builders=1,  # All builds use the same emulator and app ID.
         ),
         cpw(
