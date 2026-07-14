@@ -680,6 +680,11 @@ class Windows64Build(BaseWindowsBuild):
     factory_tags = ["win64"]
 
 
+class Windows64ClangBuild(Windows64Build):
+    buildFlags = [*Windows64Build.buildFlags, '"/p:PlatformToolset=ClangCL"']
+    factory_tags = [*Windows64Build.factory_tags, 'clang']
+
+
 class Windows64BigmemBuild(BaseWindowsBuild):
     buildersuffix = ".bigmem"
     buildFlags = ["-p", "x64"]
