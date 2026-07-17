@@ -303,8 +303,10 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE}, [
     ("x86 Debian Non-Debug with X", "ware-debian-x86", NonDebugUnixBuild),
     ("x86 Debian Installed with X", "ware-debian-x86", UnixInstalledBuild),
 
-    # riscv64 GCC
+    # RISC-V 64-bit GCC/Clang
     ("riscv64 Ubuntu", "onder-riscv64", SlowUnixInstalledBuild),
+    ("RISC-V 64-bit Ubuntu", "rise-riscv64-4", SlowDebugUnixBuild),
+    ("RISC-V 64-bit Ubuntu Clang", "rise-riscv64-2", SlowClangUnixBuild),
 ]))
 
 
@@ -432,9 +434,7 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE}, [
     ("AMD64 Arch Linux Usan", "pablogsal-arch-x86_64", ClangUbsanLinuxBuild),
 
     # RISC-V 64-bit GCC
-    ("RISC-V 64-bit Ubuntu", "rise-riscv64-4", SlowDebugUnixBuild),
     ("RISC-V 64-bit Ubuntu NoGIL", "rise-riscv64-3", SlowUnixNoGilBuild),
-    ("RISC-V 64-bit Ubuntu Clang", "rise-riscv64-2", SlowClangUnixBuild),
 ]))
 
 
