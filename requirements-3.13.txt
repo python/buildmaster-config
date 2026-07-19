@@ -1,28 +1,29 @@
-alembic==1.18.4
+alembic==1.18.5
 attrs==26.1.0
-autobahn==26.6.1
+autobahn==26.6.2
 Automat==25.4.16
 blinker==1.9.0
-buildbot==4.3.0
-buildbot-console-view==4.3.0
-buildbot-grid-view==4.3.0
-buildbot-waterfall-view==4.3.0
-buildbot-worker==4.3.0
-buildbot-wsgi-dashboards==4.3.0
-buildbot-www==4.3.0
-cbor2==6.1.2
+buildbot @ git+https://github.com/buildbot/buildbot.git@e055ebda6b4800b4762e45088b23b736e046cecf#subdirectory=master
+buildbot-console-view @ git+https://github.com/buildbot/buildbot.git@e055ebda6b4800b4762e45088b23b736e046cecf#subdirectory=www/console_view
+buildbot-grid-view @ git+https://github.com/buildbot/buildbot.git@e055ebda6b4800b4762e45088b23b736e046cecf#subdirectory=www/grid_view
+buildbot-waterfall-view @ git+https://github.com/buildbot/buildbot.git@e055ebda6b4800b4762e45088b23b736e046cecf#subdirectory=www/waterfall_view
+buildbot-worker @ git+https://github.com/buildbot/buildbot.git@e055ebda6b4800b4762e45088b23b736e046cecf#subdirectory=worker
+buildbot-wsgi-dashboards @ git+https://github.com/buildbot/buildbot.git@e055ebda6b4800b4762e45088b23b736e046cecf#subdirectory=www/wsgi_dashboards
+buildbot-www @ git+https://github.com/buildbot/buildbot.git@e055ebda6b4800b4762e45088b23b736e046cecf#subdirectory=www/base
+cbor2==6.1.3
 certifi==2026.6.17
-cffi==2.0.0
-charset-normalizer==3.4.7
-click==8.4.1
+cffi==2.1.0
+charset-normalizer==3.4.9
+click==8.4.2
 constantly==23.10.4
-croniter==6.2.2
+croniter==6.2.4
 cryptography==49.0.0
 Flask==3.1.3
-greenlet==3.5.2
-humanize==4.15.0
+greenlet==3.5.3
+humanize==4.16.0
 hyperlink==21.0.0
 idna==3.18
+importlib_metadata==9.0.0
 Incremental==24.11.0
 itsdangerous==2.2.0
 Jinja2==3.1.6
@@ -38,17 +39,18 @@ pyOpenSSL==26.3.0
 python-dateutil==2.9.0.post0
 PyYAML==6.0.3
 requests==2.34.2
-sentry-sdk==2.63.0
+sentry-sdk==2.65.0
 service-identity==26.1.0
-setuptools==82.0.1
+setuptools==83.0.0
 six==1.17.0
 SQLAlchemy==2.0.51
-treq==25.5.0
+treq==26.7.0
 Twisted==26.4.0
 txaio==26.6.1
-typing_extensions==4.15.0
+typing_extensions==4.16.0
 ujson==5.13.0
 unidiff==0.7.5
 urllib3==2.7.0
 Werkzeug==3.1.8
+zipp==4.1.0
 zope.interface==8.5

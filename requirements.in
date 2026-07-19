@@ -1,5 +1,16 @@
-buildbot[bundle,tls]
-buildbot_wsgi_dashboards
+# XXX: Use the current (19July2026) latest commit to pull in a few changes we
+# want.  These changes are expected to be included in v4.4.0 "soon"; we should
+# switch back to these commented lines instead when possible.
+#buildbot[bundle,tls]
+#buildbot-wsgi-dashboards
+buildbot[tls] @ git+https://github.com/buildbot/buildbot.git@e055ebda6b4800b4762e45088b23b736e046cecf#subdirectory=master
+buildbot-www @ git+https://github.com/buildbot/buildbot.git@e055ebda6b4800b4762e45088b23b736e046cecf#subdirectory=www/base
+buildbot-worker @ git+https://github.com/buildbot/buildbot.git@e055ebda6b4800b4762e45088b23b736e046cecf#subdirectory=worker
+buildbot-waterfall-view @ git+https://github.com/buildbot/buildbot.git@e055ebda6b4800b4762e45088b23b736e046cecf#subdirectory=www/waterfall_view
+buildbot-console-view @ git+https://github.com/buildbot/buildbot.git@e055ebda6b4800b4762e45088b23b736e046cecf#subdirectory=www/console_view
+buildbot-grid-view @ git+https://github.com/buildbot/buildbot.git@e055ebda6b4800b4762e45088b23b736e046cecf#subdirectory=www/grid_view
+buildbot-wsgi-dashboards @ git+https://github.com/buildbot/buildbot.git@e055ebda6b4800b4762e45088b23b736e046cecf#subdirectory=www/wsgi_dashboards
+# end XXX
 flask
 humanize
 PyYAML
