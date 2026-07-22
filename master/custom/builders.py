@@ -42,7 +42,6 @@ from custom.factories import (
     CentOS9NoBuiltinHashesUnixBuildExceptBlake2,
     Windows64Build,
     Windows64NoGilBuild,
-    Windows64PGOBuild,
     Windows64PGOTailcallBuild,
     Windows64PGONoGilBuild,
     Windows64PGONoGilTailcallBuild,
@@ -123,13 +122,24 @@ def get_tier_from_tags(tags):
 # updating them (e.g. changing stability)
 
 BUILDER_DEFS = [
-
     # Tests that require the 'tzdata' and 'xpickle' resources
     BuilderDef(
         "aarch64 Ubuntu Oddballs",
         factories.UnixOddballsBuild,
         tags={STABLE, TIER_1},
         worker_name="stan-aarch64-ubuntu",
+    ),
+    BuilderDef(
+        "AMD64 Windows Server 2025 Clang",
+        factories.Windows64ClangBuild,
+        tags={UNSTABLE, NO_TIER},
+        worker_name="ware-ws2025",
+    ),
+    BuilderDef(
+        "AMD64 Windows Server 2025 Refleaks",
+        factories.Windows64RefleakBuild,
+        tags={UNSTABLE, TIER_1},
+        worker_name="ware-ws2025",
     ),
     BuilderDef(
         "AMD64 Windows PGO",

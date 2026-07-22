@@ -426,4 +426,9 @@ def get_workers(settings):
             tags=['linux', 'unix', 'nixos', 'amd64', 'x86-64'],
             parallel_tests=10,
         ),
+        cpw(
+            name="ware-ws2025",
+            tags=["windows", "ws2025", "amd64", "x86-64", "clang", "msvc"],
+            parallel_tests=4,
+        ),
     ]
