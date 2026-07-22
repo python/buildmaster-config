@@ -108,7 +108,7 @@ class BuilderDef:
 
 def get_tier_from_tags(tags):
     # Get the first (highest) of the tier flags
-    tags = sorted(tags & {TIER_1, TIER_2, TIER_3})
+    tags = sorted(set(tags) & {TIER_1, TIER_2, TIER_3})
     if tags:
         return tags[0]
     return NO_TIER
