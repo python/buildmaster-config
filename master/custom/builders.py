@@ -131,6 +131,12 @@ BUILDER_DEFS = [
         tags={STABLE, TIER_1},
         worker_name="stan-aarch64-ubuntu",
     ),
+    BuilderDef(
+        "AMD64 Windows PGO",
+        factories.Windows64PGOBuild,
+        tags={STABLE, TIER_1},
+        worker_name="bolen-windows10",
+    ),
 ]
 
 def generate_builderdefs(tags, tuples):
@@ -328,9 +334,6 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_1}, [
     ("AMD64 CentOS9 FIPS No Builtin Hashes", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuild),
 
     ("AMD64 Arch Linux Valgrind", "pablogsal-arch-x86_64", ValgrindBuild),
-
-    # Windows MSVC
-    ("AMD64 Windows PGO", "bolen-windows10", Windows64PGOBuild),
 ]))
 
 
