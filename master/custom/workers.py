@@ -232,19 +232,19 @@ def get_workers(settings):
         cpw(
             name="rise-riscv64-2",
             tags=['linux', 'unix', 'ubuntu', 'riscv64'],
-            not_branches=['3.10'],
+            not_branches=['3.10', '3.11'],
             parallel_tests=4,
         ),
         cpw(
             name="rise-riscv64-3",
             tags=['linux', 'unix', 'ubuntu', 'riscv64'],
-            not_branches=['3.10'],
+            not_branches=['3.10', '3.11'],
             parallel_tests=4,
         ),
         cpw(
             name="rise-riscv64-4",
             tags=['linux', 'unix', 'ubuntu', 'riscv64'],
-            not_branches=['3.10'],
+            not_branches=['3.10', '3.11'],
             parallel_tests=4,
         ),
         cpw(
