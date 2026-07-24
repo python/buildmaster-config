@@ -621,6 +621,7 @@ class MacOSAsanNoGilBuild(UnixAsanNoGilBuild):
 
 class BaseWindowsBuild(BaseBuild):
     build_command = [r"Tools\buildbot\build.bat"]
+    compile_environ = {}
     test_command = [r"Tools\buildbot\test.bat"]
     clean_command = [r"Tools\buildbot\clean.bat"]
     python_command = [r"python.bat"]
@@ -643,7 +644,10 @@ class BaseWindowsBuild(BaseBuild):
             *self.cleanFlags,
             *get_j_opts(worker),
         ]
-        self.addStep(Compile(command=build_command))
+        self.addStep(Compile(
+            command=build_command,
+            env=self.compile_environ,
+        ))
         self.addStep(PythonInfo(
             command=self.python_command + ["-m", "test.pythoninfo"],
         ))
@@ -681,7 +685,9 @@ class Windows64Build(BaseWindowsBuild):
 
 
 class Windows64ClangBuild(Windows64Build):
-    buildFlags = [*Windows64Build.buildFlags, '"/p:PlatformToolset=ClangCL"']
+    compile_environ = {
+        "PlatformToolset": "ClangCL",
+    }
     factory_tags = [*Windows64Build.factory_tags, 'clang']
 
 
