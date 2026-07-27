@@ -222,9 +222,32 @@ def get_workers(settings):
             parallel_tests=10,
         ),
         cpw(
+            name="cstratak-c10s-s390x",
+            tags=['linux', 'unix', 'rhel', 's390x'],
+            parallel_tests=10,
+        ),
+        cpw(
             name="gps-raspbian",
             tags=['linux', 'unix', 'raspbian', 'debian', 'armv6', 'armv7l',
                   'aarch32', 'arm'],
+            parallel_tests=4,
+        ),
+        cpw(
+            name="rise-riscv64-2",
+            tags=['linux', 'unix', 'ubuntu', 'riscv64'],
+            branches=BRANCHES.only_since(3, 12),
+            parallel_tests=4,
+        ),
+        cpw(
+            name="rise-riscv64-3",
+            tags=['linux', 'unix', 'ubuntu', 'riscv64'],
+            branches=BRANCHES.only_since(3, 12),
+            parallel_tests=4,
+        ),
+        cpw(
+            name="rise-riscv64-4",
+            tags=['linux', 'unix', 'ubuntu', 'riscv64'],
+            branches=BRANCHES.only_since(3, 12),
             parallel_tests=4,
         ),
         cpw(
@@ -405,5 +428,10 @@ def get_workers(settings):
             name="malvex-nixos-x86_64",
             tags=['linux', 'unix', 'nixos', 'amd64', 'x86-64'],
             parallel_tests=10,
+        ),
+        cpw(
+            name="ware-ws2025",
+            tags=["windows", "ws2025", "amd64", "x86-64", "clang", "msvc"],
+            parallel_tests=4,
         ),
     ]

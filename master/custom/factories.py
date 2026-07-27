@@ -389,8 +389,18 @@ class SlowDebugUnixBuild(UnixBuild):
     testFlags = [*UnixBuild.testFlags, "-u-cpu"]
 
 
+class SlowUnixNoGilBuild(UnixNoGilBuild):
+    test_timeout = SLOW_TIMEOUT
+    testFlags = [*UnixBuild.testFlags, "-u-cpu"]
+
+
 class SlowUnixInstalledBuild(UnixInstalledBuild):
     test_timeout = SLOW_TIMEOUT
+
+
+class SlowClangUnixBuild(ClangUnixBuild):
+    test_timeout = SLOW_TIMEOUT
+    testFlags = [*UnixBuild.testFlags, "-u-cpu"]
 
 
 class LTONonDebugUnixBuild(NonDebugUnixBuild):
@@ -613,6 +623,7 @@ class MacOSAsanNoGilBuild(UnixAsanNoGilBuild):
 
 class BaseWindowsBuild(BaseBuild):
     build_command = [r"Tools\buildbot\build.bat"]
+    compile_environ = {}
     test_command = [r"Tools\buildbot\test.bat"]
     clean_command = [r"Tools\buildbot\clean.bat"]
     python_command = [r"python.bat"]
@@ -635,7 +646,10 @@ class BaseWindowsBuild(BaseBuild):
             *self.cleanFlags,
             *get_j_opts(worker),
         ]
-        self.addStep(Compile(command=build_command))
+        self.addStep(Compile(
+            command=build_command,
+            env=self.compile_environ,
+        ))
         self.addStep(PythonInfo(
             command=self.python_command + ["-m", "test.pythoninfo"],
         ))
@@ -670,6 +684,13 @@ class Windows64Build(BaseWindowsBuild):
     testFlags = ["-p", "x64"]
     cleanFlags = ["-p", "x64"]
     factory_tags = ["win64"]
+
+
+class Windows64ClangBuild(Windows64Build):
+    compile_environ = {
+        "PlatformToolset": "ClangCL",
+    }
+    factory_tags = [*Windows64Build.factory_tags, 'clang']
 
 
 class Windows64BigmemBuild(BaseWindowsBuild):

@@ -28,9 +28,11 @@ from custom.factories import (
     ClangUnixInstalledBuild,
     SharedUnixBuild,
     SlowDebugUnixBuild,
+    SlowUnixNoGilBuild,
     SlowNonDebugUnixBuild,
     SlowNonDebugUnixBuild15BitDigits,
     SlowUnixInstalledBuild,
+    SlowClangUnixBuild,
     NonDebugUnixBuild,
     UnixInstalledBuild,
     LTONonDebugUnixBuild,
@@ -41,7 +43,6 @@ from custom.factories import (
     CentOS9NoBuiltinHashesUnixBuildExceptBlake2,
     Windows64Build,
     Windows64NoGilBuild,
-    Windows64PGOBuild,
     Windows64PGOTailcallBuild,
     Windows64PGONoGilBuild,
     Windows64PGONoGilTailcallBuild,
@@ -115,7 +116,7 @@ class BuilderDef:
 
 def get_tier_from_tags(tags):
     # Get the first (highest) of the tier flags
-    tags = sorted(tags & {TIER_1, TIER_2, TIER_3})
+    tags = sorted(set(tags) & {TIER_1, TIER_2, TIER_3})
     if tags:
         return tags[0]
     return NO_TIER
@@ -129,13 +130,31 @@ def get_tier_from_tags(tags):
 # updating them (e.g. changing stability)
 
 BUILDER_DEFS = [
-
     # Tests that require the 'tzdata' and 'xpickle' resources
     BuilderDef(
         "aarch64 Ubuntu Oddballs",
         factories.UnixOddballsBuild,
         tags={STABLE, TIER_1},
         worker_name="stan-aarch64-ubuntu",
+    ),
+    BuilderDef(
+        "AMD64 Windows Server 2025 Clang",
+        factories.Windows64ClangBuild,
+        tags={UNSTABLE, NO_TIER},
+        worker_name="ware-ws2025",
+    ),
+    BuilderDef(
+        "AMD64 Windows Server 2025 Refleaks",
+        factories.Windows64RefleakBuild,
+        tags={UNSTABLE, TIER_1},
+        worker_name="ware-ws2025",
+    ),
+    BuilderDef(
+        "AMD64 Windows PGO",
+        factories.Windows64PGOBuild,
+        tags={STABLE, TIER_1},
+        worker_name="bolen-windows10",
+        branches={MAIN_BRANCH, PR_BRANCH},
     ),
 ]
 
@@ -318,6 +337,8 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_3}, [
 BUILDER_DEFS.extend(generate_builderdefs({STABLE}, [
     # Linux x86-64 GCC musl
     ("AMD64 Alpine Linux", "ware-alpine", UnixBuild),
+    # Linux x86-64 GCC musl Freethreading
+    ("AMD64 Alpine Linux NoGIL", "ware-alpine", UnixNoGilBuild),
 
     # Linux x86-64 GCC/Clang
     # Special builds: FIPS, ASAN, UBSAN, TraceRefs, Perf, etc.
@@ -339,6 +360,11 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE}, [
     # Linux x86 (32-bit) GCC
     ("x86 Debian Non-Debug with X", "ware-debian-x86", NonDebugUnixBuild),
     ("x86 Debian Installed with X", "ware-debian-x86", UnixInstalledBuild),
+
+    # RISC-V 64-bit GCC/Clang
+    ("riscv64 Ubuntu", "onder-riscv64", SlowUnixInstalledBuild),
+    ("RISC-V 64-bit Ubuntu", "rise-riscv64-4", SlowDebugUnixBuild),
+    ("RISC-V 64-bit Ubuntu Clang", "rise-riscv64-2", SlowClangUnixBuild),
 ]))
 
 
@@ -360,20 +386,12 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_1}, [
 
     ("AMD64 CentOS9 FIPS Only Blake2 Builtin Hash", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuildExceptBlake2),
     ("AMD64 CentOS9 FIPS No Builtin Hashes", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuild),
+
     BuilderDef(
         "AMD64 Arch Linux Valgrind",
         ValgrindBuild,
         tags={UNSTABLE, TIER_1},
         worker_name="pablogsal-arch-x86_64",
-        branches={MAIN_BRANCH, PR_BRANCH},
-    ),
-
-    # Windows MSVC
-    BuilderDef(
-        "AMD64 Windows PGO",
-        Windows64PGOBuild,
-        tags={UNSTABLE, TIER_1},
-        worker_name="bolen-windows10",
         branches={MAIN_BRANCH, PR_BRANCH},
     ),
 ]))
@@ -431,6 +449,14 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_3}, [
     ("s390x Fedora Rawhide LTO", "cstratak-fedora-rawhide-s390x", LTONonDebugUnixBuild),
     ("s390x Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-s390x", LTOPGONonDebugBuild),
 
+    # CentOS Stream 10 Linux s390x GCC/Clang
+    ("s390x CentOS10", "cstratak-c10s-s390x", CentOS10Build),
+    ("s390x CentOS10 Refleaks", "cstratak-c10s-s390x", UnixRefleakBuild),
+    ("s390x CentOS10 Clang", "cstratak-c10s-s390x", ClangUnixBuild),
+    ("s390x CentOS10 Clang Installed", "cstratak-c10s-s390x", ClangUnixInstalledBuild),
+    ("s390x CentOS10 LTO", "cstratak-c10s-s390x", LTONonDebugUnixBuild),
+    ("s390x CentOS10 LTO + PGO", "cstratak-c10s-s390x", LTOPGONonDebugBuild),
+
     # FreeBSD x86-64 clang
     # FreeBSD 15 is CURRENT: development branch (at 2023-10-17)
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
@@ -446,8 +472,6 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_3}, [
 
 # -- Unstable No Tier builders ------------------------------------------
 BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE}, [
-    # Linux x86-64 GCC musl Freethreading
-    ("AMD64 Alpine Linux NoGIL", "ware-alpine", UnixNoGilBuild),
     # Linux GCC Fedora Rawhide Freethreading builders
     ("AMD64 Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-x86_64", FedoraRawhideFreedthreadingBuild),
     ("aarch64 Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-aarch64", FedoraRawhideFreedthreadingBuild),
@@ -467,11 +491,11 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE}, [
     # Solaris sparcv9
     ("SPARCv9 Oracle Solaris 11.4", "kulikjak-solaris-sparcv9", UnixBuild),
 
-    # riscv64 GCC
-    ("riscv64 Ubuntu23", "onder-riscv64", SlowUnixInstalledBuild),
-
     # Arch Usan (see stable "AMD64 Arch Linux Usan Function" above)
     ("AMD64 Arch Linux Usan", "pablogsal-arch-x86_64", ClangUbsanLinuxBuild),
+
+    # RISC-V 64-bit GCC
+    ("RISC-V 64-bit Ubuntu NoGIL", "rise-riscv64-3", SlowUnixNoGilBuild),
 ]))
 
 
