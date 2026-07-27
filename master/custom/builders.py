@@ -146,8 +146,9 @@ BUILDER_DEFS = [
     BuilderDef(
         "AMD64 Windows Server 2025 Refleaks",
         factories.Windows64RefleakBuild,
-        tags={UNSTABLE, TIER_1},
+        tags={STABLE, TIER_1},
         worker_name="ware-ws2025",
+        branches=BRANCHES.only_since(3, 13),
     ),
     BuilderDef(
         "AMD64 Windows PGO",
