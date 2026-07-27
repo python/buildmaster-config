@@ -924,7 +924,7 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
     host_configure_cmd = ["../../Tools/wasm/wasi-env", "../../configure"]
 
     # See comment in _Wasm32WasiPreview1Build.__init__
-    branches = BRANCHES.only_since(3, 11)
+    branches = {BRANCHES[3, 11], BRANCHES[3, 12]}
 
     def setup(self, branch, worker, test_with_PTY=False, **kwargs):
         self.addStep(
@@ -963,13 +963,13 @@ class _Wasm32WasiPreview1Build(UnixBuild):
             extra_tags.append("nondebug")
         self.buildersuffix += self.append_suffix
         if self.pydebug:
-            # The debug WASI buildbot is meant for 3.11 and 3.12 only.
+            # The debug buildbot is meant for 3.13+, where WASM is tier 2
+            self.branches = BRANCHES.only_since(3, 13)
+        else:
+            # The non-debug WASI buildbot is meant for 3.11 and 3.12 only.
             # Don't use it on PRs; it's tier 3 only and getting it to
             # work on PRs against `main` is too much work.
             self.branches = {BRANCHES[3, 11], BRANCHES[3, 12]}
-        else:
-            # The non-debug buildbot is meant for 3.13+, where WASM is tier 2
-            self.branches = BRANCHES.only_since(3, 13)
         super().__init__(source, extra_tags=extra_tags, **kwargs)
 
     def setup(self, branch, worker, test_with_PTY=False, **kwargs):
