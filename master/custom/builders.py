@@ -146,8 +146,9 @@ BUILDER_DEFS = [
     BuilderDef(
         "AMD64 Windows Server 2025 Refleaks",
         factories.Windows64RefleakBuild,
-        tags={UNSTABLE, TIER_1},
+        tags={STABLE, TIER_1},
         worker_name="ware-ws2025",
+        branches=BRANCHES.only_since(3, 13),
     ),
     BuilderDef(
         "AMD64 Windows PGO",
@@ -197,7 +198,13 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_1}, [
     # Windows x86-64 MSVC
     ("AMD64 Windows10", "bolen-windows10", Windows64Build),
     ("AMD64 Windows11 Non-Debug", "ware-win11", Windows64ReleaseBuild),
-    ("AMD64 Windows11 Refleaks", "ware-win11", Windows64RefleakBuild),
+    BuilderDef(
+        "AMD64 Windows11 Refleaks",
+        factories.Windows64RefleakBuild,
+        tags={STABLE, TIER_1},
+        worker_name="ware-win11",
+        branches=BRANCHES.only_until(3, 12),
+    ),
     ("AMD64 Windows Server 2022 NoGIL", "itamaro-win64-srv-22-aws", Windows64NoGilBuild),
     BuilderDef(
         "AMD64 Windows PGO Tailcall",
