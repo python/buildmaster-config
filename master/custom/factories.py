@@ -923,7 +923,7 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
     host_configure_cmd = ["../../Tools/wasm/wasi-env", "../../configure"]
 
     # See comment in _Wasm32WasiPreview1Build.__init__
-    branches = {BRANCHES[3, 11], BRANCHES[3, 12]}
+    branches = BRANCHES.only_since(3, 11)
 
     def setup(self, branch, worker, test_with_PTY=False, **kwargs):
         self.addStep(
