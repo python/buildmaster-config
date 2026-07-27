@@ -691,6 +691,7 @@ class Windows64ClangBuild(Windows64Build):
         "PlatformToolset": "ClangCL",
     }
     factory_tags = [*Windows64Build.factory_tags, 'clang']
+    branches = BRANCHES.only_since(3, 14)
 
 
 class Windows64BigmemBuild(BaseWindowsBuild):
