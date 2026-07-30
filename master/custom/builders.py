@@ -287,6 +287,11 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_2}, [
     # WASI
     ("wasm32-wasi Non-Debug", "bcannon-wasi", Wasm32WasiCrossBuild),
     ("wasm32-wasi", "bcannon-wasi", Wasm32WasiPreview1DebugBuild),
+
+    # Windows aarch64 MSVC
+    ("ARM64 Windows", "ware-win11-arm64", WindowsARM64Build),
+    ("ARM64 Windows Non-Debug", "ware-win11-arm64", WindowsARM64ReleaseBuild),
+
 ]))
 
 
@@ -469,10 +474,6 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_3}, [
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
     # FreeBSD 16 is CURRENT: development branch (at 2026-01-09)
     ("AMD64 FreeBSD16", "opsec-fbsd16", UnixBuild),
-
-    # Windows aarch64 MSVC
-    ("ARM64 Windows", "ware-win11-arm64", WindowsARM64Build),
-    ("ARM64 Windows Non-Debug", "ware-win11-arm64", WindowsARM64ReleaseBuild),
 
 ]))
 
