@@ -120,9 +120,6 @@
 
     <div class="branch-panels">
         {% for branch in state.branches %}
-            {% if branch.tag == 'no-branch' %}
-                {% continue %}
-            {% endif %}
             <div
                 class="branch-panel panel-{{ branch.featured_problem.severity.css_color_class }}"
                 {#- Buildbot's React UI takes over `#` in the URL, so a HTML fragment link won't work here...  #}
