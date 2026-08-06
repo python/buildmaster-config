@@ -121,6 +121,7 @@ class UnixBuild(BaseBuild):
             oot_kwargs = {}
         configure_cmd = [configure_cmd, "--prefix", "$(PWD)/target"]
         configure_cmd += self.configureFlags
+        configure_cmd += worker.get_configure_flags(branch)
         self.addStep(
             Configure(command=configure_cmd, **oot_kwargs)
         )
@@ -227,6 +228,7 @@ class UnixInstalledBuild(BaseBuild):
             Configure(
                 command=["./configure", "--prefix", "$(PWD)/target"]
                 + self.configureFlags
+                + worker.get_configure_flags(branch)
             )
         )
 
@@ -444,8 +446,6 @@ class RHEL8Build(UnixBuild):
         "--with-ssl-default-suites=openssl",
         "--without-static-libpython",
         "--with-lto",
-        # Not all workers have dtrace installed
-        # "--with-dtrace",
         "--with-valgrind",
         "--with-system-libmpdec",
     ]
