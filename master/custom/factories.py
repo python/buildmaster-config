@@ -471,7 +471,6 @@ class RHEL8Build(UnixBuild):
             # possible to enable it on Fedora/RHEL. But these changes were
             # only backported up to the 3.13 branch.
             # https://github.com/python/cpython/issues/98894
-            # https://github.com/python/cpython/issues/98894
             testops.extend(('-x', 'test_dtrace'))
         return testops
 
