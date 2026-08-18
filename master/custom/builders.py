@@ -211,7 +211,7 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_1}, [
         Windows64PGOTailcallBuild,
         tags={STABLE, TIER_1},
         worker_name="itamaro-win64-srv-22-aws",
-        branches={MAIN_BRANCH, PR_BRANCH},
+        branches=BRANCHES.only_since(3, 15),
     ),
     BuilderDef(
         "AMD64 Windows PGO NoGIL",
@@ -225,7 +225,7 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_1}, [
         Windows64PGONoGilTailcallBuild,
         tags={STABLE, TIER_1},
         worker_name="itamaro-win64-srv-22-aws",
-        branches={MAIN_BRANCH, PR_BRANCH},
+        branches=BRANCHES.only_since(3, 15),
     ),
 ]))
 
