@@ -122,7 +122,6 @@ class DashboardState(DashboardObject):
             branches.append(Branch(self, {
                 **info, 'version': version, 'tag': tag
             }))
-        branches.append(self._no_branch)
         return branches
 
     @cached_property

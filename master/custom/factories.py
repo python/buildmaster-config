@@ -10,6 +10,7 @@ from buildbot.steps.shell import (
 from buildbot.plugins import util
 
 from . import JUNIT_FILENAME
+from .branches import BRANCHES
 from .steps import (
     Test,
     Clean,
@@ -57,6 +58,7 @@ class BaseBuild(factory.BuildFactory):
     test_timeout = TEST_TIMEOUT
     buildersuffix = ""
     tags = ()
+    branches = BRANCHES
 
     def __init__(self, source, *, extra_tags=[], **kwargs):
         super().__init__([source])
@@ -88,13 +90,32 @@ class UnixBuild(BaseBuild):
     test_environ = {}
     build_out_of_tree = False
 
+    def create_test_opts(self, branch, worker):
+        testopts = [*self.testFlags, *get_j_opts(worker, 2)]
+        if not has_option("-R", self.testFlags):
+            testopts.extend(("--junit-xml", JUNIT_FILENAME))
+
+        # Add excluded test resources
+        exclude_test_resources = worker.exclude_test_resources
+        if exclude_test_resources:
+            u_loc = None
+            for i, opt in enumerate(testopts):
+                if opt.startswith("-u"):
+                    u_loc = i
+                    break
+            if u_loc is not None:
+                for resource in exclude_test_resources:
+                    testopts[u_loc] += f",-{resource}"
+            else:
+                testopts.append(f"-uall,{",".join(f"-{r}" for r in exclude_test_resources)}")
+
+        return testopts
+
     def setup(self, branch, worker, test_with_PTY=False, **kwargs):
         out_of_tree_dir = "build_oot"
 
         # Adjust the timeout for this worker
         self.test_timeout *= worker.timeout_factor
-
-        exclude_test_resources = worker.exclude_test_resources
 
         # In 3.10, test_asyncio wasn't split out, and refleaks tests
         # need more time.
@@ -124,22 +145,8 @@ class UnixBuild(BaseBuild):
             Configure(command=configure_cmd, **oot_kwargs)
         )
         compile = ["make", *get_j_opts(worker), self.makeTarget]
-        testopts = [*self.testFlags, *get_j_opts(worker, 2)]
-        if not has_option("-R", self.testFlags):
-            testopts.extend(("--junit-xml", JUNIT_FILENAME))
-        # Add excluded test resources
-        if exclude_test_resources:
-            u_loc = None
-            for i, opt in enumerate(testopts):
-                if opt.startswith("-u"):
-                    u_loc = i
-                    break
-            if u_loc is not None:
-                for resource in exclude_test_resources:
-                    testopts[u_loc] += f",-{resource}"
-            else:
-                testopts.append(f"-uall,{",".join(f"-{r}" for r in exclude_test_resources)}")
 
+        testopts = self.create_test_opts(branch, worker)
         test = [
             "make",
             "buildbottest",
@@ -220,7 +227,7 @@ class UnixInstalledBuild(BaseBuild):
             major, minor = branch.version_tuple
             executable_name = f'python{major}.{minor}'
         else:
-            executable_name = f'python3'
+            executable_name = 'python3'
         installed_python = f"./target/bin/{executable_name}"
         self.addStep(
             Configure(
@@ -389,8 +396,18 @@ class SlowDebugUnixBuild(UnixBuild):
     testFlags = [*UnixBuild.testFlags, "-u-cpu"]
 
 
+class SlowUnixNoGilBuild(UnixNoGilBuild):
+    test_timeout = SLOW_TIMEOUT
+    testFlags = [*UnixBuild.testFlags, "-u-cpu"]
+
+
 class SlowUnixInstalledBuild(UnixInstalledBuild):
     test_timeout = SLOW_TIMEOUT
+
+
+class SlowClangUnixBuild(ClangUnixBuild):
+    test_timeout = SLOW_TIMEOUT
+    testFlags = [*UnixBuild.testFlags, "-u-cpu"]
 
 
 class LTONonDebugUnixBuild(NonDebugUnixBuild):
@@ -446,6 +463,16 @@ class RHEL8Build(UnixBuild):
     # /builddir/build/BUILD/Python-3.11: source code
     # /builddir/build/BUILD/Python-3.11/build/optimized: configure, make, tests
     build_out_of_tree = True
+
+    def create_test_opts(self, branch, worker):
+        testops = super().create_test_opts(branch, worker)
+        if branch.version_tuple and branch.version_tuple < (3, 13):
+            # In 2026, test_dtrace was enhanced and fixed which made it
+            # possible to enable it on Fedora/RHEL. But these changes were
+            # only backported up to the 3.13 branch.
+            # https://github.com/python/cpython/issues/98894
+            testops.extend(('-x', 'test_dtrace'))
+        return testops
 
 
 class CentOS9Build(RHEL8Build):
@@ -611,6 +638,7 @@ class MacOSAsanNoGilBuild(UnixAsanNoGilBuild):
 
 class BaseWindowsBuild(BaseBuild):
     build_command = [r"Tools\buildbot\build.bat"]
+    compile_environ = {}
     test_command = [r"Tools\buildbot\test.bat"]
     clean_command = [r"Tools\buildbot\clean.bat"]
     python_command = [r"python.bat"]
@@ -633,7 +661,10 @@ class BaseWindowsBuild(BaseBuild):
             *self.cleanFlags,
             *get_j_opts(worker),
         ]
-        self.addStep(Compile(command=build_command))
+        self.addStep(Compile(
+            command=build_command,
+            env=self.compile_environ,
+        ))
         self.addStep(PythonInfo(
             command=self.python_command + ["-m", "test.pythoninfo"],
         ))
@@ -668,6 +699,14 @@ class Windows64Build(BaseWindowsBuild):
     testFlags = ["-p", "x64"]
     cleanFlags = ["-p", "x64"]
     factory_tags = ["win64"]
+
+
+class Windows64ClangBuild(Windows64Build):
+    compile_environ = {
+        "PlatformToolset": "ClangCL",
+    }
+    factory_tags = [*Windows64Build.factory_tags, 'clang']
+    branches = BRANCHES.only_since(3, 14)
 
 
 class Windows64BigmemBuild(BaseWindowsBuild):
@@ -899,6 +938,9 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
     host = "wasm32-unknown-wasi"
     host_configure_cmd = ["../../Tools/wasm/wasi-env", "../../configure"]
 
+    # See comment in _Wasm32WasiPreview1Build.__init__
+    branches = {BRANCHES[3, 11], BRANCHES[3, 12]}
+
     def setup(self, branch, worker, test_with_PTY=False, **kwargs):
         self.addStep(
             SetPropertyFromCommand(
@@ -935,6 +977,14 @@ class _Wasm32WasiPreview1Build(UnixBuild):
         if not self.pydebug:
             extra_tags.append("nondebug")
         self.buildersuffix += self.append_suffix
+        if self.pydebug:
+            # The debug buildbot is meant for 3.13+, where WASM is tier 2
+            self.branches = BRANCHES.only_since(3, 13)
+        else:
+            # The non-debug WASI buildbot is meant for 3.11 and 3.12 only.
+            # Don't use it on PRs; it's tier 3 only and getting it to
+            # work on PRs against `main` is too much work.
+            self.branches = {BRANCHES[3, 11], BRANCHES[3, 12]}
         super().__init__(source, extra_tags=extra_tags, **kwargs)
 
     def setup(self, branch, worker, test_with_PTY=False, **kwargs):

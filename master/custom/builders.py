@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from functools import cached_property
 
 from custom import factories
+from custom.branches import BRANCHES, MAIN_BRANCH, PR_BRANCH
 from custom.factories import (
     UnixBuild,
     UnixPerfBuild,
@@ -27,9 +28,11 @@ from custom.factories import (
     ClangUnixInstalledBuild,
     SharedUnixBuild,
     SlowDebugUnixBuild,
+    SlowUnixNoGilBuild,
     SlowNonDebugUnixBuild,
     SlowNonDebugUnixBuild15BitDigits,
     SlowUnixInstalledBuild,
+    SlowClangUnixBuild,
     NonDebugUnixBuild,
     UnixInstalledBuild,
     LTONonDebugUnixBuild,
@@ -40,7 +43,6 @@ from custom.factories import (
     CentOS9NoBuiltinHashesUnixBuildExceptBlake2,
     Windows64Build,
     Windows64NoGilBuild,
-    Windows64PGOBuild,
     Windows64PGOTailcallBuild,
     Windows64PGONoGilBuild,
     Windows64PGONoGilTailcallBuild,
@@ -89,11 +91,18 @@ class BuilderDef:
     tags: frozenset[str]
     worker_name: str
 
-    def __init__(self, name, factory, *, tags, worker_name):
+    def __init__(
+        self, name, factory,
+        *,
+        tags,
+        worker_name,
+        branches=BRANCHES,
+    ):
         self.name = name
         self.factory = factory
         self.worker_name = worker_name
         self.tags = frozenset(tags)
+        self.branches = branches
 
     @cached_property
     def tier(self):
@@ -107,7 +116,7 @@ class BuilderDef:
 
 def get_tier_from_tags(tags):
     # Get the first (highest) of the tier flags
-    tags = sorted(tags & {TIER_1, TIER_2, TIER_3})
+    tags = sorted(set(tags) & {TIER_1, TIER_2, TIER_3})
     if tags:
         return tags[0]
     return NO_TIER
@@ -121,7 +130,6 @@ def get_tier_from_tags(tags):
 # updating them (e.g. changing stability)
 
 BUILDER_DEFS = [
-
     # Tests that require the 'tzdata' and 'xpickle' resources
     BuilderDef(
         "aarch64 Ubuntu Oddballs",
@@ -129,12 +137,41 @@ BUILDER_DEFS = [
         tags={STABLE, TIER_1},
         worker_name="stan-aarch64-ubuntu",
     ),
+    BuilderDef(
+        "AMD64 Windows Server 2025 Clang",
+        factories.Windows64ClangBuild,
+        tags={UNSTABLE, NO_TIER},
+        worker_name="ware-ws2025",
+    ),
+    BuilderDef(
+        "AMD64 Windows Server 2025 Refleaks",
+        factories.Windows64RefleakBuild,
+        tags={STABLE, TIER_1},
+        worker_name="ware-ws2025",
+        branches=BRANCHES.only_since(3, 13),
+    ),
+    BuilderDef(
+        "AMD64 Windows PGO",
+        factories.Windows64PGOBuild,
+        tags={STABLE, TIER_1},
+        worker_name="bolen-windows10",
+        branches={MAIN_BRANCH, PR_BRANCH},
+    ),
 ]
 
-def generate_builderdefs(tags, tuples):
+def generate_builderdefs(tags, entries):
     tags = frozenset(tags)
-    for name, worker_name, factory in tuples:
-        yield BuilderDef(name, factory, tags=tags, worker_name=worker_name)
+    for entry in entries:
+        if isinstance(entry, BuilderDef):
+            if not (entry.tags <= tags):
+                raise ValueError(
+                    f'{entry} is in the wrong generate_builderdefs call; '
+                    + 'move it to the main BUILDER_DEFS list above',
+                )
+            yield entry
+        else:
+            name, worker_name, factory = entry
+            yield BuilderDef(name, factory, tags=tags, worker_name=worker_name)
 
 
 # -- Stable Tier-1 builder ----------------------------------------------
@@ -161,11 +198,35 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_1}, [
     # Windows x86-64 MSVC
     ("AMD64 Windows10", "bolen-windows10", Windows64Build),
     ("AMD64 Windows11 Non-Debug", "ware-win11", Windows64ReleaseBuild),
-    ("AMD64 Windows11 Refleaks", "ware-win11", Windows64RefleakBuild),
+    BuilderDef(
+        "AMD64 Windows11 Refleaks",
+        factories.Windows64RefleakBuild,
+        tags={STABLE, TIER_1},
+        worker_name="ware-win11",
+        branches=BRANCHES.only_until(3, 12),
+    ),
     ("AMD64 Windows Server 2022 NoGIL", "itamaro-win64-srv-22-aws", Windows64NoGilBuild),
-    ("AMD64 Windows PGO Tailcall", "itamaro-win64-srv-22-aws", Windows64PGOTailcallBuild),
-    ("AMD64 Windows PGO NoGIL", "itamaro-win64-srv-22-aws", Windows64PGONoGilBuild),
-    ("AMD64 Windows PGO NoGIL Tailcall", "itamaro-win64-srv-22-aws", Windows64PGONoGilTailcallBuild),
+    BuilderDef(
+        "AMD64 Windows PGO Tailcall",
+        Windows64PGOTailcallBuild,
+        tags={STABLE, TIER_1},
+        worker_name="itamaro-win64-srv-22-aws",
+        branches=BRANCHES.only_since(3, 15),
+    ),
+    BuilderDef(
+        "AMD64 Windows PGO NoGIL",
+        Windows64PGONoGilBuild,
+        tags={STABLE, TIER_1},
+        worker_name="itamaro-win64-srv-22-aws",
+        branches={MAIN_BRANCH, PR_BRANCH},
+    ),
+    BuilderDef(
+        "AMD64 Windows PGO NoGIL Tailcall",
+        Windows64PGONoGilTailcallBuild,
+        tags={STABLE, TIER_1},
+        worker_name="itamaro-win64-srv-22-aws",
+        branches=BRANCHES.only_since(3, 15),
+    ),
 ]))
 
 
@@ -226,6 +287,11 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_2}, [
     # WASI
     ("wasm32-wasi Non-Debug", "bcannon-wasi", Wasm32WasiCrossBuild),
     ("wasm32-wasi", "bcannon-wasi", Wasm32WasiPreview1DebugBuild),
+
+    # Windows aarch64 MSVC
+    ("ARM64 Windows", "ware-win11-arm64", WindowsARM64Build),
+    ("ARM64 Windows Non-Debug", "ware-win11-arm64", WindowsARM64ReleaseBuild),
+
 ]))
 
 
@@ -283,6 +349,8 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_3}, [
 BUILDER_DEFS.extend(generate_builderdefs({STABLE}, [
     # Linux x86-64 GCC musl
     ("AMD64 Alpine Linux", "ware-alpine", UnixBuild),
+    # Linux x86-64 GCC musl Freethreading
+    ("AMD64 Alpine Linux NoGIL", "ware-alpine", UnixNoGilBuild),
 
     # Linux x86-64 GCC/Clang
     # Special builds: FIPS, ASAN, UBSAN, TraceRefs, Perf, etc.
@@ -290,7 +358,13 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE}, [
     ("AMD64 Arch Linux Asan", "pablogsal-arch-x86_64", UnixAsanBuild),
     ("AMD64 Arch Linux Asan Debug", "pablogsal-arch-x86_64", UnixAsanDebugBuild),
     ("AMD64 Arch Linux TraceRefs", "pablogsal-arch-x86_64", UnixTraceRefsBuild),
-    ("AMD64 Arch Linux Perf", "pablogsal-arch-x86_64", UnixPerfBuild),
+    BuilderDef(
+        "AMD64 Arch Linux Perf",
+        UnixPerfBuild,
+        tags={STABLE},
+        worker_name="pablogsal-arch-x86_64",
+        branches={MAIN_BRANCH, PR_BRANCH},
+    ),
     # UBSAN with -fno-sanitize=function, without which we currently fail (as
     #  tracked in gh-111178). The full "AMD64 Arch Linux Usan" is unstable, below
     ("AMD64 Arch Linux Usan Function", "pablogsal-arch-x86_64", ClangUbsanFunctionLinuxBuild),
@@ -298,6 +372,11 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE}, [
     # Linux x86 (32-bit) GCC
     ("x86 Debian Non-Debug with X", "ware-debian-x86", NonDebugUnixBuild),
     ("x86 Debian Installed with X", "ware-debian-x86", UnixInstalledBuild),
+
+    # RISC-V 64-bit GCC/Clang
+    ("riscv64 Ubuntu", "onder-riscv64", SlowUnixInstalledBuild),
+    ("RISC-V 64-bit Ubuntu", "rise-riscv64-4", SlowDebugUnixBuild),
+    ("RISC-V 64-bit Ubuntu Clang", "rise-riscv64-2", SlowClangUnixBuild),
 ]))
 
 
@@ -320,10 +399,13 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_1}, [
     ("AMD64 CentOS9 FIPS Only Blake2 Builtin Hash", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuildExceptBlake2),
     ("AMD64 CentOS9 FIPS No Builtin Hashes", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuild),
 
-    ("AMD64 Arch Linux Valgrind", "pablogsal-arch-x86_64", ValgrindBuild),
-
-    # Windows MSVC
-    ("AMD64 Windows PGO", "bolen-windows10", Windows64PGOBuild),
+    BuilderDef(
+        "AMD64 Arch Linux Valgrind",
+        ValgrindBuild,
+        tags={UNSTABLE, TIER_1},
+        worker_name="pablogsal-arch-x86_64",
+        branches={MAIN_BRANCH, PR_BRANCH},
+    ),
 ]))
 
 
@@ -379,23 +461,25 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_3}, [
     ("s390x Fedora Rawhide LTO", "cstratak-fedora-rawhide-s390x", LTONonDebugUnixBuild),
     ("s390x Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-s390x", LTOPGONonDebugBuild),
 
+    # CentOS Stream 10 Linux s390x GCC/Clang
+    ("s390x CentOS10", "cstratak-c10s-s390x", CentOS10Build),
+    ("s390x CentOS10 Refleaks", "cstratak-c10s-s390x", UnixRefleakBuild),
+    ("s390x CentOS10 Clang", "cstratak-c10s-s390x", ClangUnixBuild),
+    ("s390x CentOS10 Clang Installed", "cstratak-c10s-s390x", ClangUnixInstalledBuild),
+    ("s390x CentOS10 LTO", "cstratak-c10s-s390x", LTONonDebugUnixBuild),
+    ("s390x CentOS10 LTO + PGO", "cstratak-c10s-s390x", LTOPGONonDebugBuild),
+
     # FreeBSD x86-64 clang
     # FreeBSD 15 is CURRENT: development branch (at 2023-10-17)
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
     # FreeBSD 16 is CURRENT: development branch (at 2026-01-09)
     ("AMD64 FreeBSD16", "opsec-fbsd16", UnixBuild),
 
-    # Windows aarch64 MSVC
-    ("ARM64 Windows", "ware-win11-arm64", WindowsARM64Build),
-    ("ARM64 Windows Non-Debug", "ware-win11-arm64", WindowsARM64ReleaseBuild),
-
 ]))
 
 
 # -- Unstable No Tier builders ------------------------------------------
 BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE}, [
-    # Linux x86-64 GCC musl Freethreading
-    ("AMD64 Alpine Linux NoGIL", "ware-alpine", UnixNoGilBuild),
     # Linux GCC Fedora Rawhide Freethreading builders
     ("AMD64 Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-x86_64", FedoraRawhideFreedthreadingBuild),
     ("aarch64 Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-aarch64", FedoraRawhideFreedthreadingBuild),
@@ -415,11 +499,11 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE}, [
     # Solaris sparcv9
     ("SPARCv9 Oracle Solaris 11.4", "kulikjak-solaris-sparcv9", UnixBuild),
 
-    # riscv64 GCC
-    ("riscv64 Ubuntu23", "onder-riscv64", SlowUnixInstalledBuild),
-
     # Arch Usan (see stable "AMD64 Arch Linux Usan Function" above)
     ("AMD64 Arch Linux Usan", "pablogsal-arch-x86_64", ClangUbsanLinuxBuild),
+
+    # RISC-V 64-bit GCC
+    ("RISC-V 64-bit Ubuntu NoGIL", "rise-riscv64-3", SlowUnixNoGilBuild),
 ]))
 
 
@@ -437,15 +521,6 @@ def get_builder_defs(settings):
         )]
 
     return BUILDER_DEFS
-
-
-# Match builder name (excluding the branch name) of builders that should only
-# run on the main and PR branches.
-ONLY_MAIN_BRANCH = (
-    "Windows PGO",
-    "AMD64 Arch Linux Perf",
-    "AMD64 Arch Linux Valgrind",
-)
 
 
 if __name__ == "__main__":
@@ -471,3 +546,6 @@ if __name__ == "__main__":
             print(f'{NAME}{d.name}{END}')
             print(f'  {d.factory.__name__} on {d.worker_name}')
             print(f'  [{' '.join(sorted(d.tags))}]')
+            if d.branches != BRANCHES:
+                branchnames = ', '.join(b.name for b in sorted(d.branches))
+                print(f'  branches: {branchnames}')
