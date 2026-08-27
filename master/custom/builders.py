@@ -195,6 +195,9 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_1}, [
     ("AMD64 CentOS9 NoGIL", "itamaro-centos-aws", UnixNoGilBuild),
     ("AMD64 CentOS9 NoGIL Refleaks", "itamaro-centos-aws", UnixNoGilRefleakBuild),
 
+    # Ubuntu Linux AArch64
+    ("aarch64 Ubuntu 24.04 BigMem", "diegorusso-aarch64-bigmem", UnixBigmemBuild),
+
     # Windows x86-64 MSVC
     ("AMD64 Windows10", "bolen-windows10", Windows64Build),
     ("AMD64 Windows11 Non-Debug", "ware-win11", Windows64ReleaseBuild),
@@ -382,9 +385,6 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE}, [
 
 # -- Unstable Tier-1 builders -------------------------------------------
 BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_1}, [
-    # Ubuntu Linux AArch64
-    ("aarch64 Ubuntu 24.04 BigMem", "diegorusso-aarch64-bigmem", UnixBigmemBuild),
-
     # Linux x86-64 GCC
     # Fedora Rawhide is unstable
     ("AMD64 Fedora Rawhide", "cstratak-fedora-rawhide-x86_64", FedoraRawhideBuild),
