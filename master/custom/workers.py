@@ -152,7 +152,7 @@ def get_workers(settings):
         ),
         cpw(
             name="cstratak-fedora-stable-ppc64le",
-            tags=['linux', 'unix', 'fedora', 'ppc64le', 'dtrace'],
+            tags=['linux', 'unix', 'fedora', 'ppc64le'],
             parallel_tests=10,
             timeout_factor=2,  # Increase the timeout on this slow worker
         ),
@@ -165,7 +165,7 @@ def get_workers(settings):
         ),
         cpw(
             name="cstratak-CentOS9-ppc64le",
-            tags=['linux', 'unix', 'rhel', 'ppc64le', 'dtrace'],
+            tags=['linux', 'unix', 'rhel', 'ppc64le'],
             parallel_tests=10,
             timeout_factor=2,  # Increase the timeout on this slow worker
         ),
@@ -176,7 +176,7 @@ def get_workers(settings):
         ),
         cpw(
             name="cstratak-fedora-stable-aarch64",
-            tags=['linux', 'unix', 'fedora', 'arm', 'arm64', 'aarch64', 'dtrace'],
+            tags=['linux', 'unix', 'fedora', 'arm', 'arm64', 'aarch64'],
             parallel_tests=32,
         ),
         cpw(
