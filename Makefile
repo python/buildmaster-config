@@ -6,6 +6,7 @@ PIP=$(VENV_DIR)/bin/pip
 # make stop-server kills all processes named "python"
 PKILL_NAME="python"
 BUILDBOT=$(VENV_DIR)/bin/buildbot
+PYTHON=$(VENV_DIR)/bin/python
 VENV_CHECK=$(VENV_DIR)/lib/python$(PYTHON_VERSION)/site-packages/buildbot/master.py
 USER=buildbot
 LOGLINES=50
@@ -35,11 +36,16 @@ regen-requirements:
 
 # Test targets
 
-.PHONY: check
+.PHONY: check check-roles
 
 ## check             Validate buildbot master configuration
 check: $(VENV_CHECK)
 	$(BUILDBOT) checkconfig master
+
+## check-roles       Validate the configuration in each master_role
+# Unlike `check`, this uses throwaway settings so every role is exercised.
+check-roles: $(VENV_CHECK)
+	$(PYTHON) check_roles.py
 
 # Management targets
 
