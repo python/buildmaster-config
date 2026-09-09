@@ -362,6 +362,14 @@ def get_workers(settings):
             parallel_tests=2,
             parallel_builders=2,
             timeout_factor=2,  # Increase the timeout on this slow worker
+            git_options=dict(
+                # Do a full shallow clone for every build
+                mode="full",
+                method="clobber",
+                shallow=True,
+                # Disable the default, if set
+                filters=None,
+            ),
         ),
         cpw(
             name="itamaro-centos-aws",
