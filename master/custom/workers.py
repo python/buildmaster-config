@@ -40,6 +40,7 @@ class CPythonWorker:
         exclude_test_resources=None,
         downtime=None,
         git_options=None,
+        create_bb_worker=True,
     ):
         self.name = name
         self.tags = tags or set()
@@ -53,6 +54,11 @@ class CPythonWorker:
         for branch in branches:
             if isinstance(branch, str):
                 raise TypeError('use BRANCHES for branch filtering')
+
+        if not create_bb_worker:
+            # No builds run here, so no buildbot Worker objects are needed.
+            self.bb_worker = None
+            return
 
         worker_settings = settings.workers[name]
         owner = name.split("-")[0]
@@ -88,8 +94,8 @@ itamaro_downtime = no_builds_between(
     tz=ZoneInfo("America/Los_Angeles"),
 )
 
-def get_workers(settings):
-    cpw = partial(CPythonWorker, settings)
+def get_workers(settings, create_bb_workers=True):
+    cpw = partial(CPythonWorker, settings, create_bb_worker=create_bb_workers)
     if settings.use_local_worker:
         return [cpw(name="local-worker")]
     return [
