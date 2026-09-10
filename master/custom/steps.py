@@ -25,6 +25,18 @@ class GitHub(_GitHub):
     warnOnFailure = True
 
 
+class GitGC(ShellCommand):
+    name = 'git-gc'
+    warnOnFailure = True
+    haltOnFailure = False
+    flunkOnFailure = False
+    alwaysRun = True
+
+    description = ["cleaning git checkout"]
+    descriptionDone = ["git garbage collected"]
+    command = ["git", "gc"]
+
+
 class Test(BaseTest):
     # Regular expression used to catch warnings, errors and bugs
     warningPattern = (
