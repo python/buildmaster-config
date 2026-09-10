@@ -83,6 +83,8 @@ stop-master: $(VENV_CHECK)
 		rm -f master/twistd.pid; \
 	fi
 	$(BUILDBOT) stop master; tail -n$(LOGLINES) master/twistd.log
+	@echo "Python processes of the buildbot user:"
+	@pgrep -a -u buildbot python ||:
 	@if { $(PID_IS_MASTER); }; then \
 		echo "Sending SIGKILL to remaining buildbot process $$pid"; \
 		kill -KILL "$$pid" ||:; \
