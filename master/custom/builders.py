@@ -46,7 +46,6 @@ from custom.factories import (
     Windows64PGOTailcallBuild,
     Windows64PGONoGilBuild,
     Windows64PGONoGilTailcallBuild,
-    Windows64RefleakBuild,
     Windows64ReleaseBuild,
     MacOSArmWithBrewBuild,
     MacOSArmWithBrewNoGilBuild,
