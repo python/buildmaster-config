@@ -345,6 +345,12 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_3}, [
 
     # WASI (3.11 and 3.12 only, where WASI was tier 3)
     ("wasm32-wasi Non-Debug", "bcannon-wasi", Wasm32WasiCrossBuild),
+
+    # RISC-V 64-bit GCC/Clang
+    ("riscv64 Ubuntu", "onder-riscv64", SlowUnixInstalledBuild),
+    ("RISC-V 64-bit Ubuntu", "rise-riscv64-4", SlowDebugUnixBuild),
+    ("RISC-V 64-bit Ubuntu Clang", "rise-riscv64-2", SlowClangUnixBuild),
+    ("RISC-V 64-bit Ubuntu NoGIL", "rise-riscv64-3", SlowUnixNoGilBuild),
 ]))
 
 
@@ -379,11 +385,6 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE}, [
     # Linux s390x Clang (PEP 11 only covers s390x with GCC)
     ("s390x Fedora Stable Clang", "cstratak-fedora-stable-s390x", ClangUnixBuild),
     ("s390x Fedora Stable Clang Installed", "cstratak-fedora-stable-s390x", ClangUnixInstalledBuild),
-
-    # RISC-V 64-bit GCC/Clang
-    ("riscv64 Ubuntu", "onder-riscv64", SlowUnixInstalledBuild),
-    ("RISC-V 64-bit Ubuntu", "rise-riscv64-4", SlowDebugUnixBuild),
-    ("RISC-V 64-bit Ubuntu Clang", "rise-riscv64-2", SlowClangUnixBuild),
 ]))
 
 
@@ -509,9 +510,6 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE}, [
 
     # Arch Usan (see stable "AMD64 Arch Linux Usan Function" above)
     ("AMD64 Arch Linux Usan", "pablogsal-arch-x86_64", ClangUbsanLinuxBuild),
-
-    # RISC-V 64-bit GCC
-    ("RISC-V 64-bit Ubuntu NoGIL", "rise-riscv64-3", SlowUnixNoGilBuild),
 ]))
 
 
