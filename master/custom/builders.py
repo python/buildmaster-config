@@ -195,8 +195,31 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_1}, [
     ("AMD64 CentOS9 NoGIL", "itamaro-centos-aws", UnixNoGilBuild),
     ("AMD64 CentOS9 NoGIL Refleaks", "itamaro-centos-aws", UnixNoGilRefleakBuild),
 
+    # Fedora Linux aarch64 GCC
+    ("aarch64 Fedora Stable", "cstratak-fedora-stable-aarch64", FedoraStableBuild),
+    ("aarch64 Fedora Stable Refleaks", "cstratak-fedora-stable-aarch64", UnixRefleakBuild),
+    ("aarch64 Fedora Stable LTO", "cstratak-fedora-stable-aarch64", LTONonDebugUnixBuild),
+    ("aarch64 Fedora Stable LTO + PGO", "cstratak-fedora-stable-aarch64", LTOPGONonDebugBuild),
+
+    # RHEL8 aarch64 GCC
+    ("aarch64 RHEL8", "cstratak-RHEL8-aarch64", RHEL8Build),
+    ("aarch64 RHEL8 Refleaks", "cstratak-RHEL8-aarch64", UnixRefleakBuild),
+    ("aarch64 RHEL8 LTO", "cstratak-RHEL8-aarch64", LTONonDebugUnixBuild),
+    ("aarch64 RHEL8 LTO + PGO", "cstratak-RHEL8-aarch64", LTOPGONonDebugBuild),
+
+    # CentOS Stream 9 Linux aarch64 GCC
+    ("aarch64 CentOS9", "cstratak-CentOS9-aarch64", CentOS9Build),
+    ("aarch64 CentOS9 Refleaks", "cstratak-CentOS9-aarch64", UnixRefleakBuild),
+    ("aarch64 CentOS9 LTO", "cstratak-CentOS9-aarch64", LTONonDebugUnixBuild),
+    ("aarch64 CentOS9 LTO + PGO", "cstratak-CentOS9-aarch64", LTOPGONonDebugBuild),
+
     # Ubuntu Linux AArch64
     ("aarch64 Ubuntu 24.04 BigMem", "diegorusso-aarch64-bigmem", UnixBigmemBuild),
+
+    # macOS aarch64 clang
+    ("ARM64 macOS", "pablogsal-macos-m1", MacOSArmWithBrewBuild),
+    ("ARM64 MacOS M1 NoGIL", "itamaro-macos-arm64-aws", MacOSArmWithBrewNoGilBuild),
+    ("ARM64 MacOS M1 Refleaks NoGIL", "itamaro-macos-arm64-aws", MacOSArmWithBrewNoGilRefleakBuild),
 
     # Windows x86-64 MSVC
     ("AMD64 Windows10", "bolen-windows10", Windows64Build),
@@ -239,48 +262,9 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_2}, [
     ("AMD64 Fedora Stable Clang", "cstratak-fedora-stable-x86_64", ClangUnixBuild),
     ("AMD64 Fedora Stable Clang Installed", "cstratak-fedora-stable-x86_64", ClangUnixInstalledBuild),
 
-    # Fedora Linux ppc64le GCC
-    ("PPC64LE Fedora Stable", "cstratak-fedora-stable-ppc64le", FedoraStableBuild),
-    ("PPC64LE Fedora Stable Refleaks", "cstratak-fedora-stable-ppc64le", UnixRefleakBuild),
-    ("PPC64LE Fedora Stable LTO", "cstratak-fedora-stable-ppc64le", LTONonDebugUnixBuild),
-    ("PPC64LE Fedora Stable LTO + PGO", "cstratak-fedora-stable-ppc64le", LTOPGONonDebugBuild),
-
-    # RHEL8 ppc64le GCC
-    ("PPC64LE RHEL8", "cstratak-RHEL8-ppc64le", RHEL8Build),
-    ("PPC64LE RHEL8 Refleaks", "cstratak-RHEL8-ppc64le", UnixRefleakBuild),
-    ("PPC64LE RHEL8 LTO", "cstratak-RHEL8-ppc64le", LTONonDebugUnixBuild),
-    ("PPC64LE RHEL8 LTO + PGO", "cstratak-RHEL8-ppc64le", LTOPGONonDebugBuild),
-
-    # CentOS Stream 9 Linux ppc64le GCC
-    ("PPC64LE CentOS9", "cstratak-CentOS9-ppc64le", CentOS9Build),
-    ("PPC64LE CentOS9 Refleaks", "cstratak-CentOS9-ppc64le", UnixRefleakBuild),
-    ("PPC64LE CentOS9 LTO", "cstratak-CentOS9-ppc64le", LTONonDebugUnixBuild),
-    ("PPC64LE CentOS9 LTO + PGO", "cstratak-CentOS9-ppc64le", LTOPGONonDebugBuild),
-
-    # Fedora Linux aarch64 GCC/Clang
-    ("aarch64 Fedora Stable", "cstratak-fedora-stable-aarch64", FedoraStableBuild),
-    ("aarch64 Fedora Stable Refleaks", "cstratak-fedora-stable-aarch64", UnixRefleakBuild),
+    # Fedora Linux aarch64 Clang
     ("aarch64 Fedora Stable Clang", "cstratak-fedora-stable-aarch64", ClangUnixBuild),
     ("aarch64 Fedora Stable Clang Installed", "cstratak-fedora-stable-aarch64", ClangUnixInstalledBuild),
-    ("aarch64 Fedora Stable LTO", "cstratak-fedora-stable-aarch64", LTONonDebugUnixBuild),
-    ("aarch64 Fedora Stable LTO + PGO", "cstratak-fedora-stable-aarch64", LTOPGONonDebugBuild),
-
-    # RHEL8 aarch64 GCC
-    ("aarch64 RHEL8", "cstratak-RHEL8-aarch64", RHEL8Build),
-    ("aarch64 RHEL8 Refleaks", "cstratak-RHEL8-aarch64", UnixRefleakBuild),
-    ("aarch64 RHEL8 LTO", "cstratak-RHEL8-aarch64", LTONonDebugUnixBuild),
-    ("aarch64 RHEL8 LTO + PGO", "cstratak-RHEL8-aarch64", LTOPGONonDebugBuild),
-
-    # CentOS Stream 9 Linux aarch64 GCC
-    ("aarch64 CentOS9", "cstratak-CentOS9-aarch64", CentOS9Build),
-    ("aarch64 CentOS9 Refleaks", "cstratak-CentOS9-aarch64", UnixRefleakBuild),
-    ("aarch64 CentOS9 LTO", "cstratak-CentOS9-aarch64", LTONonDebugUnixBuild),
-    ("aarch64 CentOS9 LTO + PGO", "cstratak-CentOS9-aarch64", LTOPGONonDebugBuild),
-
-    # macOS aarch64 clang
-    ("ARM64 macOS", "pablogsal-macos-m1", MacOSArmWithBrewBuild),
-    ("ARM64 MacOS M1 NoGIL", "itamaro-macos-arm64-aws", MacOSArmWithBrewNoGilBuild),
-    ("ARM64 MacOS M1 Refleaks NoGIL", "itamaro-macos-arm64-aws", MacOSArmWithBrewNoGilRefleakBuild),
 
     # macOS x86-64 clang
     ("x86-64 macOS", "billenstein-macos", UnixBuild),
@@ -288,7 +272,6 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_2}, [
     ("x86-64 MacOS Intel ASAN NoGIL", "itamaro-macos-intel-aws", MacOSAsanNoGilBuild),
 
     # WASI
-    ("wasm32-wasi Non-Debug", "bcannon-wasi", Wasm32WasiCrossBuild),
     ("wasm32-wasi", "bcannon-wasi", Wasm32WasiPreview1DebugBuild),
 
     # Windows aarch64 MSVC
@@ -301,11 +284,9 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_2}, [
 # -- Stable Tier-3 builder ----------------------------------------------
 BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_3}, [
 
-    # Fedora Linux s390x GCC/Clang
+    # Fedora Linux s390x GCC
     ("s390x Fedora Stable", "cstratak-fedora-stable-s390x", UnixBuild),
     ("s390x Fedora Stable Refleaks", "cstratak-fedora-stable-s390x", UnixRefleakBuild),
-    ("s390x Fedora Stable Clang", "cstratak-fedora-stable-s390x", ClangUnixBuild),
-    ("s390x Fedora Stable Clang Installed", "cstratak-fedora-stable-s390x", ClangUnixInstalledBuild),
     ("s390x Fedora Stable LTO", "cstratak-fedora-stable-s390x", LTONonDebugUnixBuild),
     ("s390x Fedora Stable LTO + PGO", "cstratak-fedora-stable-s390x", LTOPGONonDebugBuild),
 
@@ -321,9 +302,25 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_3}, [
     ("s390x RHEL8 LTO", "cstratak-rhel8-s390x", LTONonDebugUnixBuild),
     ("s390x RHEL8 LTO + PGO", "cstratak-rhel8-s390x", LTOPGONonDebugBuild),
 
-    # Fedora Linux ppc64le Clang
+    # Fedora Linux ppc64le GCC/Clang
+    ("PPC64LE Fedora Stable", "cstratak-fedora-stable-ppc64le", FedoraStableBuild),
+    ("PPC64LE Fedora Stable Refleaks", "cstratak-fedora-stable-ppc64le", UnixRefleakBuild),
     ("PPC64LE Fedora Stable Clang", "cstratak-fedora-stable-ppc64le", ClangUnixBuild),
     ("PPC64LE Fedora Stable Clang Installed", "cstratak-fedora-stable-ppc64le", ClangUnixInstalledBuild),
+    ("PPC64LE Fedora Stable LTO", "cstratak-fedora-stable-ppc64le", LTONonDebugUnixBuild),
+    ("PPC64LE Fedora Stable LTO + PGO", "cstratak-fedora-stable-ppc64le", LTOPGONonDebugBuild),
+
+    # RHEL8 ppc64le GCC
+    ("PPC64LE RHEL8", "cstratak-RHEL8-ppc64le", RHEL8Build),
+    ("PPC64LE RHEL8 Refleaks", "cstratak-RHEL8-ppc64le", UnixRefleakBuild),
+    ("PPC64LE RHEL8 LTO", "cstratak-RHEL8-ppc64le", LTONonDebugUnixBuild),
+    ("PPC64LE RHEL8 LTO + PGO", "cstratak-RHEL8-ppc64le", LTOPGONonDebugBuild),
+
+    # CentOS Stream 9 Linux ppc64le GCC
+    ("PPC64LE CentOS9", "cstratak-CentOS9-ppc64le", CentOS9Build),
+    ("PPC64LE CentOS9 Refleaks", "cstratak-CentOS9-ppc64le", UnixRefleakBuild),
+    ("PPC64LE CentOS9 LTO", "cstratak-CentOS9-ppc64le", LTONonDebugUnixBuild),
+    ("PPC64LE CentOS9 LTO + PGO", "cstratak-CentOS9-ppc64le", LTOPGONonDebugBuild),
 
     # Linux armv7l (32-bit) GCC
     ("ARM Raspbian", "gps-raspbian", SlowNonDebugUnixBuild15BitDigits),
@@ -345,6 +342,9 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_3}, [
 
     # Emscripten
     ("WASM Emscripten", "rkm-emscripten", EmscriptenBuild),
+
+    # WASI (3.11 and 3.12 only, where WASI was tier 3)
+    ("wasm32-wasi Non-Debug", "bcannon-wasi", Wasm32WasiCrossBuild),
 ]))
 
 
@@ -376,6 +376,10 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE}, [
     ("x86 Debian Non-Debug with X", "ware-debian-x86", NonDebugUnixBuild),
     ("x86 Debian Installed with X", "ware-debian-x86", UnixInstalledBuild),
 
+    # Linux s390x Clang (PEP 11 only covers s390x with GCC)
+    ("s390x Fedora Stable Clang", "cstratak-fedora-stable-s390x", ClangUnixBuild),
+    ("s390x Fedora Stable Clang Installed", "cstratak-fedora-stable-s390x", ClangUnixInstalledBuild),
+
     # RISC-V 64-bit GCC/Clang
     ("riscv64 Ubuntu", "onder-riscv64", SlowUnixInstalledBuild),
     ("RISC-V 64-bit Ubuntu", "rise-riscv64-4", SlowDebugUnixBuild),
@@ -393,6 +397,19 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_1}, [
     ("AMD64 Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-x86_64", LTOPGONonDebugBuild),
 
     ("AMD64 Ubuntu", "skumaran-ubuntu-x86_64", UnixBuild),
+
+    # Fedora Linux aarch64 GCC
+    # Fedora Rawhide is unstable
+    ("aarch64 Fedora Rawhide", "cstratak-fedora-rawhide-aarch64", FedoraRawhideBuild),
+    ("aarch64 Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-aarch64", UnixRefleakBuild),
+    ("aarch64 Fedora Rawhide LTO", "cstratak-fedora-rawhide-aarch64", LTONonDebugUnixBuild),
+    ("aarch64 Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-aarch64", LTOPGONonDebugBuild),
+
+    # CentOS Stream 10 Linux aarch64 GCC
+    ("aarch64 CentOS10", "cstratak-CentOS10-aarch64", CentOS10Build),
+    ("aarch64 CentOS10 Refleaks", "cstratak-CentOS10-aarch64", UnixRefleakBuild),
+    ("aarch64 CentOS10 LTO", "cstratak-CentOS10-aarch64", LTONonDebugUnixBuild),
+    ("aarch64 CentOS10 LTO + PGO", "cstratak-CentOS10-aarch64", LTOPGONonDebugBuild),
 
     ("AMD64 RHEL8 FIPS No Builtin Hashes", "cstratak-RHEL8-fips-x86_64", RHEL8NoBuiltinHashesUnixBuild),
 
@@ -417,29 +434,14 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_2}, [
     ("AMD64 Fedora Rawhide Clang", "cstratak-fedora-rawhide-x86_64", ClangUnixBuild),
     ("AMD64 Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-x86_64", ClangUnixInstalledBuild),
 
-    # Fedora Linux ppc64le GCC
+    # Fedora Linux aarch64 Clang
     # Fedora Rawhide is unstable
-    ("PPC64LE Fedora Rawhide", "cstratak-fedora-rawhide-ppc64le", FedoraRawhideBuild),
-    ("PPC64LE Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-ppc64le", UnixRefleakBuild),
-    ("PPC64LE Fedora Rawhide LTO", "cstratak-fedora-rawhide-ppc64le", LTONonDebugUnixBuild),
-    ("PPC64LE Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-ppc64le", LTOPGONonDebugBuild),
-
-    # Fedora Linux aarch64 GCC/Clang
-    # Fedora Rawhide is unstable
-    ("aarch64 Fedora Rawhide", "cstratak-fedora-rawhide-aarch64", FedoraRawhideBuild),
-    ("aarch64 Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-aarch64", UnixRefleakBuild),
     ("aarch64 Fedora Rawhide Clang", "cstratak-fedora-rawhide-aarch64", ClangUnixBuild),
     ("aarch64 Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-aarch64", ClangUnixInstalledBuild),
-    ("aarch64 Fedora Rawhide LTO", "cstratak-fedora-rawhide-aarch64", LTONonDebugUnixBuild),
-    ("aarch64 Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-aarch64", LTOPGONonDebugBuild),
 
-    # CentOS Stream 10 Linux aarch64 GCC/Clang
-    ("aarch64 CentOS10", "cstratak-CentOS10-aarch64", CentOS10Build),
-    ("aarch64 CentOS10 Refleaks", "cstratak-CentOS10-aarch64", UnixRefleakBuild),
+    # CentOS Stream 10 Linux aarch64 Clang
     ("aarch64 CentOS10 Clang", "cstratak-CentOS10-aarch64", ClangUnixBuild),
     ("aarch64 CentOS10 Clang Installed", "cstratak-CentOS10-aarch64", ClangUnixInstalledBuild),
-    ("aarch64 CentOS10 LTO", "cstratak-CentOS10-aarch64", LTONonDebugUnixBuild),
-    ("aarch64 CentOS10 LTO + PGO", "cstratak-CentOS10-aarch64", LTOPGONonDebugBuild),
 
     # WebAssembly
     ("wasm32 WASI 8Core", "kushaldas-wasi", Wasm32WasiCrossBuild),
@@ -448,24 +450,24 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_2}, [
 
 # -- Unstable Tier-3 builders -------------------------------------------
 BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_3}, [
-    # Linux ppc64le Clang
+    # Linux ppc64le GCC/Clang
     # Fedora Rawhide is unstable
+    ("PPC64LE Fedora Rawhide", "cstratak-fedora-rawhide-ppc64le", FedoraRawhideBuild),
+    ("PPC64LE Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-ppc64le", UnixRefleakBuild),
     ("PPC64LE Fedora Rawhide Clang", "cstratak-fedora-rawhide-ppc64le", ClangUnixBuild),
     ("PPC64LE Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-ppc64le", ClangUnixInstalledBuild),
+    ("PPC64LE Fedora Rawhide LTO", "cstratak-fedora-rawhide-ppc64le", LTONonDebugUnixBuild),
+    ("PPC64LE Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-ppc64le", LTOPGONonDebugBuild),
 
-    # Linux s390x GCC/Clang
+    # Linux s390x GCC
     ("s390x Fedora Rawhide", "cstratak-fedora-rawhide-s390x", UnixBuild),
     ("s390x Fedora Rawhide Refleaks", "cstratak-fedora-rawhide-s390x", UnixRefleakBuild),
-    ("s390x Fedora Rawhide Clang", "cstratak-fedora-rawhide-s390x", ClangUnixBuild),
-    ("s390x Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-s390x", ClangUnixInstalledBuild),
     ("s390x Fedora Rawhide LTO", "cstratak-fedora-rawhide-s390x", LTONonDebugUnixBuild),
     ("s390x Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-s390x", LTOPGONonDebugBuild),
 
-    # CentOS Stream 10 Linux s390x GCC/Clang
+    # CentOS Stream 10 Linux s390x GCC
     ("s390x CentOS10", "cstratak-c10s-s390x", CentOS10Build),
     ("s390x CentOS10 Refleaks", "cstratak-c10s-s390x", UnixRefleakBuild),
-    ("s390x CentOS10 Clang", "cstratak-c10s-s390x", ClangUnixBuild),
-    ("s390x CentOS10 Clang Installed", "cstratak-c10s-s390x", ClangUnixInstalledBuild),
     ("s390x CentOS10 LTO", "cstratak-c10s-s390x", LTONonDebugUnixBuild),
     ("s390x CentOS10 LTO + PGO", "cstratak-c10s-s390x", LTOPGONonDebugBuild),
 
@@ -490,6 +492,12 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE}, [
     ("aarch64 Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-aarch64", UnixNoGilRefleakBuild),
     ("PPC64LE Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-ppc64le", UnixNoGilRefleakBuild),
     ("s390x Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-s390x", UnixNoGilRefleakBuild),
+
+    # Linux s390x Clang (PEP 11 only covers s390x with GCC)
+    ("s390x Fedora Rawhide Clang", "cstratak-fedora-rawhide-s390x", ClangUnixBuild),
+    ("s390x Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-s390x", ClangUnixInstalledBuild),
+    ("s390x CentOS10 Clang", "cstratak-c10s-s390x", ClangUnixBuild),
+    ("s390x CentOS10 Clang Installed", "cstratak-c10s-s390x", ClangUnixInstalledBuild),
 
     # Linux x86-64 NixOS Unstable
     ("AMD64 NixOS Unstable", "malvex-nixos-x86_64", UnixBuild),
