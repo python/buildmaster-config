@@ -47,7 +47,8 @@ def _gimme_error(func):
             raise _WrappedAttributeError(f'your error: {e!r}')
     return decorated
 
-class _WrappedAttributeError(Exception): pass
+class _WrappedAttributeError(Exception):
+    pass
 
 
 class DashboardObject:
@@ -447,9 +448,9 @@ class Build(DashboardObject):
         # We don't have a logger set up, this returns None on common failures
         # (meaning failures won't show on the dashboard).
         # TODO: set up monitoring and log failures (in the whole method).
-        except OSError as e:
+        except OSError:
             return None
-        except ElementTree.ParseError as e:
+        except ElementTree.ParseError:
             return None
 
         result = JunitResult(self, {})
