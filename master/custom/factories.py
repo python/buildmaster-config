@@ -95,6 +95,16 @@ class UnixBuild(BaseBuild):
         if not has_option("-R", self.testFlags):
             testopts.extend(("--junit-xml", JUNIT_FILENAME))
 
+        if {"fedora", "rhel"} & set(worker.tags) and (
+            branch.version_tuple and branch.version_tuple < (3, 13)
+        ):
+            # In 2026, test_dtrace was enhanced and fixed which made it
+            # possible to enable it on Fedora/RHEL. But these changes were
+            # only backported up to the 3.13 branch; on older branches the
+            # test hangs on SystemTap's dtrace shim, whatever the factory.
+            # https://github.com/python/cpython/issues/98894
+            testopts.extend(("-x", "test_dtrace"))
+
         # Add excluded test resources
         exclude_test_resources = worker.exclude_test_resources
         if exclude_test_resources:
@@ -463,16 +473,6 @@ class RHEL8Build(UnixBuild):
     # /builddir/build/BUILD/Python-3.11: source code
     # /builddir/build/BUILD/Python-3.11/build/optimized: configure, make, tests
     build_out_of_tree = True
-
-    def create_test_opts(self, branch, worker):
-        testops = super().create_test_opts(branch, worker)
-        if branch.version_tuple and branch.version_tuple < (3, 13):
-            # In 2026, test_dtrace was enhanced and fixed which made it
-            # possible to enable it on Fedora/RHEL. But these changes were
-            # only backported up to the 3.13 branch.
-            # https://github.com/python/cpython/issues/98894
-            testops.extend(('-x', 'test_dtrace'))
-        return testops
 
 
 class CentOS9Build(RHEL8Build):
