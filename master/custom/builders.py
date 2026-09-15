@@ -46,7 +46,6 @@ from custom.factories import (
     Windows64PGOTailcallBuild,
     Windows64PGONoGilBuild,
     Windows64PGONoGilTailcallBuild,
-    Windows64RefleakBuild,
     Windows64ReleaseBuild,
     MacOSArmWithBrewBuild,
     MacOSArmWithBrewNoGilBuild,
@@ -142,6 +141,14 @@ BUILDER_DEFS = [
         factories.Windows64ClangBuild,
         tags={UNSTABLE, NO_TIER},
         worker_name="ware-ws2025",
+        branches=BRANCHES.only_until(3, 15),
+    ),
+    BuilderDef(
+        "AMD64 Windows Server 2025 Clang",
+        factories.Windows64ClangBuild,
+        tags={STABLE, NO_TIER},
+        worker_name="ware-ws2025",
+        branches=BRANCHES.only_since(3, 16),
     ),
     BuilderDef(
         "AMD64 Windows Server 2025 Refleaks",
