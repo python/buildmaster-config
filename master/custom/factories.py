@@ -1327,7 +1327,9 @@ class AndroidBuild(BaseBuild):
     * Do any OS-specific setup mentioned under "Testing".
     """
 
-    # Make each run more independent
+    # When Gradle is interrupted, e.g. by a master shutdown, it sometimes gets
+    # into a state where it can't start emulators anymore. Work around this by
+    # not reusing Gradle daemons between runs
     # (https://github.com/python/cpython/pull/155518#issuecomment-5259725142).
     test_environ = {"GRADLE_OPTS": "-Dorg.gradle.daemon=false"}
 
