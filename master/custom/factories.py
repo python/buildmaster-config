@@ -1329,6 +1329,10 @@ class AndroidBuild(BaseBuild):
       its RAM size as described under "Testing".
     """
 
+    # Make each run more independent
+    # (https://github.com/python/cpython/pull/155518#issuecomment-5259725142).
+    test_environ = {"GRADLE_OPTS": "-Dorg.gradle.daemon=false"}
+
     def setup(self, **kwargs):
         android_py = ["python3", "Platforms/Android"]
         self.addSteps([
@@ -1375,6 +1379,7 @@ class AndroidBuild(BaseBuild):
             Test(
                 command=android_py + ["test", "--managed", "maxVersion", "-v", "--slow-ci"],
                 timeout=step_timeout(self.test_timeout),
+                env=self.test_environ,
             ),
         ])
 
