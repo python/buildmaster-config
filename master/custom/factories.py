@@ -70,29 +70,12 @@ class BaseBuild(factory.BuildFactory):
             **getattr(self, "test_environ", {}),
         }
 
-
-##############################################################################
-###############################  UNIX BUILDS  ################################
-##############################################################################
-
-
-def has_option(option, test_options):
-    # return True for option='-j' and test_options=['-uall', '-j2']
-    return option in ' '.join(test_options)
-
-
-class UnixBuild(BaseBuild):
-    configureFlags = ["--with-pydebug"]
-    compile_environ = {}
-    interpreterFlags = ""
-    testFlags = []
-    makeTarget = "all"
-    test_environ = {}
-    build_out_of_tree = False
-
     def create_test_opts(self, branch, worker):
         testopts = [*self.testFlags, *get_j_opts(worker, 2)]
-        if not has_option("-R", self.testFlags):
+        if (
+            not has_option("-R", self.testFlags)
+            and 'installed' not in self.factory_tags
+        ):
             testopts.extend(("--junit-xml", JUNIT_FILENAME))
 
         if {"fedora", "rhel"} & set(worker.tags) and (
@@ -120,6 +103,26 @@ class UnixBuild(BaseBuild):
                 testopts.append(f"-uall,{",".join(f"-{r}" for r in exclude_test_resources)}")
 
         return testopts
+
+
+##############################################################################
+###############################  UNIX BUILDS  ################################
+##############################################################################
+
+
+def has_option(option, test_options):
+    # return True for option='-j' and test_options=['-uall', '-j2']
+    return option in ' '.join(test_options)
+
+
+class UnixBuild(BaseBuild):
+    configureFlags = ["--with-pydebug"]
+    compile_environ = {}
+    interpreterFlags = ""
+    testFlags = []
+    makeTarget = "all"
+    test_environ = {}
+    build_out_of_tree = False
 
     def setup(self, branch, worker, test_with_PTY=False, **kwargs):
         out_of_tree_dir = "build_oot"
@@ -227,7 +230,7 @@ class UnixInstalledBuild(BaseBuild):
     buildersuffix = ".installed"
     configureFlags = []
     interpreterFlags = ["-Wdefault", "-bb", "-E"]
-    defaultTestOpts = ["-rwW", "-uall"]
+    testFlags = ["-rwW", "-uall"]
     makeTarget = "all"
     installTarget = "install"
     factory_tags = ["installed"]
@@ -250,16 +253,14 @@ class UnixInstalledBuild(BaseBuild):
         j_opts = get_j_opts(worker)
         compile = ["make", *j_opts, self.makeTarget]
         install = ["make", *j_opts, self.installTarget]
-        testopts = [
-            *self.defaultTestOpts,
-            f"--timeout={self.test_timeout}",
-            *get_j_opts(worker, 2),
-        ]
+        testopts = self.create_test_opts(branch, worker)
 
         test = [installed_python,
                 *self.interpreterFlags,
                 "-m", "test",
-                *testopts]
+                *testopts,
+                f'--timeout={self.test_timeout}',
+                ]
 
         self.addStep(Compile(command=compile))
         self.addStep(Install(command=install))
@@ -651,11 +652,9 @@ class BaseWindowsBuild(BaseBuild):
         build_command = self.build_command + self.buildFlags
         test_command = [
             *self.test_command,
-            *self.testFlags,
-            *get_j_opts(worker, 2),
+            *self.create_test_opts(branch, worker),
+            *('--timeout', str(self.test_timeout)),
         ]
-        if not has_option("-R", self.testFlags):
-            test_command.extend((r"--junit-xml", JUNIT_FILENAME))
         clean_command = [
             *self.clean_command,
             *self.cleanFlags,
@@ -668,7 +667,6 @@ class BaseWindowsBuild(BaseBuild):
         self.addStep(PythonInfo(
             command=self.python_command + ["-m", "test.pythoninfo"],
         ))
-        test_command.extend(("--timeout", str(self.test_timeout)))
         self.addStep(Test(
             command=test_command,
             timeout=step_timeout(self.test_timeout),
@@ -870,9 +868,7 @@ class UnixCrossBuild(UnixBuild):
             )
         )
 
-        testopts = [*self.testFlags, *get_j_opts(worker, 2)]
-        if not has_option("-R", self.testFlags):
-            testopts.extend((" --junit-xml", JUNIT_FILENAME))
+        testopts = self.create_test_opts(branch, worker)
 
         test = [
             "make",
@@ -1038,9 +1034,7 @@ class _Wasm32WasiPreview1Build(UnixBuild):
         )
 
         # Copied from UnixBuild.
-        testopts = [*self.testFlags, *get_j_opts(worker, 2)]
-        if not has_option("-R", self.testFlags):
-            testopts.extend(("--junit-xml", JUNIT_FILENAME))
+        testopts = self.create_test_opts(branch, worker)
         test = [
             "make",
             "buildbottest",
