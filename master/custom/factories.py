@@ -1320,14 +1320,18 @@ class AndroidBuild(BaseBuild):
     """Build Python for Android on a Linux or Mac machine, and test it using a
     Gradle-managed emulator.
 
-    To set up a worker, see cpython/Android/README.md, especially the following
-    sections:
+    To set up a worker, see cpython/Platforms/Android/README.md, especially the
+    following sections:
 
     * Install everything listed under "Prerequisites".
     * Do any OS-specific setup mentioned under "Testing".
-    * If the managed emulator appears to be running out of memory, increase
-      its RAM size as described under "Testing".
     """
+
+    # When Gradle is interrupted, e.g. by a master shutdown, it sometimes gets
+    # into a state where it can't start emulators anymore. Work around this by
+    # not reusing Gradle daemons between runs
+    # (https://github.com/python/cpython/pull/155518#issuecomment-5259725142).
+    test_environ = {"GRADLE_OPTS": "-Dorg.gradle.daemon=false"}
 
     def setup(self, **kwargs):
         android_py = ["python3", "Platforms/Android"]
@@ -1375,6 +1379,7 @@ class AndroidBuild(BaseBuild):
             Test(
                 command=android_py + ["test", "--managed", "maxVersion", "-v", "--slow-ci"],
                 timeout=step_timeout(self.test_timeout),
+                env=self.test_environ,
             ),
         ])
 
