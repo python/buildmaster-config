@@ -1320,13 +1320,11 @@ class AndroidBuild(BaseBuild):
     """Build Python for Android on a Linux or Mac machine, and test it using a
     Gradle-managed emulator.
 
-    To set up a worker, see cpython/Android/README.md, especially the following
-    sections:
+    To set up a worker, see cpython/Platforms/Android/README.md, especially the
+    following sections:
 
     * Install everything listed under "Prerequisites".
     * Do any OS-specific setup mentioned under "Testing".
-    * If the managed emulator appears to be running out of memory, increase
-      its RAM size as described under "Testing".
     """
 
     # Make each run more independent
