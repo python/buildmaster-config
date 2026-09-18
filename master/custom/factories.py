@@ -557,6 +557,24 @@ class CentOS9NoBuiltinHashesUnixBuild(CentOS9Build):
     factory_tags = ["no-builtin-hashes"]
 
 
+class CentOS10NoBuiltinHashesUnixBuildExceptBlake2(CentOS10Build):
+    # Build on 64-bit CentOS Stream 10 using: --with-builtin-hashlib-hashes=blake2
+    buildersuffix = ".no-builtin-hashes-except-blake2"
+    configureFlags = CentOS10Build.configureFlags + [
+        "--with-builtin-hashlib-hashes=blake2"
+    ]
+    factory_tags = ["no-builtin-hashes-except-blake2"]
+
+
+class CentOS10NoBuiltinHashesUnixBuild(CentOS10Build):
+    # Build on 64-bit CentOS Stream 10 using: --without-builtin-hashlib-hashes
+    buildersuffix = ".no-builtin-hashes"
+    configureFlags = CentOS10Build.configureFlags + [
+        "--without-builtin-hashlib-hashes"
+    ]
+    factory_tags = ["no-builtin-hashes"]
+
+
 ##############################################################################
 ############################  MACOS BUILDS  ##################################
 ##############################################################################
