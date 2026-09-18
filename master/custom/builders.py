@@ -41,6 +41,8 @@ from custom.factories import (
     RHEL8NoBuiltinHashesUnixBuildExceptBlake2,
     CentOS9NoBuiltinHashesUnixBuild,
     CentOS9NoBuiltinHashesUnixBuildExceptBlake2,
+    CentOS10NoBuiltinHashesUnixBuild,
+    CentOS10NoBuiltinHashesUnixBuildExceptBlake2,
     Windows64Build,
     Windows64NoGilBuild,
     Windows64PGOTailcallBuild,
@@ -400,12 +402,21 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_1}, [
     ("AMD64 Fedora Rawhide LTO", "cstratak-fedora-rawhide-x86_64", LTONonDebugUnixBuild),
     ("AMD64 Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-x86_64", LTOPGONonDebugBuild),
 
+    # CentOS Stream 10 Linux x86-64 GCC
+    ("AMD64 CentOS10", "cstratak-CentOS10-x86_64", CentOS10Build),
+    ("AMD64 CentOS10 Refleaks", "cstratak-CentOS10-x86_64", UnixRefleakBuild),
+    ("AMD64 CentOS10 LTO", "cstratak-CentOS10-x86_64", LTONonDebugUnixBuild),
+    ("AMD64 CentOS10 LTO + PGO", "cstratak-CentOS10-x86_64", LTOPGONonDebugBuild),
+
     ("AMD64 Ubuntu", "skumaran-ubuntu-x86_64", UnixBuild),
 
     ("AMD64 RHEL8 FIPS No Builtin Hashes", "cstratak-RHEL8-fips-x86_64", RHEL8NoBuiltinHashesUnixBuild),
 
     ("AMD64 CentOS9 FIPS Only Blake2 Builtin Hash", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuildExceptBlake2),
     ("AMD64 CentOS9 FIPS No Builtin Hashes", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuild),
+
+    ("AMD64 CentOS10 FIPS Only Blake2 Builtin Hash", "cstratak-CentOS10-fips-x86_64", CentOS10NoBuiltinHashesUnixBuildExceptBlake2),
+    ("AMD64 CentOS10 FIPS No Builtin Hashes", "cstratak-CentOS10-fips-x86_64", CentOS10NoBuiltinHashesUnixBuild),
 
     BuilderDef(
         "AMD64 Arch Linux Valgrind",
@@ -424,6 +435,10 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_2}, [
     # UBSan is a special build
     ("AMD64 Fedora Rawhide Clang", "cstratak-fedora-rawhide-x86_64", ClangUnixBuild),
     ("AMD64 Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-x86_64", ClangUnixInstalledBuild),
+
+    # CentOS Stream 10 Linux x86-64 Clang
+    ("AMD64 CentOS10 Clang", "cstratak-CentOS10-x86_64", ClangUnixBuild),
+    ("AMD64 CentOS10 Clang Installed", "cstratak-CentOS10-x86_64", ClangUnixInstalledBuild),
 
     # Fedora Linux ppc64le GCC
     # Fedora Rawhide is unstable

@@ -145,6 +145,18 @@ def get_workers(settings):
             branches=BRANCHES.only_since(3, 12),
         ),
         cpw(
+            name="cstratak-CentOS10-x86_64",
+            tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64', 'dtrace'],
+            parallel_tests=6,
+        ),
+        cpw(
+            name="cstratak-CentOS10-fips-x86_64",
+            tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64', 'fips', 'dtrace'],
+            parallel_tests=6,
+            # Only 3.12+ for FIPS builder
+            branches=BRANCHES.only_since(3, 12),
+        ),
+        cpw(
             name="cstratak-fedora-rawhide-ppc64le",
             tags=['linux', 'unix', 'fedora', 'ppc64le', 'dtrace'],
             parallel_tests=10,
