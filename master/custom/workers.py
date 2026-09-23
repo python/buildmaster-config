@@ -321,6 +321,7 @@ def get_workers(settings):
         cpw(
             name="skumaran-ubuntu-x86_64",
             tags=['linux', 'unix', 'ubuntu', 'amd64', 'x86-64'],
+            parallel_tests=1,
         ),
         cpw(
             name="ware-alpine",
