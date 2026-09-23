@@ -12,6 +12,34 @@
     margin: 20px auto 0;
     font-family: 'Arial', sans-serif;
 
+    /* Base rules from Bootstrap's reboot and the Buildbot UI, so the page
+       looks the same served directly as it does embedded in the UI. */
+    font-size: 14px;
+    line-height: 20px;
+    code {
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 87.5%;
+    }
+    a {
+        color: #007bff;
+        text-decoration: none;
+        &:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+    }
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: 500;
+        line-height: 1.2;
+        margin-top: 0;
+        margin-bottom: .5rem;
+    }
+    h3 { font-size: 1.75rem; }
+    h4 { font-size: 1.5rem; }
+    h5 { font-size: 1.25rem; }
+    summary { cursor: pointer; }
+    ul { margin-top: 0; margin-bottom: 1rem; }
+
     .header {
         text-align: center;
         margin-bottom: 30px;
@@ -178,6 +206,7 @@
             margin: 0px;
             width: 1rem;
             height: 1rem;
+            box-sizing: border-box;
             background-color: var(--pill-bg-color);
             color: var(--pill-text-color);
             font-size: .75rem;
