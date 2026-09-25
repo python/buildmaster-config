@@ -425,7 +425,7 @@ def get_workers(settings):
         ),
         cpw(
             name="onder-riscv64",
-            tags=['linux', 'unix', 'ubuntu', 'riscv64'],
+            tags=['linux', 'unix', 'debian', 'riscv64', 'dtrace'],
             branches=BRANCHES.only_since(3, 11),
             parallel_tests=4,
         ),
