@@ -356,7 +356,7 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_3}, [
     ("WASM Emscripten", "rkm-emscripten", EmscriptenBuild),
 
     # RISC-V 64-bit GCC/Clang
-    ("riscv64 Ubuntu", "onder-riscv64", SlowUnixInstalledBuild),
+    ("riscv64 Debian", "onder-riscv64", SlowUnixInstalledBuild),
     ("RISC-V 64-bit Ubuntu", "rise-riscv64-4", SlowDebugUnixBuild),
     ("RISC-V 64-bit Ubuntu Clang", "rise-riscv64-2", SlowClangUnixBuild),
     ("RISC-V 64-bit Ubuntu NoGIL", "rise-riscv64-3", SlowUnixNoGilBuild),
