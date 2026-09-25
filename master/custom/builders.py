@@ -356,7 +356,6 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_3}, [
     ("WASM Emscripten", "rkm-emscripten", EmscriptenBuild),
 
     # RISC-V 64-bit GCC/Clang
-    ("riscv64 Ubuntu", "onder-riscv64", SlowUnixInstalledBuild),
     ("RISC-V 64-bit Ubuntu", "rise-riscv64-4", SlowDebugUnixBuild),
     ("RISC-V 64-bit Ubuntu Clang", "rise-riscv64-2", SlowClangUnixBuild),
     ("RISC-V 64-bit Ubuntu NoGIL", "rise-riscv64-3", SlowUnixNoGilBuild),
@@ -497,6 +496,9 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_3}, [
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
     # FreeBSD 16 is CURRENT: development branch (at 2026-01-09)
     ("AMD64 FreeBSD16", "opsec-fbsd16", UnixBuild),
+
+    # RISC-V 64-bit GCC
+    ("riscv64 Debian", "onder-riscv64", SlowUnixInstalledBuild),
 
 ]))
 
