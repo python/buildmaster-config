@@ -498,8 +498,7 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_3}, [
     ("AMD64 FreeBSD16", "opsec-fbsd16", UnixBuild),
 
     # RISC-V 64-bit GCC
-    ("riscv64 Debian", "onder-riscv64", SlowUnixInstalledBuild),
-
+    ("RISC-V 64-bit Debian", "onder-riscv64", SlowUnixInstalledBuild),
 ]))
 
 
