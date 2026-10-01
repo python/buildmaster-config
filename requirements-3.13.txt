@@ -30,7 +30,7 @@ MarkupSafe==3.0.3
 msgpack==1.2.2
 multipart==2.0.1
 packaging==26.3
-psycopg2==2.9.13
+psycopg==3.3.6
 pycparser==3.0
 PyJWT==2.15.0
 pyOpenSSL==26.4.0
