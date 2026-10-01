@@ -371,7 +371,6 @@ def get_workers(settings):
         cpw(
             name="bcannon-wasi",
             tags=['wasm', 'wasi'],
-            branches=BRANCHES.only_since(3, 11),
             parallel_tests=2,
             parallel_builders=2,
             timeout_factor=2,  # Increase the timeout on this slow worker
@@ -419,14 +418,12 @@ def get_workers(settings):
         cpw(
             name="kushaldas-wasi",
             tags=['wasm', 'wasi'],
-            branches=BRANCHES.only_since(3, 11),
             parallel_tests=4,
             parallel_builders=2,
         ),
         cpw(
             name="onder-riscv64",
             tags=['linux', 'unix', 'debian', 'riscv64', 'dtrace'],
-            branches=BRANCHES.only_since(3, 11),
             parallel_tests=4,
         ),
         cpw(
