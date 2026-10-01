@@ -6,4 +6,6 @@ PyYAML
 requests
 treq
 sentry-sdk
-psycopg2
+# buildbot depends on SQLAlchemy, but we add the extra here to ensure the
+# correct leaf dependencies
+SQLAlchemy[postgresql]
