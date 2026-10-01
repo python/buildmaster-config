@@ -19,6 +19,7 @@ import dataclasses
 from functools import total_ordering
 from typing import Any
 
+
 # Buildbot configuration first; see below for the BranchInfo class.
 
 def generate_branches():
@@ -36,7 +37,6 @@ def generate_branches():
     yield _maintenance_branch(3, 13)
     yield _maintenance_branch(3, 12)
     yield _maintenance_branch(3, 11)
-    yield _maintenance_branch(3, 10)
     yield BranchInfo(
         'PR',
         version_tuple=None,
@@ -59,11 +59,6 @@ def _maintenance_branch(major, minor, **kwargs):
         builddir_name=version_str,
         sort_key=-minor,
     )
-
-    if version_tuple < (3, 11):
-        # Before 3.11, test_asyncio wasn't split out, and refleaks tests
-        # need more time.
-        result.monolithic_test_asyncio = True
 
     if version_tuple < (3, 13):
         # Free-threaded builds are available since 3.13
