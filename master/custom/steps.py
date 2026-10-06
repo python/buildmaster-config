@@ -49,6 +49,10 @@ class Test(BaseTest):
         # Py_FatalError() call
         r"Fatal Python error:",
 
+        # C assert() failed:
+        # "Assertion failed: xxx, function xxx, file xxx, line xxx."
+        r"Assertion failed: .*, function .*, file .*, line",
+
         # PyErr_WriteUnraisable() exception: usually, error in
         # garbage collector or destructor
         r"Exception ignored in:",
