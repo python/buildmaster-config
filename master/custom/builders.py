@@ -494,8 +494,10 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_3}, [
     # FreeBSD x86-64 clang
     # FreeBSD 15 is CURRENT: development branch (at 2023-10-17)
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
+    ("AMD64 FreeBSD15 NoGIL", "opsec-fbsd15", UnixNoGilBuild),
     # FreeBSD 16 is CURRENT: development branch (at 2026-01-09)
     ("AMD64 FreeBSD16", "opsec-fbsd16", UnixBuild),
+    ("AMD64 FreeBSD16 Non-Debug", "opsec-fbsd16", NonDebugUnixBuild),
 
     # RISC-V 64-bit GCC
     ("RISC-V 64-bit Debian", "onder-riscv64", SlowUnixInstalledBuild),
