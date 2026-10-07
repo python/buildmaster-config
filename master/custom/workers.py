@@ -332,17 +332,17 @@ def get_workers(settings):
         cpw(
             name="opsec-fbsd14",
             tags=['freebsd', 'bsd', 'unix', 'amd64', 'x86-64'],
-            parallel_tests=4,
+            parallel_tests=8,
         ),
         cpw(
             name="opsec-fbsd15",
             tags=['freebsd', 'bsd', 'unix', 'amd64', 'x86-64'],
-            parallel_tests=4,
+            parallel_tests=8,
         ),
         cpw(
             name="opsec-fbsd16",
             tags=['freebsd', 'bsd', 'unix', 'amd64', 'x86-64'],
-            parallel_tests=4,
+            parallel_tests=8,
         ),
         cpw(
             name="ware-debian-x86",
