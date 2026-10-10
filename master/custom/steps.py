@@ -122,7 +122,7 @@ class Test(BaseTest):
     decodeRC = {
         0: SUCCESS,
 
-        # Do not mark "env changed" as a failure, but a warning
+        # Do not mark "env changed" as a failure, but as a warning
         3: WARNINGS,    # EXITCODE_ENV_CHANGED
 
         # Treat --fail-rerun exit code (5) to WARNINGS, when a test failed but
