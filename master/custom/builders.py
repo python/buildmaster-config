@@ -456,6 +456,7 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_2}, [
     ("AMD64 CentOS10 Clang", "cstratak-CentOS10-x86_64", ClangUnixBuild),
     ("AMD64 CentOS10 Clang Installed", "cstratak-CentOS10-x86_64", ClangUnixInstalledBuild),
 
+    # Fedora Linux aarch64 Clang
     # Fedora Rawhide is unstable
     ("aarch64 Fedora Rawhide Clang", "cstratak-fedora-rawhide-aarch64", ClangUnixBuild),
     ("aarch64 Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-aarch64", ClangUnixInstalledBuild),
