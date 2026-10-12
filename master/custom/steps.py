@@ -122,6 +122,9 @@ class Test(BaseTest):
     decodeRC = {
         0: SUCCESS,
 
+        # Do not mark "env changed" as a failure, but as a warning
+        3: WARNINGS,    # EXITCODE_ENV_CHANGED
+
         # Treat --fail-rerun exit code (5) to WARNINGS, when a test failed but
         # passed when run again in verbose mode in a fresh process (unstable
         # test).
@@ -131,7 +134,6 @@ class Test(BaseTest):
         # So there is no need to map each regrtest exit code to FAILURE.
         #
         # 2: FAILURE,    # EXITCODE_BAD_TEST
-        # 3: FAILURE,    # EXITCODE_ENV_CHANGED
         # 4: FAILURE,    # EXITCODE_NO_TESTS_RAN
         # 130: FAILURE,  # EXITCODE_INTERRUPTED
     }
