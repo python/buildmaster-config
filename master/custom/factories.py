@@ -253,6 +253,7 @@ class UnixInstalledBuild(BaseBuild):
         test = [installed_python,
                 *self.interpreterFlags,
                 "-m", "test",
+                "--slow-ci",
                 *testopts,
                 f'--timeout={self.test_timeout}',
                 ]
@@ -1414,6 +1415,7 @@ class ValgrindBuild(UnixBuild):
         "--without-pymalloc",
     ]
     testFlags = [
+        "--single-process",
         "test_grammar",
         "test_syntax",
         "test_tokenize",
@@ -1451,6 +1453,7 @@ class ValgrindBuild(UnixBuild):
             util.Interpolate("--suppressions=%(prop:builddir)s/build/Misc/valgrind-python.supp"),
             "./python",
             "-m", "test",
+            "--slow-ci",
             *self.testFlags,
             f"--timeout={self.test_timeout}",
         ]
