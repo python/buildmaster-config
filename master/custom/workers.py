@@ -145,6 +145,18 @@ def get_workers(settings):
             branches=BRANCHES.only_since(3, 12),
         ),
         cpw(
+            name="cstratak-CentOS10-x86_64",
+            tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64', 'dtrace'],
+            parallel_tests=6,
+        ),
+        cpw(
+            name="cstratak-CentOS10-fips-x86_64",
+            tags=['linux', 'unix', 'rhel', 'amd64', 'x86-64', 'fips', 'dtrace'],
+            parallel_tests=6,
+            # Only 3.12+ for FIPS builder
+            branches=BRANCHES.only_since(3, 12),
+        ),
+        cpw(
             name="cstratak-fedora-rawhide-ppc64le",
             tags=['linux', 'unix', 'fedora', 'ppc64le', 'dtrace'],
             parallel_tests=10,
@@ -309,6 +321,7 @@ def get_workers(settings):
         cpw(
             name="skumaran-ubuntu-x86_64",
             tags=['linux', 'unix', 'ubuntu', 'amd64', 'x86-64'],
+            parallel_tests=1,
         ),
         cpw(
             name="ware-alpine",
@@ -319,17 +332,17 @@ def get_workers(settings):
         cpw(
             name="opsec-fbsd14",
             tags=['freebsd', 'bsd', 'unix', 'amd64', 'x86-64'],
-            parallel_tests=4,
+            parallel_tests=8,
         ),
         cpw(
             name="opsec-fbsd15",
             tags=['freebsd', 'bsd', 'unix', 'amd64', 'x86-64'],
-            parallel_tests=4,
+            parallel_tests=8,
         ),
         cpw(
             name="opsec-fbsd16",
             tags=['freebsd', 'bsd', 'unix', 'amd64', 'x86-64'],
-            parallel_tests=4,
+            parallel_tests=8,
         ),
         cpw(
             name="ware-debian-x86",
@@ -358,7 +371,6 @@ def get_workers(settings):
         cpw(
             name="bcannon-wasi",
             tags=['wasm', 'wasi'],
-            branches=BRANCHES.only_since(3, 11),
             parallel_tests=2,
             parallel_builders=2,
             timeout_factor=2,  # Increase the timeout on this slow worker
@@ -406,14 +418,12 @@ def get_workers(settings):
         cpw(
             name="kushaldas-wasi",
             tags=['wasm', 'wasi'],
-            branches=BRANCHES.only_since(3, 11),
             parallel_tests=4,
             parallel_builders=2,
         ),
         cpw(
             name="onder-riscv64",
-            tags=['linux', 'unix', 'ubuntu', 'riscv64'],
-            branches=BRANCHES.only_since(3, 11),
+            tags=['linux', 'unix', 'debian', 'riscv64', 'dtrace'],
             parallel_tests=4,
         ),
         cpw(

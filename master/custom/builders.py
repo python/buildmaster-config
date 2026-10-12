@@ -41,12 +41,13 @@ from custom.factories import (
     RHEL8NoBuiltinHashesUnixBuildExceptBlake2,
     CentOS9NoBuiltinHashesUnixBuild,
     CentOS9NoBuiltinHashesUnixBuildExceptBlake2,
+    CentOS10NoBuiltinHashesUnixBuild,
+    CentOS10NoBuiltinHashesUnixBuildExceptBlake2,
     Windows64Build,
     Windows64NoGilBuild,
     Windows64PGOTailcallBuild,
     Windows64PGONoGilBuild,
     Windows64PGONoGilTailcallBuild,
-    Windows64RefleakBuild,
     Windows64ReleaseBuild,
     MacOSArmWithBrewBuild,
     MacOSArmWithBrewNoGilBuild,
@@ -142,6 +143,14 @@ BUILDER_DEFS = [
         factories.Windows64ClangBuild,
         tags={UNSTABLE, NO_TIER},
         worker_name="ware-ws2025",
+        branches=BRANCHES.only_until(3, 15),
+    ),
+    BuilderDef(
+        "AMD64 Windows Server 2025 Clang",
+        factories.Windows64ClangBuild,
+        tags={STABLE, NO_TIER},
+        worker_name="ware-ws2025",
+        branches=BRANCHES.only_since(3, 16),
     ),
     BuilderDef(
         "AMD64 Windows Server 2025 Refleaks",
@@ -347,7 +356,6 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_3}, [
     ("wasm32-wasi Non-Debug", "bcannon-wasi", Wasm32WasiCrossBuild),
 
     # RISC-V 64-bit GCC/Clang
-    ("riscv64 Ubuntu", "onder-riscv64", SlowUnixInstalledBuild),
     ("RISC-V 64-bit Ubuntu", "rise-riscv64-4", SlowDebugUnixBuild),
     ("RISC-V 64-bit Ubuntu Clang", "rise-riscv64-2", SlowClangUnixBuild),
     ("RISC-V 64-bit Ubuntu NoGIL", "rise-riscv64-3", SlowUnixNoGilBuild),
@@ -397,6 +405,12 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_1}, [
     ("AMD64 Fedora Rawhide LTO", "cstratak-fedora-rawhide-x86_64", LTONonDebugUnixBuild),
     ("AMD64 Fedora Rawhide LTO + PGO", "cstratak-fedora-rawhide-x86_64", LTOPGONonDebugBuild),
 
+    # CentOS Stream 10 Linux x86-64 GCC
+    ("AMD64 CentOS10", "cstratak-CentOS10-x86_64", CentOS10Build),
+    ("AMD64 CentOS10 Refleaks", "cstratak-CentOS10-x86_64", UnixRefleakBuild),
+    ("AMD64 CentOS10 LTO", "cstratak-CentOS10-x86_64", LTONonDebugUnixBuild),
+    ("AMD64 CentOS10 LTO + PGO", "cstratak-CentOS10-x86_64", LTOPGONonDebugBuild),
+
     ("AMD64 Ubuntu", "skumaran-ubuntu-x86_64", UnixBuild),
 
     # Fedora Linux aarch64 GCC
@@ -417,6 +431,9 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_1}, [
     ("AMD64 CentOS9 FIPS Only Blake2 Builtin Hash", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuildExceptBlake2),
     ("AMD64 CentOS9 FIPS No Builtin Hashes", "cstratak-CentOS9-fips-x86_64", CentOS9NoBuiltinHashesUnixBuild),
 
+    ("AMD64 CentOS10 FIPS Only Blake2 Builtin Hash", "cstratak-CentOS10-fips-x86_64", CentOS10NoBuiltinHashesUnixBuildExceptBlake2),
+    ("AMD64 CentOS10 FIPS No Builtin Hashes", "cstratak-CentOS10-fips-x86_64", CentOS10NoBuiltinHashesUnixBuild),
+
     BuilderDef(
         "AMD64 Arch Linux Valgrind",
         ValgrindBuild,
@@ -435,7 +452,10 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_2}, [
     ("AMD64 Fedora Rawhide Clang", "cstratak-fedora-rawhide-x86_64", ClangUnixBuild),
     ("AMD64 Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-x86_64", ClangUnixInstalledBuild),
 
-    # Fedora Linux aarch64 Clang
+    # CentOS Stream 10 Linux x86-64 Clang
+    ("AMD64 CentOS10 Clang", "cstratak-CentOS10-x86_64", ClangUnixBuild),
+    ("AMD64 CentOS10 Clang Installed", "cstratak-CentOS10-x86_64", ClangUnixInstalledBuild),
+
     # Fedora Rawhide is unstable
     ("aarch64 Fedora Rawhide Clang", "cstratak-fedora-rawhide-aarch64", ClangUnixBuild),
     ("aarch64 Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-aarch64", ClangUnixInstalledBuild),
@@ -475,9 +495,13 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_3}, [
     # FreeBSD x86-64 clang
     # FreeBSD 15 is CURRENT: development branch (at 2023-10-17)
     ("AMD64 FreeBSD15", "opsec-fbsd15", UnixBuild),
+    ("AMD64 FreeBSD15 NoGIL", "opsec-fbsd15", UnixNoGilBuild),
     # FreeBSD 16 is CURRENT: development branch (at 2026-01-09)
     ("AMD64 FreeBSD16", "opsec-fbsd16", UnixBuild),
+    ("AMD64 FreeBSD16 Non-Debug", "opsec-fbsd16", NonDebugUnixBuild),
 
+    # RISC-V 64-bit GCC
+    ("RISC-V 64-bit Debian", "onder-riscv64", SlowUnixInstalledBuild),
 ]))
 
 

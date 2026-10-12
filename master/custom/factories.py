@@ -70,6 +70,40 @@ class BaseBuild(factory.BuildFactory):
             **getattr(self, "test_environ", {}),
         }
 
+    def create_test_opts(self, branch, worker):
+        testopts = [*self.testFlags, *get_j_opts(worker, 2)]
+        if (
+            not has_option("-R", self.testFlags)
+            and 'installed' not in self.factory_tags
+        ):
+            testopts.extend(("--junit-xml", JUNIT_FILENAME))
+
+        if {"fedora", "rhel"} & set(worker.tags) and (
+            branch.version_tuple and branch.version_tuple < (3, 13)
+        ):
+            # In 2026, test_dtrace was enhanced and fixed which made it
+            # possible to enable it on Fedora/RHEL. But these changes were
+            # only backported up to the 3.13 branch; on older branches the
+            # test hangs on SystemTap's dtrace shim, whatever the factory.
+            # https://github.com/python/cpython/issues/98894
+            testopts.extend(("-x", "test_dtrace"))
+
+        # Add excluded test resources
+        exclude_test_resources = worker.exclude_test_resources
+        if exclude_test_resources:
+            u_loc = None
+            for i, opt in enumerate(testopts):
+                if opt.startswith("-u"):
+                    u_loc = i
+                    break
+            if u_loc is not None:
+                for resource in exclude_test_resources:
+                    testopts[u_loc] += f",-{resource}"
+            else:
+                testopts.append(f"-uall,{",".join(f"-{r}" for r in exclude_test_resources)}")
+
+        return testopts
+
 
 ##############################################################################
 ###############################  UNIX BUILDS  ################################
@@ -90,37 +124,11 @@ class UnixBuild(BaseBuild):
     test_environ = {}
     build_out_of_tree = False
 
-    def create_test_opts(self, branch, worker):
-        testopts = [*self.testFlags, *get_j_opts(worker, 2)]
-        if not has_option("-R", self.testFlags):
-            testopts.extend(("--junit-xml", JUNIT_FILENAME))
-
-        # Add excluded test resources
-        exclude_test_resources = worker.exclude_test_resources
-        if exclude_test_resources:
-            u_loc = None
-            for i, opt in enumerate(testopts):
-                if opt.startswith("-u"):
-                    u_loc = i
-                    break
-            if u_loc is not None:
-                for resource in exclude_test_resources:
-                    testopts[u_loc] += f",-{resource}"
-            else:
-                testopts.append(f"-uall,{",".join(f"-{r}" for r in exclude_test_resources)}")
-
-        return testopts
-
     def setup(self, branch, worker, test_with_PTY=False, **kwargs):
         out_of_tree_dir = "build_oot"
 
         # Adjust the timeout for this worker
         self.test_timeout *= worker.timeout_factor
-
-        # In 3.10, test_asyncio wasn't split out, and refleaks tests
-        # need more time.
-        if branch.monolithic_test_asyncio and has_option("-R", self.testFlags):
-            self.test_timeout *= 2
 
         if self.build_out_of_tree:
             self.addStep(
@@ -217,7 +225,7 @@ class UnixInstalledBuild(BaseBuild):
     buildersuffix = ".installed"
     configureFlags = []
     interpreterFlags = ["-Wdefault", "-bb", "-E"]
-    defaultTestOpts = ["-rwW", "-uall"]
+    testFlags = ["-rwW", "-uall"]
     makeTarget = "all"
     installTarget = "install"
     factory_tags = ["installed"]
@@ -240,16 +248,14 @@ class UnixInstalledBuild(BaseBuild):
         j_opts = get_j_opts(worker)
         compile = ["make", *j_opts, self.makeTarget]
         install = ["make", *j_opts, self.installTarget]
-        testopts = [
-            *self.defaultTestOpts,
-            f"--timeout={self.test_timeout}",
-            *get_j_opts(worker, 2),
-        ]
+        testopts = self.create_test_opts(branch, worker)
 
         test = [installed_python,
                 *self.interpreterFlags,
                 "-m", "test",
-                *testopts]
+                *testopts,
+                f'--timeout={self.test_timeout}',
+                ]
 
         self.addStep(Compile(command=compile))
         self.addStep(Install(command=install))
@@ -464,16 +470,6 @@ class RHEL8Build(UnixBuild):
     # /builddir/build/BUILD/Python-3.11/build/optimized: configure, make, tests
     build_out_of_tree = True
 
-    def create_test_opts(self, branch, worker):
-        testops = super().create_test_opts(branch, worker)
-        if branch.version_tuple and branch.version_tuple < (3, 13):
-            # In 2026, test_dtrace was enhanced and fixed which made it
-            # possible to enable it on Fedora/RHEL. But these changes were
-            # only backported up to the 3.13 branch.
-            # https://github.com/python/cpython/issues/98894
-            testops.extend(('-x', 'test_dtrace'))
-        return testops
-
 
 class CentOS9Build(RHEL8Build):
     # Build on 64-bit CentOS Stream 9.
@@ -551,6 +547,24 @@ class CentOS9NoBuiltinHashesUnixBuild(CentOS9Build):
     # Build on 64-bit CentOS Stream 9 using: --without-builtin-hashlib-hashes
     buildersuffix = ".no-builtin-hashes"
     configureFlags = CentOS9Build.configureFlags + [
+        "--without-builtin-hashlib-hashes"
+    ]
+    factory_tags = ["no-builtin-hashes"]
+
+
+class CentOS10NoBuiltinHashesUnixBuildExceptBlake2(CentOS10Build):
+    # Build on 64-bit CentOS Stream 10 using: --with-builtin-hashlib-hashes=blake2
+    buildersuffix = ".no-builtin-hashes-except-blake2"
+    configureFlags = CentOS10Build.configureFlags + [
+        "--with-builtin-hashlib-hashes=blake2"
+    ]
+    factory_tags = ["no-builtin-hashes-except-blake2"]
+
+
+class CentOS10NoBuiltinHashesUnixBuild(CentOS10Build):
+    # Build on 64-bit CentOS Stream 10 using: --without-builtin-hashlib-hashes
+    buildersuffix = ".no-builtin-hashes"
+    configureFlags = CentOS10Build.configureFlags + [
         "--without-builtin-hashlib-hashes"
     ]
     factory_tags = ["no-builtin-hashes"]
@@ -651,11 +665,9 @@ class BaseWindowsBuild(BaseBuild):
         build_command = self.build_command + self.buildFlags
         test_command = [
             *self.test_command,
-            *self.testFlags,
-            *get_j_opts(worker, 2),
+            *self.create_test_opts(branch, worker),
+            *('--timeout', str(self.test_timeout)),
         ]
-        if not has_option("-R", self.testFlags):
-            test_command.extend((r"--junit-xml", JUNIT_FILENAME))
         clean_command = [
             *self.clean_command,
             *self.cleanFlags,
@@ -668,7 +680,6 @@ class BaseWindowsBuild(BaseBuild):
         self.addStep(PythonInfo(
             command=self.python_command + ["-m", "test.pythoninfo"],
         ))
-        test_command.extend(("--timeout", str(self.test_timeout)))
         self.addStep(Test(
             command=test_command,
             timeout=step_timeout(self.test_timeout),
@@ -870,9 +881,7 @@ class UnixCrossBuild(UnixBuild):
             )
         )
 
-        testopts = [*self.testFlags, *get_j_opts(worker, 2)]
-        if not has_option("-R", self.testFlags):
-            testopts.extend((" --junit-xml", JUNIT_FILENAME))
+        testopts = self.create_test_opts(branch, worker)
 
         test = [
             "make",
@@ -939,7 +948,7 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
     host_configure_cmd = ["../../Tools/wasm/wasi-env", "../../configure"]
 
     # See comment in _Wasm32WasiPreview1Build.__init__
-    branches = {BRANCHES[3, 11], BRANCHES[3, 12]}
+    branches = BRANCHES.only_until(3, 12)
 
     def setup(self, branch, worker, test_with_PTY=False, **kwargs):
         self.addStep(
@@ -984,7 +993,7 @@ class _Wasm32WasiPreview1Build(UnixBuild):
             # The non-debug WASI buildbot is meant for 3.11 and 3.12 only.
             # Don't use it on PRs; it's tier 3 only and getting it to
             # work on PRs against `main` is too much work.
-            self.branches = {BRANCHES[3, 11], BRANCHES[3, 12]}
+            self.branches = BRANCHES.only_until(3, 12)
         super().__init__(source, extra_tags=extra_tags, **kwargs)
 
     def setup(self, branch, worker, test_with_PTY=False, **kwargs):
@@ -1038,9 +1047,7 @@ class _Wasm32WasiPreview1Build(UnixBuild):
         )
 
         # Copied from UnixBuild.
-        testopts = [*self.testFlags, *get_j_opts(worker, 2)]
-        if not has_option("-R", self.testFlags):
-            testopts.extend(("--junit-xml", JUNIT_FILENAME))
+        testopts = self.create_test_opts(branch, worker)
         test = [
             "make",
             "buildbottest",
@@ -1326,14 +1333,18 @@ class AndroidBuild(BaseBuild):
     """Build Python for Android on a Linux or Mac machine, and test it using a
     Gradle-managed emulator.
 
-    To set up a worker, see cpython/Android/README.md, especially the following
-    sections:
+    To set up a worker, see cpython/Platforms/Android/README.md, especially the
+    following sections:
 
     * Install everything listed under "Prerequisites".
     * Do any OS-specific setup mentioned under "Testing".
-    * If the managed emulator appears to be running out of memory, increase
-      its RAM size as described under "Testing".
     """
+
+    # When Gradle is interrupted, e.g. by a master shutdown, it sometimes gets
+    # into a state where it can't start emulators anymore. Work around this by
+    # not reusing Gradle daemons between runs
+    # (https://github.com/python/cpython/pull/155518#issuecomment-5259725142).
+    test_environ = {"GRADLE_OPTS": "-Dorg.gradle.daemon=false"}
 
     def setup(self, **kwargs):
         android_py = ["python3", "Platforms/Android"]
@@ -1381,6 +1392,7 @@ class AndroidBuild(BaseBuild):
             Test(
                 command=android_py + ["test", "--managed", "maxVersion", "-v", "--slow-ci"],
                 timeout=step_timeout(self.test_timeout),
+                env=self.test_environ,
             ),
         ])
 

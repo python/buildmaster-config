@@ -10,7 +10,7 @@
 
 {% macro build_dot(build) -%}
     <a
-        href="#/builders/{{build.builderid}}/builds/{{ build.number }}"
+        href="/#/builders/{{build.builderid}}/builds/{{ build.number }}"
         class="build-dot build-results-{{ build.css_color_class }}"
         title="{{ build_summary(build) }}"
     >
@@ -191,7 +191,7 @@
                                 {% if problem.builder %}
                                     {% set builder = problem.builder %}
                                     <h5>
-                                        <a href="#/builders/{{builder.builderid}}">
+                                        <a href="/#/builders/{{builder.builderid}}">
                                             {{ builder.name -}}
                                         </a>
                                         {% for tag in builder.tags %}

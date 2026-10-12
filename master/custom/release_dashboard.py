@@ -1,6 +1,7 @@
 import contextlib
 import datetime
 import os
+import re
 import time
 from functools import cached_property, total_ordering
 import enum
@@ -48,6 +49,25 @@ def _gimme_error(func):
     return decorated
 
 class _WrappedAttributeError(Exception): pass
+
+
+_PRE_BLOCK_RE = re.compile(r"(<pre\b.*?</pre>)", re.DOTALL)
+
+
+def strip_indentation(html):
+    """Remove line indentation and blank lines, except inside <pre> blocks.
+
+    The template is deeply indented for readability, and that indentation
+    makes up more than half of the rendered page. Browsers collapse
+    whitespace between tags anyway, so this doesn't change how the page
+    renders. Only <pre> content is whitespace-sensitive and is left alone.
+    """
+    parts = _PRE_BLOCK_RE.split(html)
+    for i in range(0, len(parts), 2):
+        lines = map(str.lstrip, parts[i].split("\n"))
+        parts[i] = "\n".join(line for line in lines if line)
+
+    return "\n".join(parts)
 
 
 class DashboardObject:
@@ -777,12 +797,15 @@ class ReleaseDashboard:
     def get_release_status(self):
         state = DashboardState(self)
 
-        return render_template(
-            "releasedashboard.html",
-            state=state,
-            Severity=Severity,
-            generated_at=state.now,
+        return strip_indentation(
+            render_template(
+                "releasedashboard.html",
+                state=state,
+                Severity=Severity,
+                generated_at=state.now,
+            )
         )
+
 
 def get_release_status_app(buildernames=None, **kwargs):
     return ReleaseDashboard(**kwargs).flask_app

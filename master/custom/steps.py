@@ -49,6 +49,10 @@ class Test(BaseTest):
         # Py_FatalError() call
         r"Fatal Python error:",
 
+        # C assert() failed:
+        # "Assertion failed: xxx, function xxx, file xxx, line xxx."
+        r"Assertion failed: .*, function .*, file .*, line",
+
         # PyErr_WriteUnraisable() exception: usually, error in
         # garbage collector or destructor
         r"Exception ignored in:",
@@ -73,6 +77,11 @@ class Test(BaseTest):
 
         # test_os leaked [6, 6, 6] memory blocks, sum=18,
         r"test_[^ ]+ leaked ",
+
+        # Match the first line:
+        # '1 test run no tests:'
+        # '2 tests run no tests:'
+        r"[0-9]+ tests? run no tests:",
 
         # FAIL: test_stdin_broken_pipe (test.test_asyncio...)
         r"FAIL: ",
