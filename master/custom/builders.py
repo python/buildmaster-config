@@ -56,6 +56,7 @@ from custom.factories import (
     WindowsARM64ReleaseBuild,
     Wasm32WasiCrossBuild,
     Wasm32WasiPreview1DebugBuild,
+    Wasm32WasiPlatformDebugBuild,
     IOSARM64SimulatorBuild,
     AndroidBuild,
     EmscriptenBuild,
@@ -281,7 +282,8 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_2}, [
     ("x86-64 MacOS Intel ASAN NoGIL", "itamaro-macos-intel-aws", MacOSAsanNoGilBuild),
 
     # WASI
-    ("wasm32-wasi", "bcannon-wasi", Wasm32WasiPreview1DebugBuild),
+    ("wasm32-wasip1", "bcannon-wasi", Wasm32WasiPreview1DebugBuild),
+    ("wasm32-wasi", "bcannon-wasi", Wasm32WasiPlatformDebugBuild),
 
     # Windows aarch64 MSVC
     ("ARM64 Windows", "ware-win11-arm64", WindowsARM64Build),
