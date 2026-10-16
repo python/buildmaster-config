@@ -979,7 +979,7 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
 # This can go once Wasm32WasiPreview1DebugBuild is removed post-3.15.
 class _Wasm32WasiPreview1Build(UnixBuild):
     """Build Python for wasm32-wasi using Tools/wasm/wasi.py."""
-    buildersuffix = ".wasi"
+    buildersuffix = ".wasip1"
     factory_tags = ["wasm", "wasi"]
     # pydebug and append_suffix defined in subclasses.
 
