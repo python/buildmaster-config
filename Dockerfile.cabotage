@@ -1,0 +1,62 @@
+# Adapted from https://github.com/buildbot/buildbot/raw/refs/heads/master/Dockerfile.master
+
+# Build the environment in an intermediate image, then copy it over to final.
+
+ARG DEBIAN_VERSION="trixie"
+
+FROM --platform=${BUILDPLATFORM} docker.io/library/debian:${DEBIAN_VERSION} AS buildbot-build
+
+RUN \
+    apt-get update && \
+    apt-get -y upgrade && \
+    apt-get -y install --no-install-recommends --no-install-suggests -q \
+        ca-certificates \
+        curl \
+        make \
+        git \
+        build-essential \
+        python3-dev \
+        virtualenv \
+        libpq-dev \
+        && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy requirements separately to avoid unnecessary rebuilds.
+COPY requirements*.txt /srv/buildbot/
+
+RUN virtualenv --python=python3 /srv/buildbot/venv && \
+    /srv/buildbot/venv/bin/pip3 install -r /srv/buildbot/requirements-*.txt
+
+COPY . /srv/buildbot
+
+# Copy docker-specific config into place
+COPY docker/buildbot.tac /srv/buildbot/master/buildbot.tac
+COPY docker/start_buildbot.sh /srv/buildbot/start_buildbot.sh
+
+
+#==============================================================================
+# Build the final image here.  Use build artifacts from the buildbot-build
+# container.
+
+FROM docker.io/library/debian:${DEBIAN_VERSION}-slim AS buildbot-master
+
+RUN \
+    apt-get update && \
+    apt-get -y upgrade && \
+    apt-get -y install -q \
+        curl \
+        dumb-init \
+        git \
+        libpq5 \
+        libcairo2 \
+        openssh-client \
+        python3 \
+        tar \
+        tzdata \
+        && \
+    rm -rf /var/lib/apt/lists
+
+COPY --from=buildbot-build /srv/buildbot /srv/buildbot
+
+WORKDIR /srv/buildbot
+CMD ["dumb-init", "/srv/buildbot/start_buildbot.sh"]
