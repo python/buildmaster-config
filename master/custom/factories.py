@@ -991,9 +991,7 @@ class _Wasm32WasiPreview1Build(UnixBuild):
             # The debug buildbot is meant for 3.13+, where WASM is tier 2.
             # This builder is only needed up to 3.15 as that's the last version
             # using wasm32-wasip1.
-            floor = BRANCHES.only_since(3, 13)
-            ceiling = BRANCHES.only_until(3, 15)
-            self.branches = BranchSet([*floor, *ceiling])
+            self.branches = BRANCHES.only_since(3, 13).only_until(3, 15)
         else:
             # The non-debug WASI buildbot is meant for 3.11 and 3.12 only.
             # Don't use it on PRs; it's tier 3 only and getting it to
