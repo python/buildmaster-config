@@ -22,6 +22,9 @@ DEFAULTS = dict(
 )
 
 
+_WARNINGS = {*()}
+
+
 class Settings:
 
     value = ...
@@ -66,10 +69,12 @@ class Settings:
     def _convert(self, func, default):
         if self.value is not ...:
             return func(self.value)
-        default = DEFAULTS.get(".".join(map(str, self.path)), default)
-        if not os.getenv("CI"):
+        path = ".".join(map(str, self.path))
+        default = DEFAULTS.get(path, default)
+        if not os.getenv('CI') and path not in _WARNINGS:
             # Note: We use log.err to make this show up during `checkconfig`
-            log.err(f"WARNING: No setting at {self.path}, returning {default}")
+            log.err(f"WARNING: No setting at {path}, returning {default}")
+            _WARNINGS.add(path)
         return func(default)
 
     def __int__(self):
