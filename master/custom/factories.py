@@ -253,6 +253,7 @@ class UnixInstalledBuild(BaseBuild):
         test = [installed_python,
                 *self.interpreterFlags,
                 "-m", "test",
+                "--slow-ci",
                 *testopts,
                 f'--timeout={self.test_timeout}',
                 ]
@@ -620,13 +621,14 @@ class MacOSArmWithBrewNoGilRefleakBuild(UnixNoGilRefleakBuild):
     ]
 
 
-class MacOSAsanNoGilBuild(UnixAsanNoGilBuild):
+class MacOSIntelAsanNoGilBuild(UnixAsanNoGilBuild):
+    # Intel (x86_64) Mac: Homebrew's prefix is /usr/local, not /opt/homebrew.
     buildersuffix = ".macos-with-brew.asan.nogil"
     configureFlags = UnixAsanNoGilBuild.configureFlags + [
-        "--with-openssl=/opt/homebrew/opt/openssl@3",
-        "CPPFLAGS=-I/opt/homebrew/include",
-        "LDFLAGS=-L/opt/homebrew/lib",
-        "PKG_CONFIG_PATH=/opt/homebrew/opt/tcl-tk@8/lib/pkgconfig",
+        "--with-openssl=/usr/local/opt/openssl@3",
+        "CPPFLAGS=-I/usr/local/include",
+        "LDFLAGS=-L/usr/local/lib",
+        "PKG_CONFIG_PATH=/usr/local/opt/tcl-tk@8/lib/pkgconfig",
     ]
     asan_options = 'detect_leaks=0:allocator_may_return_null=1:handle_segv=0'
     compile_environ = {'ASAN_OPTIONS': asan_options}
@@ -976,9 +978,10 @@ class Wasm32WasiCrossBuild(UnixCrossBuild):
         super().setup(branch, worker, test_with_PTY=test_with_PTY, **kwargs)
 
 
+# This can go once Wasm32WasiPreview1DebugBuild is removed post-3.15.
 class _Wasm32WasiPreview1Build(UnixBuild):
     """Build Python for wasm32-wasi using Tools/wasm/wasi.py."""
-    buildersuffix = ".wasi"
+    buildersuffix = ".wasip1"
     factory_tags = ["wasm", "wasi"]
     # pydebug and append_suffix defined in subclasses.
 
@@ -987,8 +990,10 @@ class _Wasm32WasiPreview1Build(UnixBuild):
             extra_tags.append("nondebug")
         self.buildersuffix += self.append_suffix
         if self.pydebug:
-            # The debug buildbot is meant for 3.13+, where WASM is tier 2
-            self.branches = BRANCHES.only_since(3, 13)
+            # The debug buildbot is meant for 3.13+, where WASM is tier 2.
+            # This builder is only needed up to 3.15 as that's the last version
+            # using wasm32-wasip1.
+            self.branches = BRANCHES.only_since(3, 13).only_until(3, 15)
         else:
             # The non-debug WASI buildbot is meant for 3.11 and 3.12 only.
             # Don't use it on PRs; it's tier 3 only and getting it to
@@ -1076,12 +1081,115 @@ class _Wasm32WasiPreview1Build(UnixBuild):
         )
 
 
-# Preventing this from running on versions older than 3.13 is managed in
-# workers.py.
+# Only needed for Python 3.13 - Python 3.15.
 class Wasm32WasiPreview1DebugBuild(_Wasm32WasiPreview1Build):
     append_suffix = ".debug"
     pydebug = True
     testFlags = ["-u-cpu"]
+
+
+class Wasm32WasiPlatformDebugBuild(UnixBuild):
+    factory_tags = ["wasm", "wasi"]
+    buildersuffix = ".wasi"
+    pydebug = True
+    append_suffix = ".debug"
+
+    testFlags = ["-u-cpu"]
+
+    def __init__(self, source, *, extra_tags=[], **kwargs):
+        if self.pydebug:
+            self.buildersuffix += self.append_suffix
+        # `Platforms/WASI` was introduced in Python 3.15.
+        # `Platforms/WASI path` was introduced in Python 3.16.
+        self.branches = BRANCHES.only_since(3, 16)
+        super().__init__(source, extra_tags=extra_tags, **kwargs)
+
+    def setup(self, branch, worker, test_with_PTY=False, **kwargs):
+        wasi_py = "Platforms/WASI"
+        self.addStep(
+            SetPropertyFromCommand(
+                name="Determine WASI host path",
+                command=["python3", wasi_py, "path"],
+                property="wasi_host_path",
+                haltOnFailure=True,
+            )
+        )
+
+        # Build Python
+        build_configure = ["python3", wasi_py, "configure-build-python"]
+        if self.pydebug:
+            build_configure.extend(["--", "--with-pydebug"])
+        self.addStep(
+            Configure(
+                name="Configure build Python",
+                command=build_configure,
+            )
+        )
+        self.addStep(
+            Compile(
+                name="Compile build Python",
+                command=["python3", wasi_py, "make-build-python"],
+            )
+        )
+        self.addStep(
+            PythonInfo(
+                name="Display build info of the build Python",
+                command=["python3", wasi_py, "pythoninfo-build"],
+            )
+        )
+
+        # Host/WASI Python
+        self.addStep(
+            # Pydebug build automatically inferred from build Python.
+            Configure(
+                name="Configure host Python",
+                command=["python3", wasi_py, "configure-host"],
+            )
+        )
+        self.addStep(
+            Compile(
+                name="Compile host Python",
+                command=["python3", wasi_py, "make-host"],
+            )
+        )
+
+        self.addStep(
+            PythonInfo(
+                name="Display build info of the host/WASI Python",
+                command=["python3", wasi_py, "pythoninfo-host"],
+            )
+        )
+
+        # Copied from UnixBuild.
+        testopts = self.create_test_opts(branch, worker)
+        test = [
+            "make",
+            "buildbottest",
+            "TESTOPTS=" + " ".join(testopts) + " ${BUILDBOT_TESTOPTS}",
+            f"TESTPYTHONOPTS={self.interpreterFlags}",
+            f"TESTTIMEOUT={self.test_timeout}",
+        ]
+        self.addStep(
+            Test(
+                command=test,
+                timeout=step_timeout(self.test_timeout),
+                usePTY=test_with_PTY,
+                env=self.test_environ,
+                workdir=util.Property("wasi_host_path"),
+            )
+        )
+        if not branch.is_pr and not has_option("-R", self.testFlags):
+            filename = util.Interpolate(
+                f"%(prop:wasi_host_path)s/{JUNIT_FILENAME}"
+            )
+            self.addStep(UploadTestResults(branch, filename=filename))
+
+        self.addStep(
+            Clean(
+                name="Clean the builds",
+                command=["python3", wasi_py, "clean"],
+            )
+        )
 
 
 ##############################################################################
@@ -1414,6 +1522,7 @@ class ValgrindBuild(UnixBuild):
         "--without-pymalloc",
     ]
     testFlags = [
+        "--single-process",
         "test_grammar",
         "test_syntax",
         "test_tokenize",
@@ -1451,6 +1560,7 @@ class ValgrindBuild(UnixBuild):
             util.Interpolate("--suppressions=%(prop:builddir)s/build/Misc/valgrind-python.supp"),
             "./python",
             "-m", "test",
+            "--slow-ci",
             *self.testFlags,
             f"--timeout={self.test_timeout}",
         ]

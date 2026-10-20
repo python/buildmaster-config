@@ -15,7 +15,7 @@
 ## Private settings
 
 The production server uses /etc/buildbot/settings.yaml configuration file which
-contains secrets like the IRC nickname password.
+contains necessary secrets and other configuration.
 
 ## Update requirements
 

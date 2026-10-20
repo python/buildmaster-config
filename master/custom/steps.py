@@ -78,6 +78,11 @@ class Test(BaseTest):
         # test_os leaked [6, 6, 6] memory blocks, sum=18,
         r"test_[^ ]+ leaked ",
 
+        # Match the first line:
+        # '1 test run no tests:'
+        # '2 tests run no tests:'
+        r"[0-9]+ tests? run no tests:",
+
         # FAIL: test_stdin_broken_pipe (test.test_asyncio...)
         r"FAIL: ",
 

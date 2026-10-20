@@ -8,4 +8,7 @@ treq
 sentry-sdk
 # buildbot depends on SQLAlchemy, but we add the extra here to ensure the
 # correct leaf dependencies
-SQLAlchemy[postgresql]
+# XXX: The 2.1 series seems a bit fresher than we really want right now.  Stick
+#      to 2.0.x for now, and watch the dependencies when we do update.  We might
+#      have to specify `postgresql-psycopgbinary`
+SQLAlchemy[postgresql]<2.1
