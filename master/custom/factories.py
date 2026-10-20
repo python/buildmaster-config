@@ -10,7 +10,7 @@ from buildbot.steps.shell import (
 from buildbot.plugins import util
 
 from . import JUNIT_FILENAME
-from .branches import BRANCHES, BranchSet
+from .branches import BRANCHES
 from .steps import (
     Test,
     Clean,
