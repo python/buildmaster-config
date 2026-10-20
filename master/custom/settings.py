@@ -8,10 +8,6 @@ from twisted.python import log
 DEFAULTS = dict(
     web_port=9011,
     worker_port=9021,
-    irc_notice=False,
-    irc_host="irc.libera.chat",
-    irc_channel="#python-dev-notifs",
-    irc_nick="py-bb-test",
     buildbot_url="http://localhost:9011/",
     db_url="sqlite:///state.sqlite",
     do_auth=False,

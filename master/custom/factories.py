@@ -620,13 +620,14 @@ class MacOSArmWithBrewNoGilRefleakBuild(UnixNoGilRefleakBuild):
     ]
 
 
-class MacOSAsanNoGilBuild(UnixAsanNoGilBuild):
+class MacOSIntelAsanNoGilBuild(UnixAsanNoGilBuild):
+    # Intel (x86_64) Mac: Homebrew's prefix is /usr/local, not /opt/homebrew.
     buildersuffix = ".macos-with-brew.asan.nogil"
     configureFlags = UnixAsanNoGilBuild.configureFlags + [
-        "--with-openssl=/opt/homebrew/opt/openssl@3",
-        "CPPFLAGS=-I/opt/homebrew/include",
-        "LDFLAGS=-L/opt/homebrew/lib",
-        "PKG_CONFIG_PATH=/opt/homebrew/opt/tcl-tk@8/lib/pkgconfig",
+        "--with-openssl=/usr/local/opt/openssl@3",
+        "CPPFLAGS=-I/usr/local/include",
+        "LDFLAGS=-L/usr/local/lib",
+        "PKG_CONFIG_PATH=/usr/local/opt/tcl-tk@8/lib/pkgconfig",
     ]
     asan_options = 'detect_leaks=0:allocator_may_return_null=1:handle_segv=0'
     compile_environ = {'ASAN_OPTIONS': asan_options}

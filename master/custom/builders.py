@@ -21,7 +21,7 @@ from custom.factories import (
     UnixRefleakBuild,
     UnixNoGilBuild,
     UnixNoGilRefleakBuild,
-    MacOSAsanNoGilBuild,
+    MacOSIntelAsanNoGilBuild,
     ClangUnixBuild,
     ClangUbsanLinuxBuild,
     ClangUbsanFunctionLinuxBuild,
@@ -279,7 +279,7 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_2}, [
     # macOS x86-64 clang
     ("x86-64 macOS", "billenstein-macos", UnixBuild),
     ("x86-64 MacOS Intel NoGIL", "itamaro-macos-intel-aws", UnixNoGilBuild),
-    ("x86-64 MacOS Intel ASAN NoGIL", "itamaro-macos-intel-aws", MacOSAsanNoGilBuild),
+    ("x86-64 MacOS Intel ASAN NoGIL", "itamaro-macos-intel-aws", MacOSIntelAsanNoGilBuild),
 
     # WASI
     ("wasm32-wasip1", "bcannon-wasi", Wasm32WasiPreview1DebugBuild),
