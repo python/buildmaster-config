@@ -2,6 +2,7 @@ PYTHON_VERSION=3.13
 SYSTEM_PYTHON=python$(PYTHON_VERSION)
 VENV_DIR=./venv
 REQUIREMENTS=requirements-$(PYTHON_VERSION).txt
+PYTHON=$(VENV_DIR)/bin/python
 PIP=$(VENV_DIR)/bin/pip
 BUILDBOT=$(VENV_DIR)/bin/buildbot
 VENV_CHECK=$(VENV_DIR)/lib/python$(PYTHON_VERSION)/site-packages/buildbot/master.py
@@ -37,6 +38,12 @@ regen-requirements:
 ## check             Validate buildbot master configuration
 check: $(VENV_CHECK)
 	$(BUILDBOT) checkconfig master
+
+
+## report [OPTS=...] Print out a summary of the current configuration
+.PHONY: report
+report: $(VENV_CHECK)
+	$(PYTHON) -m utils.config_report $(OPTS)
 
 # Management targets
 
