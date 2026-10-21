@@ -26,3 +26,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Check configuration
         run: make check PIP=pip BUILDBOT=buildbot PYTHON_VERSION=${{ matrix.python-version }}
+      - name: Compare configuration reports
+        run: |
+          # Use the same formatter for both configurations, including older main revisions.
+          python -m utils.config_report -vvv > "$RUNNER_TEMP/branch_report"
+          git fetch --depth=1 origin main
+          git checkout FETCH_HEAD master/
+          python -m utils.config_report -vvv > "$RUNNER_TEMP/main_report"
+          git diff -U10 --color=always --no-index "$RUNNER_TEMP/main_report" "$RUNNER_TEMP/branch_report" || test "$?" -eq 1
