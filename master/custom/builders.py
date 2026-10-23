@@ -52,8 +52,6 @@ from custom.factories import (
     MacOSArmWithBrewBuild,
     MacOSArmWithBrewNoGilBuild,
     MacOSArmWithBrewNoGilRefleakBuild,
-    WindowsARM64Build,
-    WindowsARM64ReleaseBuild,
     Wasm32WasiCrossBuild,
     Wasm32WasiPreview1DebugBuild,
     Wasm32WasiPlatformDebugBuild,
@@ -286,8 +284,8 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_2}, [
     ("wasm32-wasi", "bcannon-wasi", Wasm32WasiPlatformDebugBuild),
 
     # Windows aarch64 MSVC
-    ("ARM64 Windows", "ware-win11-arm64", WindowsARM64Build),
-    ("ARM64 Windows Non-Debug", "ware-win11-arm64", WindowsARM64ReleaseBuild),
+    ("ARM64 Windows", "ware-win11-arm64", factories.WindowsARM64Build),
+    ("ARM64 Windows Non-Debug", "ware-win11-arm64", factories.WindowsARM64ReleaseBuild),
 
 ]))
 
@@ -473,6 +471,10 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_2}, [
 
     # WebAssembly
     ("wasm32 WASI 8Core", "kushaldas-wasi", Wasm32WasiCrossBuild),
+
+    # Windows aarch64 MSVC
+    ("ARM64 Windows Refleaks", "ware-win11-arm64", factories.WindowsARM64RefleakBuild),
+    ("ARM64 Windows PGO", "ware-win11-arm64", factories.WindowsARM64PGOBuild),
 ]))
 
 
