@@ -1606,6 +1606,7 @@ class EmscriptenBuild(BaseBuild):
     def setup(self, **kwargs):
         compile_environ = {
             "EMSDK_CACHE": "/home/emscripten/emsdk-versions",
+            "PY_EMSDK_CACHE": "/home/emscripten/emsdk-versions",
         }
 
         self.addSteps([
