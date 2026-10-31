@@ -15,6 +15,12 @@ TRACEBACK_REGEX = re.compile(
 
 LEAKS_REGEX = re.compile(r"(test_\w+) leaked \[.*] (.*),.*", re.MULTILINE)
 
+ANSI_ESCAPE_REGEX = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
+
+
+def strip_ansi(text):
+    return ANSI_ESCAPE_REGEX.sub("", text)
+
 
 class Logs:
     def __init__(self, raw_logs):
@@ -124,6 +130,7 @@ def construct_tracebacks_from_build_stderr(build):
         test_log = "\n".join(
             [line.lstrip("e") for line in test_log.splitlines() if line.startswith("e")]
         )
+        test_log = strip_ansi(test_log)
         if not test_log:
             continue
         yield test_log
@@ -135,6 +142,7 @@ def get_logs_and_tracebacks_from_build(build):
         test_step = [step for step in build["steps"] if step["name"] == TESTS_STEP][0]
         test_log = test_step["logs"][0]["content"]["content"]
         test_log = "\n".join([line.lstrip("eo") for line in test_log.splitlines()])
+        test_log = strip_ansi(test_log)
     except IndexError:
         pass
     logs = Logs(test_log)
