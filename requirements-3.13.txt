@@ -44,7 +44,7 @@ setuptools==84.0.0
 six==1.17.0
 SQLAlchemy==2.0.54
 treq==26.7.0
-Twisted==26.4.0
+Twisted==26.10.0rc1
 txaio==26.6.1
 typing_extensions==4.16.0
 ujson==6.0.0
