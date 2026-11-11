@@ -1,4 +1,5 @@
 buildbot[bundle,tls]
+buildbot_wsgi_dashboards
 # XXX: Temporary specifications until 4.4.0 is properly released
 buildbot[bundle,tls] @ https://github.com/buildbot/buildbot/releases/download/v4.4.0rc1/buildbot-4.4.0rc1-py3-none-any.whl
 buildbot_console_view @ https://github.com/buildbot/buildbot/releases/download/v4.4.0rc1/buildbot_console_view-4.4.0rc1-py3-none-any.whl
