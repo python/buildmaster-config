@@ -1,7 +1,8 @@
 .release_status {
     --none-color: #888;
 
-    background-color: white;
+    background-color: var(--card-color);
+    color: var(--text-color);
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
@@ -21,10 +22,10 @@
         font-size: 87.5%;
     }
     a {
-        color: #007bff;
+        color: var(--link-color);
         text-decoration: none;
         &:hover {
-            color: #0056b3;
+            color: var(--link-hover-color);
             text-decoration: underline;
         }
     }
@@ -144,7 +145,7 @@
 
         .panel-body {
             padding: 10px;
-            background-color: white;
+            background-color: var(--background-color);
             text-align: center;
             flex-grow: 2;
         }
@@ -208,16 +209,20 @@
             height: 1rem;
             box-sizing: border-box;
             background-color: var(--pill-bg-color);
-            color: var(--pill-text-color);
             font-size: .75rem;
             line-height: 1rem;
             border-radius: .5rem;
             padding: 0 0 .4rem;
             text-align: center;
             vertical-align: .125rem;
-            &.build-results-success { background-color: var(--success-color); color: white; }
+            &.build-results-success { background-color: var(--success-color); }
             &.build-results-warning { background-color: var(--warning-color-bg); }
-            &.build-results-danger { background-color: var(--danger-color); color: white; }
+            &.build-results-danger { background-color: var(--danger-color); }
+            :is(#root, html) & {
+                color: var(--pill-text-color);
+                &.build-results-success, &.build-results-danger { color: white; }
+                &.build-results-warning { color: #333; }
+            }
         }
         .tag {
             display: inline-block;
@@ -250,27 +255,38 @@
                 padding: .5rem;
                 border-radius: .25rem;
                 margin-right: 1rem;
-                background-color: var(--pill-bg-color);
-                border: 1px solid rgba(0, 0, 0, .2);
+                background-color: var(--background-color);
+                border: 1px solid var(--border-color);
                 box-shadow: rgba(0, 0, 0, .2) 0px 1px 2px -1px inset;
             }
         }
     }
 }
 
+/* When embedded in the Buildbot UI, its Light/Dark theme setting puts
+   --bb-* variables on <html>; follow them, with light-dark() fallbacks for
+   the page served standalone (which follows the OS colour scheme instead). */
 :root {
-    --primary-color: #306998;
-    --secondary-color: #FFD43B;
-    --background-color: #f4f4f4;
-    --text-color: #333;
+    --primary-color: var(--bb-link-color, light-dark(#306998, #79b8e8));
+    --background-color: var(--bb-background-color, light-dark(#fff, #1e1e2e));
+    --card-color: var(--bb-card-bg-color, light-dark(#f5f5f5, #2a2a3c));
+    --text-color: var(--bb-text-color, light-dark(#333, #d4d4d8));
+    --border-color: var(--bb-border-color, light-dark(rgba(0, 0, 0, .2), #3a3a4c));
+    --link-color: var(--bb-link-color, light-dark(#007bff, #79b8e8));
+    --link-hover-color: color-mix(in srgb, var(--link-color) 75%, var(--text-color));
     --success-color: #4CAF60;
     --warning-color: #C2870F;
     --warning-color-bg: #E4B615; /* nicer "traffic light" amber , but not enough contrast for text */
     --danger-color: #f44336;
-    --pill-bg-color: #e0e0e0;
-    --pill-text-color: #333;
-    --pill-hover-bg-color: #306998;
-    --pill-hover-text-color: #ffffff;
+    --pill-bg-color: var(--bb-border-color, light-dark(#e0e0e0, #3a3a4c));
+    --pill-text-color: var(--bb-text-color, light-dark(#333, #d4d4d8));
+
+    /* Only when served standalone (the Buildbot UI mounts in #root), so the
+       UI's own theme is left alone: lets light-dark() and browser-drawn
+       chrome follow the OS colour scheme. */
+    &:not(:has(#root)) {
+        color-scheme: light dark;
+    }
 }
 
 body {
