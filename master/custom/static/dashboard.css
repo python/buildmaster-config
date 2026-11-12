@@ -209,16 +209,20 @@
             height: 1rem;
             box-sizing: border-box;
             background-color: var(--pill-bg-color);
-            color: var(--pill-text-color);
             font-size: .75rem;
             line-height: 1rem;
             border-radius: .5rem;
             padding: 0 0 .4rem;
             text-align: center;
             vertical-align: .125rem;
-            &.build-results-success { background-color: var(--success-color); color: white; }
+            &.build-results-success { background-color: var(--success-color); }
             &.build-results-warning { background-color: var(--warning-color-bg); }
-            &.build-results-danger { background-color: var(--danger-color); color: white; }
+            &.build-results-danger { background-color: var(--danger-color); }
+            :is(#root, html) & {
+                color: var(--pill-text-color);
+                &.build-results-success, &.build-results-danger { color: white; }
+                &.build-results-warning { color: #333; }
+            }
         }
         .tag {
             display: inline-block;
@@ -251,7 +255,7 @@
                 padding: .5rem;
                 border-radius: .25rem;
                 margin-right: 1rem;
-                background-color: var(--pill-bg-color);
+                background-color: var(--background-color);
                 border: 1px solid var(--border-color);
                 box-shadow: rgba(0, 0, 0, .2) 0px 1px 2px -1px inset;
             }
@@ -265,8 +269,8 @@
 :root {
     --primary-color: var(--bb-link-color, #306998);
     --secondary-color: #FFD43B;
-    --background-color: var(--bb-background-color, #f4f4f4);
-    --card-color: var(--bb-card-bg-color, white);
+    --background-color: var(--bb-background-color, #fff);
+    --card-color: var(--bb-card-bg-color, #f5f5f5);
     --text-color: var(--bb-text-color, #333);
     --border-color: var(--bb-border-color, rgba(0, 0, 0, .2));
     --link-color: var(--bb-link-color, #007bff);
@@ -283,6 +287,7 @@
 
 @media (prefers-color-scheme: dark) {
     :root {
+        color-scheme: dark;
         --primary-color: var(--bb-link-color, #79b8e8);
         --background-color: var(--bb-background-color, #1e1e2e);
         --card-color: var(--bb-card-bg-color, #2a2a3c);
