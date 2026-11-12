@@ -1,7 +1,8 @@
 .release_status {
     --none-color: #888;
 
-    background-color: white;
+    background-color: var(--card-color);
+    color: var(--text-color);
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
@@ -21,10 +22,10 @@
         font-size: 87.5%;
     }
     a {
-        color: #007bff;
+        color: var(--link-color);
         text-decoration: none;
         &:hover {
-            color: #0056b3;
+            color: var(--link-hover-color);
             text-decoration: underline;
         }
     }
@@ -144,7 +145,7 @@
 
         .panel-body {
             padding: 10px;
-            background-color: white;
+            background-color: var(--background-color);
             text-align: center;
             flex-grow: 2;
         }
@@ -251,26 +252,46 @@
                 border-radius: .25rem;
                 margin-right: 1rem;
                 background-color: var(--pill-bg-color);
-                border: 1px solid rgba(0, 0, 0, .2);
+                border: 1px solid var(--border-color);
                 box-shadow: rgba(0, 0, 0, .2) 0px 1px 2px -1px inset;
             }
         }
     }
 }
 
+/* When embedded in the Buildbot UI, its Light/Dark theme setting puts
+   --bb-* variables on <html>; follow them, with fallbacks for the page
+   served standalone (which follows the OS colour scheme instead). */
 :root {
-    --primary-color: #306998;
+    --primary-color: var(--bb-link-color, #306998);
     --secondary-color: #FFD43B;
-    --background-color: #f4f4f4;
-    --text-color: #333;
+    --background-color: var(--bb-background-color, #f4f4f4);
+    --card-color: var(--bb-card-bg-color, white);
+    --text-color: var(--bb-text-color, #333);
+    --border-color: var(--bb-border-color, rgba(0, 0, 0, .2));
+    --link-color: var(--bb-link-color, #007bff);
+    --link-hover-color: color-mix(in srgb, var(--link-color) 75%, var(--text-color));
     --success-color: #4CAF60;
     --warning-color: #C2870F;
     --warning-color-bg: #E4B615; /* nicer "traffic light" amber , but not enough contrast for text */
     --danger-color: #f44336;
-    --pill-bg-color: #e0e0e0;
-    --pill-text-color: #333;
+    --pill-bg-color: var(--bb-border-color, #e0e0e0);
+    --pill-text-color: var(--bb-text-color, #333);
     --pill-hover-bg-color: #306998;
     --pill-hover-text-color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-color: var(--bb-link-color, #79b8e8);
+        --background-color: var(--bb-background-color, #1e1e2e);
+        --card-color: var(--bb-card-bg-color, #2a2a3c);
+        --text-color: var(--bb-text-color, #d4d4d8);
+        --border-color: var(--bb-border-color, #3a3a4c);
+        --link-color: var(--bb-link-color, #79b8e8);
+        --pill-bg-color: var(--bb-border-color, #3a3a4c);
+        --pill-text-color: var(--bb-text-color, #d4d4d8);
+    }
 }
 
 body {
