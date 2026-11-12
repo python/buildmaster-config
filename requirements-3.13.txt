@@ -1,16 +1,16 @@
 alembic==1.20.1
 attrs==26.1.0
-autobahn==26.10.2
+autobahn==26.11.1
 Automat==25.4.16
 blinker==1.9.0
-buildbot==4.3.0
-buildbot-console-view==4.3.0
-buildbot-grid-view==4.3.0
-buildbot-waterfall-view==4.3.0
-buildbot-worker==4.3.0
-buildbot-wsgi-dashboards==4.3.0
-buildbot-www==4.3.0
-cbor2==6.1.5
+buildbot @ https://github.com/buildbot/buildbot/releases/download/v4.4.0rc1/buildbot-4.4.0rc1-py3-none-any.whl#sha256=c37979b2d5446987961314382684f8aca444d92ba0f8d1393ae5eaf4032c1247
+buildbot-console-view @ https://github.com/buildbot/buildbot/releases/download/v4.4.0rc1/buildbot_console_view-4.4.0rc1-py3-none-any.whl#sha256=f376493f086ff75f8403d9fa5dbb1ad5783595d0d4d450244bbda72dc6d85b69
+buildbot-grid-view @ https://github.com/buildbot/buildbot/releases/download/v4.4.0rc1/buildbot_grid_view-4.4.0rc1-py3-none-any.whl#sha256=04c20b71eff71e16d638bad0ec0aee217dffb6149926866c3a1d07218f7cdcbc
+buildbot-waterfall-view @ https://github.com/buildbot/buildbot/releases/download/v4.4.0rc1/buildbot_waterfall_view-4.4.0rc1-py3-none-any.whl#sha256=0fbb4df5ead35752ec688132e3db5dc02b101d2ee5a736bc2f88e00c01c84f6b
+buildbot-worker @ https://github.com/buildbot/buildbot/releases/download/v4.4.0rc1/buildbot_worker-4.4.0rc1-py3-none-any.whl#sha256=d380e46ffeb1ee478daef0e2b6b53a24c81791e57bceb0aa0003329cb066a268
+buildbot-wsgi-dashboards @ https://github.com/buildbot/buildbot/releases/download/v4.4.0rc1/buildbot_wsgi_dashboards-4.4.0rc1-py3-none-any.whl#sha256=ee0cfade5c8994b645d7588d232c7125664e98e5712408e82f44961a7c054308
+buildbot-www @ https://github.com/buildbot/buildbot/releases/download/v4.4.0rc1/buildbot_www-4.4.0rc1-py3-none-any.whl#sha256=01e520eb9b1ab3a7a083f17f7ccfc0c7d117b4bcdc727caa8afaf6f72077d21b
+cbor2==6.2.0.post2
 certifi==2026.10.23
 cffi==2.1.1
 charset-normalizer==3.5.2
@@ -23,6 +23,7 @@ greenlet==3.5.6
 humanize==4.16.0
 hyperlink==21.0.0
 idna==3.20
+importlib_metadata==10.1.0
 Incremental==24.11.0
 itsdangerous==2.2.0
 Jinja2==3.1.6
@@ -35,21 +36,20 @@ psycopg2==2.9.13
 pycparser==3.12
 PyJWT==2.15.1
 pyOpenSSL==26.4.0
-python-dateutil==3.0.0
+python-dateutil==4.0.0
 PyYAML==6.0.3
 requests==2.34.2
 sentry-sdk==2.73.0
 service-identity==26.1.0
-setuptools==84.2.1
-six==1.17.0
-SQLAlchemy==2.0.55
+SQLAlchemy==2.0.57
 treq==26.7.0
 Twisted==26.10.0
 txaio==26.6.1
 typing_extensions==4.16.0
 tzdata==2026.6
-ujson==6.0.0
+ujson==6.1.0
 unidiff==1.0.1
 urllib3==2.8.0
 Werkzeug==3.1.9
+zipp==4.1.2
 zope.interface==8.7
