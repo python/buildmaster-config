@@ -71,7 +71,7 @@ class BaseBuild(factory.BuildFactory):
         }
 
     def create_test_opts(self, branch, worker):
-        testopts = [*self.testFlags, *get_j_opts(worker, 2)]
+        testopts = [*self.testFlags, *get_j_opts(worker)]
         if (
             not has_option("-R", self.testFlags)
             and 'installed' not in self.factory_tags
