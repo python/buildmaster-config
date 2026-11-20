@@ -20,6 +20,7 @@ import humanize
 
 from buildbot.data.resultspec import Filter
 import buildbot.process.results
+from werkzeug.exceptions import ServiceUnavailable
 
 N_BUILDS = 200
 MAX_CHANGES = 50
@@ -739,8 +740,7 @@ class ReleaseDashboard:
     def __init__(self, test_result_dir=None):
         self.flask_app = Flask("test", root_path=os.path.dirname(__file__))
         self.cache = None
-
-        self._refresh_branch_info()
+        self.branch_info = {}
 
         self.flask_app.jinja_env.add_extension('jinja2.ext.loopcontrols')
         self.flask_app.jinja_env.undefined = jinja2.StrictUndefined
@@ -791,8 +791,13 @@ class ReleaseDashboard:
             return full_name.split()[0]
 
     def _refresh_branch_info(self):
-        with urllib.request.urlopen(BRANCHES_URL) as file:
-            self.branch_info = json.load(file)
+        try:
+            with urllib.request.urlopen(BRANCHES_URL, timeout=2) as file:
+                self.branch_info = json.load(file)
+        except (OSError, ValueError):
+            self.flask_app.logger.warning('Could not refresh release branch data', exc_info=True)
+        if not self.branch_info:
+            raise ServiceUnavailable('Release branch data is not yet available.', retry_after=5)
 
     def get_release_status(self):
         state = DashboardState(self)
