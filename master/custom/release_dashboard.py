@@ -191,9 +191,6 @@ class Builder(DashboardObject):
             order=["-complete_at"],
             filters=[Filter("complete", "eq", ["True"])],
         )
-        builds = []
-        for info in infos:
-            builds.append(Build(self, info))
         return [Build(self, info) for info in infos]
 
     @cached_property
