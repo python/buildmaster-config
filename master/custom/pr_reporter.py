@@ -231,8 +231,9 @@ buildid), logLevel=logging.INFO)
         payload = {"body": message}
         headers = yield self._get_auth_header(props)
 
-        return self._http.post(
+        response = yield self._http.post(
             "/".join(["/repos", repo_user, repo_name, "issues", issue, "comments"]),
             json=payload,
             headers=headers,
         )
+        return response
