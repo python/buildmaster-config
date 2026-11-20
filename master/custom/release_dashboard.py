@@ -741,13 +741,13 @@ class ReleaseDashboard:
         self.flask_app = Flask("test", root_path=os.path.dirname(__file__))
         self.cache = None
         self.branch_info = {}
-        self.refresh_lock = threading.Lock()
-        self.retry_at = 0
 
         self.flask_app.jinja_env.add_extension('jinja2.ext.loopcontrols')
         self.flask_app.jinja_env.undefined = jinja2.StrictUndefined
 
-        self.test_result_dir = Path(test_result_dir).resolve() if test_result_dir is not None else None
+        self.test_result_dir = Path(test_result_dir).resolve()
+        self.refresh_lock = threading.Lock()
+        self.retry_at = 0
 
         @self.flask_app.route('/')
         @self.flask_app.route("/index.html")
@@ -806,12 +806,7 @@ class ReleaseDashboard:
 
     def _refresh(self, stylesheet_url):
         try:
-            try:
-                self._refresh_branch_info()
-            except (OSError, ValueError):
-                self.flask_app.logger.warning('Could not refresh release branch data', exc_info=True)
-            if not self.branch_info:
-                raise ValueError('Release branch data is unavailable')
+            self._refresh_branch_info()
             with self.flask_app.app_context():
                 result = self.get_release_status(stylesheet_url)
             self.cache = (result, time.monotonic() + CACHE_DURATION)
