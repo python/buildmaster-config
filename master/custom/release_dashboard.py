@@ -791,7 +791,7 @@ class ReleaseDashboard:
             return full_name.split()[0]
 
     def _refresh_branch_info(self):
-        with urllib.request.urlopen(BRANCHES_URL) as file:
+        with urllib.request.urlopen(BRANCHES_URL, timeout=10) as file:
             self.branch_info = json.load(file)
 
     def get_release_status(self):
