@@ -750,7 +750,11 @@ class ReleaseDashboard:
         @self.flask_app.route('/')
         @self.flask_app.route("/index.html")
         def main():
-            force_refresh = request.args.get("refresh", "").lower() in {"1", "yes", "true"}
+            force_refresh = (
+                request.args.get("refresh", "").lower() in {"1", "yes", "true"}
+                and request.remote_addr in {'127.0.0.1', '::1'}
+                and not request.headers.get('X-Forwarded-For')
+            )
 
             if self.cache is not None and not force_refresh:
                 result, deadline = self.cache
