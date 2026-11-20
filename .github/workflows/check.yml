@@ -26,6 +26,8 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Check configuration
         run: make check PIP=pip BUILDBOT=buildbot PYTHON_VERSION=${{ matrix.python-version }}
+      - name: Check custom components
+        run: PYTHONPATH=master python -m unittest discover -s tests
       - name: Compare configuration reports
         run: |
           # Use the same formatter for both configurations, including older main revisions.

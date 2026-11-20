@@ -461,8 +461,13 @@ class Build(DashboardObject):
             if not filepath.is_file():
                 return None
 
-            with filepath.open() as file:
-                etree = ElementTree.parse(file)
+            result = JunitResult(self, {})
+            with filepath.open('rb') as file:
+                for _, element in ElementTree.iterparse(file, events=('end',)):
+                    if element.tag == 'testcase':
+                        if element.find('error') is not None:
+                            result.add(element)
+                        element.clear()
 
         # We don't have a logger set up, this returns None on common failures
         # (meaning failures won't show on the dashboard).
@@ -472,9 +477,6 @@ class Build(DashboardObject):
         except ElementTree.ParseError as e:
             return None
 
-        result = JunitResult(self, {})
-        for element in etree.iterfind('.//error/..'):
-            result.add(element)
         return result
 
     @cached_property
