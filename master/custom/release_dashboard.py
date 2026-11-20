@@ -34,14 +34,6 @@ CACHE_DURATION = 6 * 60
 BRANCHES_URL = "https://peps.python.org/api/release-cycle.json"
 
 
-def _is_local_refresh():
-    return (
-        request.args.get("refresh", "").lower() in {"1", "yes", "true"}
-        and request.remote_addr in {'127.0.0.1', '::1'}
-        and not request.headers.get('X-Forwarded-For')
-    )
-
-
 def _gimme_error(func):
     """Debug decorator to turn AttributeError into a different Exception
 
@@ -758,7 +750,11 @@ class ReleaseDashboard:
         @self.flask_app.route('/')
         @self.flask_app.route("/index.html")
         def main():
-            force_refresh = _is_local_refresh()
+            force_refresh = (
+                request.args.get("refresh", "").lower() in {"1", "yes", "true"}
+                and request.remote_addr in {'127.0.0.1', '::1'}
+                and not request.headers.get('X-Forwarded-For')
+            )
 
             if self.cache is not None and not force_refresh:
                 result, deadline = self.cache
