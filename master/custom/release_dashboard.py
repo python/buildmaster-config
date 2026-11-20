@@ -468,6 +468,8 @@ class Build(DashboardObject):
                         if element.find('error') is not None:
                             result.add(element)
                         element.clear()
+                    elif element.tag == 'testsuite':
+                        element.clear()
 
         # We don't have a logger set up, this returns None on common failures
         # (meaning failures won't show on the dashboard).
