@@ -335,7 +335,6 @@ BUILDER_DEFS.extend(generate_builderdefs({STABLE, TIER_3}, [
     ("ARM Raspbian", "gps-raspbian", SlowNonDebugUnixBuild15BitDigits),
 
     # Linux armv8 (64-bit) GCC
-    ("ARM64 Raspbian", "stan-raspbian", SlowNonDebugUnixBuild),
     ("ARM64 Raspbian Debug", "savannah-raspbian", SlowDebugUnixBuild),
 
     # FreBSD x86-64 clang
