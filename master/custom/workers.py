@@ -278,16 +278,6 @@ def get_workers(settings):
             branches=BRANCHES.only_since(3, 13),
         ),
         cpw(
-            name="stan-raspbian",
-            tags=['linux', 'unix', 'raspbian', 'debian', 'armv8',
-                  'aarch64', 'arm'],
-            parallel_tests=4,
-            # Tests fail with latin1 encoding on 3.12, probably earlier
-            branches=BRANCHES.only_since(3, 13),
-            # Problematic ISP causes issues connecting to testpython.net
-            exclude_test_resources=['urlfetch', 'network'],
-        ),
-        cpw(
             name="savannah-raspbian",
             tags=['linux', 'unix', 'raspbian', 'debian', 'armv8',
                   'aarch64', 'arm'],
