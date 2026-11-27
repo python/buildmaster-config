@@ -508,6 +508,7 @@ BUILDER_DEFS.extend(generate_builderdefs({UNSTABLE, TIER_3}, [
 
     # RISC-V 64-bit GCC
     ("RISC-V 64-bit Debian", "onder-riscv64", SlowUnixInstalledBuild),
+    ("RISC-V 64-bit Bianbu Non-Debug", "stan-riscv64-bianbu", SlowNonDebugUnixBuild),
 ]))
 
 
