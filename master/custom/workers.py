@@ -278,6 +278,12 @@ def get_workers(settings):
             branches=BRANCHES.only_since(3, 13),
         ),
         cpw(
+            name="stan-riscv64-bianbu",
+            tags=['linux', 'unix', 'bianbu', 'ubuntu', 'riscv64'],
+            parallel_tests=4,
+            branches=BRANCHES.only_since(3, 13),
+        ),
+        cpw(
             name="stan-raspbian",
             tags=['linux', 'unix', 'raspbian', 'debian', 'armv8',
                   'aarch64', 'arm'],
