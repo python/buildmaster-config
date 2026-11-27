@@ -1103,16 +1103,16 @@ class Wasm32WasiPreview1DebugBuild(_Wasm32WasiPreview1Build):
     testFlags = ["-u-cpu"]
 
 
-class Wasm32WasiPlatformDebugBuild(UnixBuild):
+class _Wasm32WasiPlatformBuild(UnixBuild):
     factory_tags = ["wasm", "wasi"]
     buildersuffix = ".wasi"
-    pydebug = True
-    append_suffix = ".debug"
+    kind = None  # "pydebug", "release"
+    append_suffix = None
 
     testFlags = ["-u-cpu"]
 
     def __init__(self, source, *, extra_tags=[], **kwargs):
-        if self.pydebug:
+        if self.append_suffix:
             self.buildersuffix += self.append_suffix
         # `Platforms/WASI` was introduced in Python 3.15.
         # `Platforms/WASI path` was introduced in Python 3.16.
@@ -1132,8 +1132,11 @@ class Wasm32WasiPlatformDebugBuild(UnixBuild):
 
         # Build Python
         build_configure = ["python3", wasi_py, "configure-build-python"]
-        if self.pydebug:
-            build_configure.extend(["--", "--with-pydebug"])
+        match self.kind:
+            case "pydebug":
+                build_configure.extend(["--", "--with-pydebug"])
+            case "release":
+                build_configure.append("--release")
         self.addStep(
             Configure(
                 name="Configure build Python",
@@ -1154,11 +1157,14 @@ class Wasm32WasiPlatformDebugBuild(UnixBuild):
         )
 
         # Host/WASI Python
+        host_configure = ["python3", wasi_py, "configure-host"]
+        # Pydebug build automatically inferred from build Python.
+        if self.kind == "release":
+            host_configure.append("--release")
         self.addStep(
-            # Pydebug build automatically inferred from build Python.
             Configure(
                 name="Configure host Python",
-                command=["python3", wasi_py, "configure-host"],
+                command=host_configure,
             )
         )
         self.addStep(
@@ -1167,7 +1173,6 @@ class Wasm32WasiPlatformDebugBuild(UnixBuild):
                 command=["python3", wasi_py, "make-host"],
             )
         )
-
         self.addStep(
             PythonInfo(
                 name="Display build info of the host/WASI Python",
@@ -1175,22 +1180,32 @@ class Wasm32WasiPlatformDebugBuild(UnixBuild):
             )
         )
 
-        # Copied from UnixBuild.
+        if self.kind == "release":
+            self.addStep(
+                Install(
+                    name="Create release archive",
+                    description=["archiving"],
+                    descriptionDone = ["Archived"],
+                    command=["python3", wasi_py, "package"],
+                )
+            )
+
+        test = ["python3", wasi_py, "test", "--slow-ci"]
+        if self.kind == "release":
+            test.extend(["--target", "archive"])
         testopts = self.create_test_opts(branch, worker)
-        test = [
-            "make",
-            "buildbottest",
-            "TESTOPTS=" + " ".join(testopts) + " ${BUILDBOT_TESTOPTS}",
-            f"TESTPYTHONOPTS={self.interpreterFlags}",
-            f"TESTTIMEOUT={self.test_timeout}",
-        ]
+        testopts.append(f"--timeout={self.test_timeout}")
+        test_env = {
+            **self.test_environ,
+            "EXTRATESTOPTS": " ".join(testopts) + " ${BUILDBOT_TESTOPTS}",
+            "TESTPYTHONOPTS": self.interpreterFlags,
+        }
         self.addStep(
             Test(
                 command=test,
                 timeout=step_timeout(self.test_timeout),
                 usePTY=test_with_PTY,
-                env=self.test_environ,
-                workdir=util.Property("wasi_host_path"),
+                env=test_env,
             )
         )
         if not branch.is_pr and not has_option("-R", self.testFlags):
@@ -1205,6 +1220,16 @@ class Wasm32WasiPlatformDebugBuild(UnixBuild):
                 command=["python3", wasi_py, "clean"],
             )
         )
+
+
+class Wasm32WasiPlatformDebugBuild(_Wasm32WasiPlatformBuild):
+    kind = "pydebug"
+    append_suffix = ".debug"
+
+
+class Wasm32WasiPlatformReleaseBuild(_Wasm32WasiPlatformBuild):
+    kind = "release"
+    append_suffix = ".release"
 
 
 ##############################################################################
