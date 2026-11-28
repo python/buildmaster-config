@@ -1,20 +1,19 @@
-import contextlib
 import datetime
 import os
 import re
+import threading
 import time
 from functools import cached_property, total_ordering
 import enum
 from dataclasses import dataclass
 import itertools
 import urllib.request
-import urllib.error
 import json
 from pathlib import Path
 from xml.etree import ElementTree
 
 from flask import Flask
-from flask import render_template, request
+from flask import render_template, request, url_for
 import jinja2
 import humanize
 
@@ -30,6 +29,8 @@ MAX_CHANGES = 50
 # cronjob that forces a refresh every 5 minutes, so all human requests should
 # get a cache hit.
 CACHE_DURATION = 6 * 60
+REFRESH_RETRY_DELAY = 60
+
 
 BRANCHES_URL = "https://peps.python.org/api/release-cycle.json"
 
@@ -740,13 +741,14 @@ class ReleaseDashboard:
     def __init__(self, test_result_dir=None):
         self.flask_app = Flask("test", root_path=os.path.dirname(__file__))
         self.cache = None
-
-        self._refresh_branch_info()
+        self.branch_info = {}
 
         self.flask_app.jinja_env.add_extension('jinja2.ext.loopcontrols')
         self.flask_app.jinja_env.undefined = jinja2.StrictUndefined
 
         self.test_result_dir = Path(test_result_dir).resolve()
+        self.refresh_lock = threading.Lock()
+        self.retry_at = 0
 
         @self.flask_app.route('/')
         @self.flask_app.route("/index.html")
@@ -757,18 +759,26 @@ class ReleaseDashboard:
                 and not request.headers.get('X-Forwarded-For')
             )
 
-            if self.cache is not None and not force_refresh:
-                result, deadline = self.cache
-                if time.monotonic() <= deadline:
-                    return result
+            cached = self.cache
+            now = time.monotonic()
+            if cached is not None and not force_refresh and now <= cached[1]:
+                return cached[0]
 
-            with contextlib.suppress(urllib.error.HTTPError):
-                self._refresh_branch_info()
+            if now >= self.retry_at and self.refresh_lock.acquire(blocking=False):
+                try:
+                    threading.Thread(
+                        target=self._refresh,
+                        kwargs={'stylesheet_url': url_for('static', filename='dashboard.css')},
+                        name='release-dashboard-refresh',
+                        daemon=True,
+                    ).start()
+                except Exception:
+                    self.refresh_lock.release()
+                    raise
 
-            result = self.get_release_status()
-            deadline = time.monotonic() + CACHE_DURATION
-            self.cache = (result, deadline)
-            return result
+            if cached is not None:
+                return cached[0]
+            return 'Release status is not yet available. Retry in five seconds.', 503, {'Retry-After': '5'}
 
         @self.flask_app.template_filter('first_line')
         def first_line(text):
@@ -799,7 +809,19 @@ class ReleaseDashboard:
         with urllib.request.urlopen(BRANCHES_URL) as file:
             self.branch_info = json.load(file)
 
-    def get_release_status(self):
+    def _refresh(self, stylesheet_url):
+        try:
+            self._refresh_branch_info()
+            with self.flask_app.app_context():
+                result = self.get_release_status(stylesheet_url)
+            self.cache = (result, time.monotonic() + CACHE_DURATION)
+        except Exception:
+            self.flask_app.logger.exception('Could not refresh release dashboard')
+        finally:
+            self.retry_at = time.monotonic() + REFRESH_RETRY_DELAY
+            self.refresh_lock.release()
+
+    def get_release_status(self, stylesheet_url):
         state = DashboardState(self)
 
         return strip_indentation(
@@ -808,6 +830,7 @@ class ReleaseDashboard:
                 state=state,
                 Severity=Severity,
                 generated_at=state.now,
+                stylesheet_url=stylesheet_url,
             )
         )
 
