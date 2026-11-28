@@ -1,5 +1,6 @@
 import contextlib
 import datetime
+import inspect
 import os
 import re
 import time
@@ -19,10 +20,13 @@ import jinja2
 import humanize
 
 from buildbot.data.resultspec import Filter
+from buildbot.data.connector import DataConnector
 import buildbot.process.results
 
 N_BUILDS = 200
 MAX_CHANGES = 50
+
+SUPPORTS_INCLUDE_TOTAL = 'include_total' in inspect.signature(DataConnector.get).parameters
 
 
 # Cache result for 6 minutes. Generating the page is slow and a Python build
@@ -98,6 +102,8 @@ class DashboardObject:
         """Call Buildbot API"""
         # Buildbot sets `buildbot_api` as an attribute on the WSGI app,
         # a bit later than we'd like. Get to it dynamically.
+        if SUPPORTS_INCLUDE_TOTAL:
+            kwargs['include_total'] = False
         return self._root._app.flask_app.buildbot_api.dataGet(*args, **kwargs)
 
     def __repr__(self):
